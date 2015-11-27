@@ -12,3 +12,7 @@
 hs_err_pid*
 /build/
 /dist/
+/Isis/build/
+/src/com/iia/gestionsalles/Isis/build/
+/src/com/iia/gestionsalles/Isis/nbproject/private/
+/src/com/iia/Isis/dist/

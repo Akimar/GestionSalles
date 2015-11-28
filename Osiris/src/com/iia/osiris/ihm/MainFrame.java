@@ -14,6 +14,7 @@ import com.iia.osiris.metier.TerminalTableModel;
 import java.sql.Connection;
 import java.util.Vector;
 import javax.swing.JFrame;
+import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
 
 
 /**
@@ -28,7 +29,8 @@ public class MainFrame extends javax.swing.JFrame {
     private SalleTableModel salleTableModel;
     private SalarieTableModel salarieTableModel;
     private TerminalTableModel terminalTableModel;
-    
+    private int indexTableModel; // permet de savoir quel TableModel est utilisé (getModel renvoie une chaine difficilement exploitable)
+    // -1 par défaut, 0 pour SalleTableModel, 1 pour SalarieTableModel, 2 pour TerminalTableModel
     /**
      * Creates new form MainFrame
      */
@@ -38,6 +40,11 @@ public class MainFrame extends javax.swing.JFrame {
         
         vectorSalle = new Vector<Salle>();
         vectorSalarie = new Vector<Salarie>();
+        
+        buttonMod.setEnabled(false);
+        buttonDel.setEnabled(false);
+        
+        myTable.setSelectionMode(SINGLE_SELECTION);
         
         try
         {
@@ -90,12 +97,17 @@ public class MainFrame extends javax.swing.JFrame {
         jMenuBar6 = new javax.swing.JMenuBar();
         jMenu11 = new javax.swing.JMenu();
         jMenu12 = new javax.swing.JMenu();
-        panelOptions = new javax.swing.JPanel();
+        jRadioButton1 = new javax.swing.JRadioButton();
+        panelButtonTab = new javax.swing.JPanel();
         boutonTerminal = new javax.swing.JButton();
         boutonSalles = new javax.swing.JButton();
         boutonSalarie = new javax.swing.JButton();
         scrollPane = new javax.swing.JScrollPane();
         myTable = new javax.swing.JTable();
+        panelOptions = new javax.swing.JPanel();
+        buttonAdd = new javax.swing.JButton();
+        buttonMod = new javax.swing.JButton();
+        buttonDel = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
@@ -133,14 +145,28 @@ public class MainFrame extends javax.swing.JFrame {
         jMenu12.setText("Edit");
         jMenuBar6.add(jMenu12);
 
+        jRadioButton1.setText("jRadioButton1");
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Osiris");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setResizable(false);
 
+        panelButtonTab.setBackground(java.awt.Color.orange);
+
         boutonTerminal.setText("Terminaux");
+        boutonTerminal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                boutonTerminalActionPerformed(evt);
+            }
+        });
 
         boutonSalles.setText("Salles");
+        boutonSalles.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                boutonSallesActionPerformed(evt);
+            }
+        });
 
         boutonSalarie.setText("Salariés");
         boutonSalarie.addActionListener(new java.awt.event.ActionListener() {
@@ -149,28 +175,28 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout panelOptionsLayout = new javax.swing.GroupLayout(panelOptions);
-        panelOptions.setLayout(panelOptionsLayout);
-        panelOptionsLayout.setHorizontalGroup(
-            panelOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelOptionsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panelOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(boutonTerminal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        javax.swing.GroupLayout panelButtonTabLayout = new javax.swing.GroupLayout(panelButtonTab);
+        panelButtonTab.setLayout(panelButtonTabLayout);
+        panelButtonTabLayout.setHorizontalGroup(
+            panelButtonTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelButtonTabLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(panelButtonTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(boutonTerminal)
                     .addComponent(boutonSalles, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(boutonSalarie, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(20, 20, 20))
         );
-        panelOptionsLayout.setVerticalGroup(
-            panelOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelOptionsLayout.createSequentialGroup()
-                .addContainerGap()
+        panelButtonTabLayout.setVerticalGroup(
+            panelButtonTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelButtonTabLayout.createSequentialGroup()
+                .addGap(43, 43, 43)
                 .addComponent(boutonTerminal)
-                .addGap(71, 71, 71)
+                .addGap(70, 70, 70)
                 .addComponent(boutonSalles)
-                .addGap(66, 66, 66)
+                .addGap(70, 70, 70)
                 .addComponent(boutonSalarie)
-                .addContainerGap(90, Short.MAX_VALUE))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
 
         boutonTerminal.getAccessibleContext().setAccessibleName("b_salle");
@@ -186,7 +212,62 @@ public class MainFrame extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        myTable.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                myTableFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                myTableFocusLost(evt);
+            }
+        });
         scrollPane.setViewportView(myTable);
+
+        panelOptions.setBackground(java.awt.Color.cyan);
+
+        buttonAdd.setText("Ajouter");
+        buttonAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonAddActionPerformed(evt);
+            }
+        });
+
+        buttonMod.setText("Modifier");
+        buttonMod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonModActionPerformed(evt);
+            }
+        });
+
+        buttonDel.setText("Supprimer");
+        buttonDel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonDelActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panelOptionsLayout = new javax.swing.GroupLayout(panelOptions);
+        panelOptions.setLayout(panelOptionsLayout);
+        panelOptionsLayout.setHorizontalGroup(
+            panelOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelOptionsLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(panelOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(buttonDel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(buttonMod, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(buttonAdd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
+        );
+        panelOptionsLayout.setVerticalGroup(
+            panelOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelOptionsLayout.createSequentialGroup()
+                .addGap(43, 43, 43)
+                .addComponent(buttonAdd)
+                .addGap(70, 70, 70)
+                .addComponent(buttonMod)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
+                .addComponent(buttonDel)
+                .addGap(43, 43, 43))
+        );
 
         jMenu1.setText("Fichier");
 
@@ -211,25 +292,25 @@ public class MainFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(panelButtonTab, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(87, 87, 87)
+                .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE)
+                .addGap(87, 87, 87)
                 .addComponent(panelOptions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(309, 309, 309)
-                .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(367, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(127, 127, 127)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(139, 139, 139)
-                        .addComponent(panelOptions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(127, 127, 127)
-                        .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(241, Short.MAX_VALUE))
+                    .addComponent(panelButtonTab, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(panelOptions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(106, Short.MAX_VALUE))
         );
 
-        panelOptions.getAccessibleContext().setAccessibleName("");
+        panelButtonTab.getAccessibleContext().setAccessibleName("");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -265,8 +346,8 @@ public class MainFrame extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 JFrame Mf = new MainFrame();
+                Mf.setLocationRelativeTo(null);
                 Mf.setVisible(true);
-               
             }
         });
     }
@@ -280,46 +361,57 @@ public class MainFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         
         myTable.setModel(salarieTableModel);
-        
-       /* TableData.getTableHeader().getColumnModel().getColumn(0).setHeaderValue("Identifiant");
-        TableData.getTableHeader().getColumnModel().getColumn(1).setHeaderValue("Nom");
-        TableData.getTableHeader().getColumnModel().getColumn(2).setHeaderValue("Prenom");
-        TableData.getTableHeader().getColumnModel().getColumn(3).setHeaderValue("Badge");
-        TableData.getTableHeader().getColumnModel().getColumn(4).setHeaderValue("Admin");
-        
-    
-        
-        int i = 0;
-        int j = 0;
-        
-        while(i<vectorSalarie.size())
-        {
-            while(j<TableData.getColumnCount())
-            {
-                TableData.setValueAt(vectorSalarie.elementAt(i).getIdentifiant(), i, j);
-                TableData.setValueAt(vectorSalarie.elementAt(i).getNom(), i, j);
-                TableData.setValueAt(vectorSalarie.elementAt(i).getPrenom(), i, j);
-                TableData.setValueAt(vectorSalarie.elementAt(i).getBadge(), i, j);
-                TableData.setValueAt(vectorSalarie.elementAt(i).isEstAdmin(), i, j);
-                
-                j++;
-            }
-            
-            i++;
-            j=0;
-        }
-        
-        TableData.getTableHeader().updateUI();*/
-        
-       
-   
+        indexTableModel = 1;
     }//GEN-LAST:event_boutonSalarieActionPerformed
+
+    private void boutonTerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boutonTerminalActionPerformed
+        // TODO add your handling code here:
+        
+        myTable.setModel(terminalTableModel);
+        indexTableModel = 2;
+    }//GEN-LAST:event_boutonTerminalActionPerformed
+
+    private void boutonSallesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boutonSallesActionPerformed
+        // TODO add your handling code here:
+        
+        myTable.setModel(salarieTableModel);
+        indexTableModel = 0;
+    }//GEN-LAST:event_boutonSallesActionPerformed
+
+    private void myTableFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_myTableFocusGained
+        // TODO add your handling code here:
+        
+        buttonMod.setEnabled(true);
+        buttonDel.setEnabled(true);
+    }//GEN-LAST:event_myTableFocusGained
+
+    private void myTableFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_myTableFocusLost
+        // TODO add your handling code here:
+        
+        buttonMod.setEnabled(false);
+        buttonDel.setEnabled(false);
+    }//GEN-LAST:event_myTableFocusLost
+
+    private void buttonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_buttonAddActionPerformed
+
+    private void buttonModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonModActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_buttonModActionPerformed
+
+    private void buttonDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDelActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_buttonDelActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton boutonSalarie;
     private javax.swing.JButton boutonSalles;
     private javax.swing.JButton boutonTerminal;
+    private javax.swing.JButton buttonAdd;
+    private javax.swing.JButton buttonDel;
+    private javax.swing.JButton buttonMod;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu10;
     private javax.swing.JMenu jMenu11;
@@ -339,8 +431,10 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar6;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JTable myTable;
+    private javax.swing.JPanel panelButtonTab;
     private javax.swing.JPanel panelOptions;
     private javax.swing.JScrollPane scrollPane;
     // End of variables declaration//GEN-END:variables

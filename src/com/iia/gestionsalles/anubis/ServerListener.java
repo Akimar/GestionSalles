@@ -46,7 +46,5 @@ public abstract class ServerListener {
                 ex.printStackTrace();
             }
         }
-
     }
-    
 }

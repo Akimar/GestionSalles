@@ -8,9 +8,7 @@ package com.iia.gestionsalles.osiris.database;
 import com.iia.gestionsalles.osiris.metier.Salarie;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
  *

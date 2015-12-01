@@ -16,7 +16,7 @@ import java.util.Vector;
  *
  * @author Akimar
  */
-public  class SalarieDAO {
+public abstract class SalarieDAO {
     
     public static void getAllSalarie(Connection cnx, Vector<Salarie> vectorSalarie)
     {
@@ -30,6 +30,35 @@ public  class SalarieDAO {
             {
                 vectorSalarie.add(new Salarie(rs.getInt("Identifiant"), rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Badge"), rs.getBoolean("EstAdmin")));
             }
+        }
+        catch (Exception ex)
+        {
+        } 
+        
+        finally
+        {
+            if(stmt != null)
+            {
+                try
+                {
+                    stmt.close();
+                }
+
+                catch(SQLException ex)
+                {
+
+                }
+            }
+        }
+    }
+    
+    public static void addSalarie(Connection cnx, String nom, String prenom, String badge, boolean admin)
+    {
+        Statement stmt = null;
+        try 
+        {
+            stmt = cnx.createStatement();       
+            stmt.executeQuery("INSERT INTO Salarie VALUES(NULL, "+nom+", "+prenom+", "+badge+", "+admin);                
         }
         catch (Exception ex)
         {

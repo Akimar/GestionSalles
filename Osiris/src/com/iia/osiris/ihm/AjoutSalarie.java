@@ -5,6 +5,11 @@
  */
 package com.iia.osiris.ihm;
 
+import com.iia.osiris.database.BDD_Util;
+import com.iia.osiris.database.SalarieDAO;
+import java.sql.Connection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -35,6 +40,9 @@ public class AjoutSalarie extends javax.swing.JFrame {
     private void initComponents() {
 
         adminGroup = new javax.swing.ButtonGroup();
+        buttonPanel = new javax.swing.JPanel();
+        validerAjoutSalarie = new javax.swing.JButton();
+        annulerAjoutSalarie = new javax.swing.JButton();
         ajoutSalariePanel = new javax.swing.JPanel();
         nomSalarieLabel = new javax.swing.JLabel();
         prenomSalarieLabel = new javax.swing.JLabel();
@@ -46,17 +54,49 @@ public class AjoutSalarie extends javax.swing.JFrame {
         nomSalarieField = new javax.swing.JTextField();
         prenomSalarieField = new javax.swing.JTextField();
         badgeSalarieField = new javax.swing.JTextField();
-        jPanel1 = new javax.swing.JPanel();
+        errorPanel = new javax.swing.JPanel();
         errorFirstNameLabel = new javax.swing.JLabel();
-        errorBadgeLabel = new javax.swing.JLabel();
         errorNameLabel = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
-        validerAjoutSalarie = new javax.swing.JButton();
-        annulerAjoutSalarie = new javax.swing.JButton();
+        errorBadgeLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Osiris");
         setResizable(false);
+
+        validerAjoutSalarie.setText("Ajouter");
+        validerAjoutSalarie.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                validerAjoutSalarieActionPerformed(evt);
+            }
+        });
+
+        annulerAjoutSalarie.setText("Annuler");
+        annulerAjoutSalarie.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                annulerAjoutSalarieActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout buttonPanelLayout = new javax.swing.GroupLayout(buttonPanel);
+        buttonPanel.setLayout(buttonPanelLayout);
+        buttonPanelLayout.setHorizontalGroup(
+            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(buttonPanelLayout.createSequentialGroup()
+                .addGap(41, 41, 41)
+                .addComponent(validerAjoutSalarie)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
+                .addComponent(annulerAjoutSalarie)
+                .addGap(41, 41, 41))
+        );
+        buttonPanelLayout.setVerticalGroup(
+            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(buttonPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(validerAjoutSalarie)
+                    .addComponent(annulerAjoutSalarie))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         nomSalarieLabel.setText("Nom : ");
 
@@ -81,138 +121,99 @@ public class AjoutSalarie extends javax.swing.JFrame {
             }
         });
 
-        errorFirstNameLabel.setForeground(new java.awt.Color(255, 51, 51));
-        errorFirstNameLabel.setText("Caractères interdits !");
-
-        errorBadgeLabel.setForeground(new java.awt.Color(255, 51, 51));
-        errorBadgeLabel.setText("Format incorrect !");
-
-        errorNameLabel.setForeground(new java.awt.Color(255, 51, 51));
-        errorNameLabel.setText("Caractères interdits !");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(errorBadgeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(errorFirstNameLabel)
-                        .addGap(0, 22, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(errorNameLabel)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(33, 33, 33)
-                .addComponent(errorNameLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
-                .addComponent(errorFirstNameLabel)
-                .addGap(39, 39, 39)
-                .addComponent(errorBadgeLabel)
-                .addGap(32, 32, 32))
-        );
-
-        validerAjoutSalarie.setText("Ajouter");
-        validerAjoutSalarie.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                validerAjoutSalarieActionPerformed(evt);
+        prenomSalarieField.addCaretListener(new javax.swing.event.CaretListener() {
+            public void caretUpdate(javax.swing.event.CaretEvent evt) {
+                prenomSalarieFieldCaretUpdate(evt);
             }
         });
 
-        annulerAjoutSalarie.setText("Annuler");
-        annulerAjoutSalarie.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                annulerAjoutSalarieActionPerformed(evt);
+        badgeSalarieField.addCaretListener(new javax.swing.event.CaretListener() {
+            public void caretUpdate(javax.swing.event.CaretEvent evt) {
+                badgeSalarieFieldCaretUpdate(evt);
             }
         });
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addComponent(validerAjoutSalarie)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 129, Short.MAX_VALUE)
-                .addComponent(annulerAjoutSalarie)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(validerAjoutSalarie)
-                    .addComponent(annulerAjoutSalarie))
-                .addContainerGap(12, Short.MAX_VALUE))
-        );
 
         javax.swing.GroupLayout ajoutSalariePanelLayout = new javax.swing.GroupLayout(ajoutSalariePanel);
         ajoutSalariePanel.setLayout(ajoutSalariePanelLayout);
         ajoutSalariePanelLayout.setHorizontalGroup(
             ajoutSalariePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ajoutSalariePanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(12, 12, 12)
                 .addGroup(ajoutSalariePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(ajoutSalariePanelLayout.createSequentialGroup()
+                        .addComponent(adminSalarieLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(estAdminRadio)
+                        .addGap(18, 18, 18)
+                        .addComponent(nonAdminRadio))
+                    .addGroup(ajoutSalariePanelLayout.createSequentialGroup()
                         .addGroup(ajoutSalariePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(ajoutSalariePanelLayout.createSequentialGroup()
-                                .addComponent(adminSalarieLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(estAdminRadio)
-                                .addGap(18, 18, 18)
-                                .addComponent(nonAdminRadio))
-                            .addGroup(ajoutSalariePanelLayout.createSequentialGroup()
-                                .addGroup(ajoutSalariePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(prenomSalarieLabel)
-                                    .addComponent(nomSalarieLabel)
-                                    .addComponent(badgeSalarieLabel))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(ajoutSalariePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(prenomSalarieField, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
-                                    .addComponent(badgeSalarieField)
-                                    .addComponent(nomSalarieField)))
-                            .addComponent(titreLabel, javax.swing.GroupLayout.Alignment.TRAILING))
+                            .addComponent(prenomSalarieLabel)
+                            .addComponent(nomSalarieLabel)
+                            .addComponent(badgeSalarieLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(12, Short.MAX_VALUE))
+                        .addGroup(ajoutSalariePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(prenomSalarieField, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                            .addComponent(badgeSalarieField)
+                            .addComponent(nomSalarieField)))
+                    .addComponent(titreLabel, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         ajoutSalariePanelLayout.setVerticalGroup(
             ajoutSalariePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ajoutSalariePanelLayout.createSequentialGroup()
-                .addGroup(ajoutSalariePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(ajoutSalariePanelLayout.createSequentialGroup()
-                        .addComponent(titreLabel)
-                        .addGap(15, 15, 15)
-                        .addGroup(ajoutSalariePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(nomSalarieLabel)
-                            .addComponent(nomSalarieField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(30, 30, 30)
-                        .addGroup(ajoutSalariePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(prenomSalarieLabel)
-                            .addComponent(prenomSalarieField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(30, 30, 30)
-                        .addGroup(ajoutSalariePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(badgeSalarieLabel)
-                            .addComponent(badgeSalarieField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(29, 29, 29)
-                        .addGroup(ajoutSalariePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(adminSalarieLabel)
-                            .addComponent(estAdminRadio)
-                            .addComponent(nonAdminRadio)))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(titreLabel)
+                .addGap(15, 15, 15)
+                .addGroup(ajoutSalariePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nomSalarieLabel)
+                    .addComponent(nomSalarieField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30)
+                .addGroup(ajoutSalariePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(prenomSalarieLabel)
+                    .addComponent(prenomSalarieField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30)
+                .addGroup(ajoutSalariePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(badgeSalarieLabel)
+                    .addComponent(badgeSalarieField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(29, 29, 29)
+                .addGroup(ajoutSalariePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(adminSalarieLabel)
+                    .addComponent(estAdminRadio)
+                    .addComponent(nonAdminRadio))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        errorFirstNameLabel.setForeground(new java.awt.Color(255, 51, 51));
+        errorFirstNameLabel.setText("Caractères interdits !");
+
+        errorNameLabel.setForeground(new java.awt.Color(255, 51, 51));
+        errorNameLabel.setText("Caractères interdits !");
+
+        errorBadgeLabel.setForeground(new java.awt.Color(255, 51, 51));
+        errorBadgeLabel.setText("Format incorrect !");
+
+        javax.swing.GroupLayout errorPanelLayout = new javax.swing.GroupLayout(errorPanel);
+        errorPanel.setLayout(errorPanelLayout);
+        errorPanelLayout.setHorizontalGroup(
+            errorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(errorPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(errorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(errorBadgeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(errorFirstNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(errorNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(37, 37, 37))
+        );
+        errorPanelLayout.setVerticalGroup(
+            errorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, errorPanelLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(errorNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(37, 37, 37)
+                .addComponent(errorFirstNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
+                .addComponent(errorBadgeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(19, 19, 19))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -220,15 +221,30 @@ public class AjoutSalarie extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(ajoutSalariePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(ajoutSalariePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(errorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(8, 8, 8))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(ajoutSalariePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(ajoutSalariePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(errorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5))
         );
 
         pack();
@@ -246,12 +262,38 @@ public class AjoutSalarie extends javax.swing.JFrame {
         if(nomSalarieField.getText().isEmpty() || prenomSalarieField.getText().isEmpty() || badgeSalarieField.getText().isEmpty() )
         {
             JOptionPane.showMessageDialog(null, "Veuillez compléter tous les champs.");
-        }       
+        }
+        
+        else if(!errorBadgeLabel.isVisible() && !errorFirstNameLabel.isVisible() && !errorNameLabel.isVisible())
+        {
+            boolean admin = (nonAdminRadio.isSelected()) ? false : true;
+            
+          
+          
+            Connection cnx;
+            try 
+            {
+                cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
+                
+                SalarieDAO.addSalarie(cnx,nomSalarieField.getText(), prenomSalarieField.getText(), badgeSalarieField.getText(), admin);
+                
+                cnx.close();
+                cnx=null;
+                
+                
+            } 
+            catch (Exception ex) 
+            {
+                Logger.getLogger(AjoutSalarie.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+          
+        }
     }//GEN-LAST:event_validerAjoutSalarieActionPerformed
 
     private void nomSalarieFieldCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_nomSalarieFieldCaretUpdate
         // TODO add your handling code here:
-        if(!nomSalarieField.getText().matches("[a-zA-ZÀ-ÿ ]+") && !nomSalarieField.getText().isEmpty())
+        if(!nomSalarieField.getText().matches("[a-zA-ZÀ-ÿ\\- ]+") && !nomSalarieField.getText().isEmpty())
         {
             errorNameLabel.setVisible(true);
         }
@@ -262,6 +304,34 @@ public class AjoutSalarie extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_nomSalarieFieldCaretUpdate
 
+    private void prenomSalarieFieldCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_prenomSalarieFieldCaretUpdate
+        // TODO add your handling code here:
+        
+        if(!prenomSalarieField.getText().matches("[a-zA-ZÀ-ÿ\\- ]+") && !prenomSalarieField.getText().isEmpty())
+        {
+            errorFirstNameLabel.setVisible(true);
+        }
+        
+        else
+        {
+            errorFirstNameLabel.setVisible(false);
+        }
+    }//GEN-LAST:event_prenomSalarieFieldCaretUpdate
+
+    private void badgeSalarieFieldCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_badgeSalarieFieldCaretUpdate
+        // TODO add your handling code here:
+        
+        if(!badgeSalarieField.getText().matches("[A-Za-z0-9]+") && !badgeSalarieField.getText().isEmpty())
+        {
+            errorBadgeLabel.setVisible(true);
+        }
+        
+        else
+        {
+            errorBadgeLabel.setVisible(false);
+        }
+    }//GEN-LAST:event_badgeSalarieFieldCaretUpdate
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup adminGroup;
@@ -270,12 +340,12 @@ public class AjoutSalarie extends javax.swing.JFrame {
     private javax.swing.JButton annulerAjoutSalarie;
     private javax.swing.JTextField badgeSalarieField;
     private javax.swing.JLabel badgeSalarieLabel;
+    private javax.swing.JPanel buttonPanel;
     private javax.swing.JLabel errorBadgeLabel;
     private javax.swing.JLabel errorFirstNameLabel;
     private javax.swing.JLabel errorNameLabel;
+    private javax.swing.JPanel errorPanel;
     private javax.swing.JRadioButton estAdminRadio;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JTextField nomSalarieField;
     private javax.swing.JLabel nomSalarieLabel;
     private javax.swing.JRadioButton nonAdminRadio;

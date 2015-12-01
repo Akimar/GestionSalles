@@ -38,7 +38,7 @@ public abstract class InitProgramme {
             cnx =  BDD_Util.open("root", "formation", "127.0.0.1", "GestionSalles");
                  
             
-            
+            //il te manque pas un stmt = cnx.createStatement(); ?
             ResultSet rs = stmt.executeQuery("SELECT *  FROM Salle"); 
                  
             while(rs.next()) // pour chaque salle

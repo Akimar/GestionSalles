@@ -5,10 +5,14 @@
  */
 package isis;
 
+import com.iia.osiris.metier.Salarie;
+import com.iia.osiris.metier.Salle;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 
 /**
@@ -17,33 +21,65 @@ import java.sql.Statement;
  */
 public class NouvelleResa extends javax.swing.JFrame {
 
+    ArrayList<Salle> listSalles = new ArrayList<>();
     public NouvelleResa() {
         Connection cnx = null;
         Statement stmt = null;
         ResultSet ResultSalles = null;
+        ResultSet ResultSalarie = null;
+        ArrayList<Salarie> ListPersonne = new ArrayList<Salarie>();
+        Salarie newSalarie = null;
         try
         {
-            cnx = BDD_Util.open("root", "formation", "127.0.0.1", "GestionSalles");
+            cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
             stmt = cnx.createStatement();
-            ResultSalles = stmt.executeQuery("SELECT *  FROM Salle"); 
+            ResultSalles = stmt.executeQuery("SELECT *  FROM Salle");
+            stmt = cnx.createStatement();
+            ResultSalarie = stmt.executeQuery("SELECT *  FROM Salarie");
         }
         catch (Exception ex)
         {
-            System.out.println(ex.getMessage());
+            System.out.println(ex.getStackTrace());
         }
         initComponents();
         try
         {
+            this.jComboBox_Salle.removeAllItems();
             while (ResultSalles.next())
             {
-                this.jComboBox_Salle.addItem(ResultSalles.getString("Nom"));
+                this.jComboBox_Salle.addItem(new Salle(ResultSalles.getInt("Identifiant"), ResultSalles.getString("NumeroTerminal"), ResultSalles.getString("NomSalle"), null, null));
             }
+            this.jComboBox_Salle.updateUI();
+            
+
+            this.jComboBox_Responsable.removeAllItems();
+            this.jList_Personnes.removeAll();
+            while (ResultSalarie.next())
+            {
+                newSalarie = new Salarie(ResultSalarie.getInt("Identifiant"), ResultSalarie.getString("Nom"), ResultSalarie.getString("Prenom"), ResultSalarie.getString("Badge"), ResultSalarie.getBoolean("EstAdmin"));
+                this.jComboBox_Responsable.addItem(newSalarie);
+                ListPersonne.add(newSalarie);
+            }
+            this.jComboBox_Responsable.updateUI();
+
+            
+            this.jList_Personnes.setListData(ListPersonne.toArray());
+            jList_Personnes.updateUI();
+            
+            cnx.close();
         }
         catch (Exception ex)
         {
             System.out.println(ex.getMessage());
+            Alert test = new Alert(Alert.AlertType.ERROR, "CKC", ButtonType.OK);
+            test.show();
+            this.setVisible(false);
+            this.dispose();
         }
-        
+        cnx = null;
+        stmt = null;
+        ResultSalles = null;
+        ResultSalarie = null;
     }
 
     /**
@@ -64,9 +100,10 @@ public class NouvelleResa extends javax.swing.JFrame {
         jComboBox_Salle = new javax.swing.JComboBox();
         jComboBox_Responsable = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
+        jList_Personnes = new javax.swing.JList();
         jButton_Annuler = new javax.swing.JButton();
         jButton_ok = new javax.swing.JButton();
+        jButton_RAZ = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Réserver une salle");
@@ -83,12 +120,12 @@ public class NouvelleResa extends javax.swing.JFrame {
 
         jComboBox_Responsable.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
+        jList_Personnes.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane1.setViewportView(jList_Personnes);
 
         jButton_Annuler.setText("Annuler");
         jButton_Annuler.addActionListener(new java.awt.event.ActionListener() {
@@ -104,6 +141,13 @@ public class NouvelleResa extends javax.swing.JFrame {
             }
         });
 
+        jButton_RAZ.setLabel("RàZ");
+        jButton_RAZ.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_RAZActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -111,6 +155,9 @@ public class NouvelleResa extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton_Annuler))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
@@ -126,12 +173,11 @@ public class NouvelleResa extends javax.swing.JFrame {
                             .addComponent(jLabel3)
                             .addComponent(jComboBox_Responsable, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(68, 68, 68)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton_Annuler)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton_RAZ)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton_ok)
                 .addContainerGap())
@@ -152,7 +198,9 @@ public class NouvelleResa extends javax.swing.JFrame {
                         .addComponent(jComboBox_Salle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jComboBox_Responsable, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 182, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton_RAZ)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 150, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton_Annuler)
                     .addComponent(jButton_ok)))
@@ -179,12 +227,16 @@ public class NouvelleResa extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton_okActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_okActionPerformed
-        // TODO add your handling code here:
+        listSalles.ge
     }//GEN-LAST:event_jButton_okActionPerformed
 
     private void jButton_AnnulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_AnnulerActionPerformed
         this.setVisible(false);
     }//GEN-LAST:event_jButton_AnnulerActionPerformed
+
+    private void jButton_RAZActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_RAZActionPerformed
+        this.jList_Personnes.clearSelection();
+    }//GEN-LAST:event_jButton_RAZActionPerformed
 
     /**
      * @param args the command line arguments
@@ -223,6 +275,7 @@ public class NouvelleResa extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_Annuler;
+    private javax.swing.JButton jButton_RAZ;
     private javax.swing.JButton jButton_ok;
     private javax.swing.JComboBox jComboBox_Responsable;
     private javax.swing.JComboBox jComboBox_Salle;
@@ -230,7 +283,7 @@ public class NouvelleResa extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JList jList1;
+    private javax.swing.JList jList_Personnes;
     private javax.swing.JPanel jPanel1;
     private com.javaswingcomponents.datepicker.JSCDatePicker jSCDatePicker1;
     private javax.swing.JScrollPane jScrollPane1;

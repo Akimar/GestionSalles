@@ -3,21 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.iia.gestionsalles.osiris.metier;
+package com.iia.osiris.metier;
 
+import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author Akimar
  */
-public class SalleTableModel extends DefaultTableModel {
+public class SalarieTableModel extends DefaultTableModel {
     
-    private String[] columns = new String[] { "Nom", "Prenom", "Age", "Admin", "" };
-    private Class[] classs = new Class[] { String.class, String.class, Integer.class, Boolean.class, String.class };
-    private boolean[] editables = new boolean[] { true, true, true, false, false };
+    private String[] columns = new String[] { "Nom", "Prénom", "Badge", "Administrateur" };
+    private Class[] classs = new Class[] { String.class, String.class, String.class, Boolean.class};
+    private boolean[] editables = new boolean[] { false, false, false, true};
 
-    public SalleTableModel() {
+    public SalarieTableModel() {
         super(0, 0);
     }
 
@@ -39,5 +40,14 @@ public class SalleTableModel extends DefaultTableModel {
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         return classs[columnIndex];
-    } 
+    }
+    
+    public void fillTable(Vector<Salarie> vectorSalarie)
+    {
+        
+        for(Salarie salarie : vectorSalarie)
+        {
+            this.addRow(new Object[] { salarie.getNom(),salarie.getPrenom(),salarie.getBadge(), salarie.isEstAdmin()}); 
+        }
+    }
 }

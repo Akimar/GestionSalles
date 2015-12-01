@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.iia.gestionsalles.osiris.metier;
+package com.iia.osiris.metier;
 
 import java.util.Objects;
 

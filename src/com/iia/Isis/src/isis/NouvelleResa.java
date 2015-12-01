@@ -20,7 +20,6 @@ public class NouvelleResa extends javax.swing.JFrame {
     public NouvelleResa() {
         Connection cnx = null;
         Statement stmt = null;
-        PreparedStatement pstmt = null;
         ResultSet ResultSalles = null;
         try
         {

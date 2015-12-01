@@ -103,6 +103,11 @@ public class Salle {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return Nom;
+    }
+
  
     
     

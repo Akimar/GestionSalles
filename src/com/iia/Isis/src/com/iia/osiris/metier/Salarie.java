@@ -99,6 +99,11 @@ public class Salarie {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return Nom + " " + Prenom ;
+    }
     
     
     

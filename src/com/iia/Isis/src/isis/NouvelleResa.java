@@ -9,8 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import javax.swing.JComboBox;
-import com.iia.gestionsalles.osiris.metier.Salle;
+
 
 /**
  *

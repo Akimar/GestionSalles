@@ -6,6 +6,7 @@
 package isis;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -24,7 +25,7 @@ public class MainJFrame extends javax.swing.JFrame {
      */
     public MainJFrame() {
         Connection cnx = null;
-        Statement stmt = null;
+        Statement stmt;
         ResultSet ResultSalles = null;
         try 
         {

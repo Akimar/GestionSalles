@@ -10,6 +10,7 @@ import com.iia.osiris.metier.Salle;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
 import java.util.ArrayList;
@@ -273,38 +274,54 @@ public class NouvelleResa extends javax.swing.JFrame {
         int IntDateDeb = -1;
         int IntDateFin = -1;
         int identifiant_jour = -1;
-        int idReservation = -1 ;
+        int idReservation = -1;
         if (this.jComboBox_Responsable.getSelectedIndex() >= 0 && this.jComboBox_Salle.getSelectedIndex() >= 0 && this.jSCDatePicker1.getSelectedDate() != null) {
-            try {
-                cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
-                cnx.setAutoCommit(false);
-                identifiant_jour = jSCDatePicker1.getSelectedDate().getDay();
-                prestmt = cnx.prepareStatement("INSERT INTO reservation VALUES (NULL,?,?,?,?,?,?); ", Statement.RETURN_GENERATED_KEYS);
-                prestmt.setDate(1, new java.sql.Date(this.jSCDatePicker1.getSelectedDate().getTime()));
-                IntDateDeb = Integer.parseInt(((String)jComboBox_Deb.getSelectedItem()).substring(0,2).trim());
-                prestmt.setTime(2, new Time(IntDateDeb, 0, 0));
-                IntDateFin = Integer.parseInt(((String)jComboBox_fin.getSelectedItem()).substring(0,2).trim());
-                prestmt.setTime(3, new Time(IntDateFin, 59, 00));
-                prestmt.setInt(4, identifiant_jour);
-                prestmt.setInt(5, ((Salarie) jComboBox_Responsable.getSelectedItem()).getIdentifiant());
-                prestmt.setInt(6, ((Salle) jComboBox_Salle.getSelectedItem()).getIdentifiant());
-                prestmt.executeUpdate();
-                idReservation = prestmt.getGeneratedKeys().getInt(1);//ca pas marche
-                //ajouter les autorisés
-                for (Salarie selected : (ArrayList<Salarie>)jList_Personnes.getSelectedValuesList())
-                {
-                    prestmt = cnx.prepareStatement("INSERT INTO autorise VALUES (?,?);");
-                    prestmt.setInt(1, selected.getIdentifiant());
-                    prestmt.setInt(2, idReservation);
+            IntDateDeb = Integer.parseInt(((String) jComboBox_Deb.getSelectedItem()).substring(0, 2).trim());
+            IntDateFin = Integer.parseInt(((String) jComboBox_fin.getSelectedItem()).substring(0, 2).trim());
+            if (IntDateDeb > IntDateFin) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Veuillez choisir une heure de fin postérieure à l'heure de début ", "Attention !", 2);
+            } else {
+                try {
+                    cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
+                    cnx.setAutoCommit(false);
+                    identifiant_jour = jSCDatePicker1.getSelectedDate().getDay();
+                    prestmt = cnx.prepareStatement("INSERT INTO reservation VALUES (NULL,?,?,?,?,?,?); ", Statement.RETURN_GENERATED_KEYS);
+                    prestmt.setDate(1, new java.sql.Date(this.jSCDatePicker1.getSelectedDate().getTime()));
+
+                    prestmt.setTime(2, new Time(IntDateDeb, 0, 0));
+
+                    prestmt.setTime(3, new Time(IntDateFin, 59, 00));
+                    prestmt.setInt(4, identifiant_jour);
+                    prestmt.setInt(5, ((Salarie) jComboBox_Responsable.getSelectedItem()).getIdentifiant());
+                    prestmt.setInt(6, ((Salle) jComboBox_Salle.getSelectedItem()).getIdentifiant());
                     prestmt.executeUpdate();
+                    cnx.commit();
+                    ResultSet tmpSet = prestmt.getGeneratedKeys();
+                    tmpSet.next();
+                    idReservation = tmpSet.getInt(1);
+                    tmpSet = null;
+                    //ajouter les autorisés
+                    for (Salarie selected : (ArrayList<Salarie>) jList_Personnes.getSelectedValuesList()) {
+                        prestmt = cnx.prepareStatement("INSERT INTO autorise VALUES (?,?);");
+                        prestmt.setInt(1, selected.getIdentifiant());
+                        prestmt.setInt(2, idReservation);
+                        prestmt.executeUpdate();
+                        cnx.commit();
+                    }
+                    javax.swing.JOptionPane.showMessageDialog(null, "Réservation effectuée avec succès !", "Information !", 1);
+                    prestmt = null;
+                    cnx.close();
+                    
+                    this.setVisible(false);
+                    this.dispose();
+                } catch (Exception ex) {
+                    System.out.println(ex.getStackTrace());
+                    try {
+                        cnx.rollback();
+                    } catch (SQLException ex1) {
+                        System.out.println(ex1.getStackTrace());
+                    }
                 }
-                cnx.commit();
-                prestmt = null;
-                cnx.close();
-                this.setVisible(false);
-                this.dispose();
-            } catch (Exception ex) {
-                System.out.println(ex.getStackTrace());;
             }
         } else {
             javax.swing.JOptionPane.showMessageDialog(null, "Veuillez remplir tout les champs", "Attention !", 2);
@@ -353,19 +370,16 @@ public class NouvelleResa extends javax.swing.JFrame {
                     jComboBox_Deb.removeAllItems();
                     jComboBox_fin.removeAllItems();
 
-                    if (heurDeb1 != null && heurFin1 != null)
-                    {
+                    if (heurDeb1 != null && heurFin1 != null) {
                         tmp = heurDeb1.getHours();
                         while (tmp <= heurFin1.getHours()) {
                             jComboBox_Deb.addItem(tmp + " : 00");
                             jComboBox_fin.addItem(tmp + " : 59");
                             tmp++;
-                        } 
+                        }
                     }
 
-
-                    if (heurDeb2 != null && heurFin2 != null)
-                    {
+                    if (heurDeb2 != null && heurFin2 != null) {
                         tmp = heurDeb2.getHours();
                         while (tmp <= heurFin2.getHours()) {
                             jComboBox_Deb.addItem(tmp + " : 00");
@@ -373,12 +387,10 @@ public class NouvelleResa extends javax.swing.JFrame {
                             tmp++;
                         }
                     }
-
                 }
             } catch (Exception ex) {
                 System.out.println(ex.getStackTrace());
             }
-            //actualiser grace à base
         }
 
     }//GEN-LAST:event_jButton_ChercherActionPerformed

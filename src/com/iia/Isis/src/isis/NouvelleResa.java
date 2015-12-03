@@ -11,10 +11,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-
 
 /**
  *
@@ -23,6 +26,7 @@ import javafx.scene.control.ButtonType;
 public class NouvelleResa extends javax.swing.JFrame {
 
     ArrayList<Salle> listSalles = new ArrayList<>();
+
     public NouvelleResa() {
         Connection cnx = null;
         Statement stmt = null;
@@ -30,49 +34,39 @@ public class NouvelleResa extends javax.swing.JFrame {
         ResultSet ResultSalarie = null;
         ArrayList<Salarie> ListPersonne = new ArrayList<Salarie>();
         Salarie newSalarie = null;
-        try
-        {
+        try {
             cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
             stmt = cnx.createStatement();
             ResultSalles = stmt.executeQuery("SELECT *  FROM Salle");
             stmt = cnx.createStatement();
             ResultSalarie = stmt.executeQuery("SELECT *  FROM Salarie");
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             System.out.println(ex.getStackTrace());
         }
         initComponents();
-        try
-        {
+        try {
             this.jComboBox_Salle.removeAllItems();
-            while (ResultSalles.next())
-            {
+            while (ResultSalles.next()) {
                 this.jComboBox_Salle.addItem(new Salle(ResultSalles.getInt("Identifiant"), ResultSalles.getString("NumeroTerminal"), ResultSalles.getString("NomSalle"), null, null));
             }
             this.jComboBox_Salle.updateUI();
-            
 
             this.jComboBox_Responsable.removeAllItems();
             this.jList_Personnes.removeAll();
-            while (ResultSalarie.next())
-            {
+            while (ResultSalarie.next()) {
                 newSalarie = new Salarie(ResultSalarie.getInt("Identifiant"), ResultSalarie.getString("Nom"), ResultSalarie.getString("Prenom"), ResultSalarie.getString("Badge"), ResultSalarie.getBoolean("EstAdmin"));
                 this.jComboBox_Responsable.addItem(newSalarie);
                 ListPersonne.add(newSalarie);
             }
             this.jComboBox_Responsable.updateUI();
 
-            
             this.jList_Personnes.setListData(ListPersonne.toArray());
             jList_Personnes.updateUI();
-            
+
             cnx.close();
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
-            javax.swing.JOptionPane.showMessageDialog(null,ex.getStackTrace(),"Error", 0); 
+            javax.swing.JOptionPane.showMessageDialog(null, ex.getStackTrace(), "Error", 0);
             this.setVisible(false);
             this.dispose();
         }
@@ -276,29 +270,46 @@ public class NouvelleResa extends javax.swing.JFrame {
     private void jButton_okActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_okActionPerformed
         Connection cnx = null;
         PreparedStatement prestmt;
-        
-        if(this.jComboBox_Responsable.getSelectedIndex() > 0 && this.jComboBox_Salle.getSelectedIndex() > 0 && this.jSCDatePicker1.getSelectedDate() != null)
-        {
+        int IntDateDeb = -1;
+        int IntDateFin = -1;
+        int identifiant_jour = -1;
+        int idReservation = -1 ;
+        if (this.jComboBox_Responsable.getSelectedIndex() >= 0 && this.jComboBox_Salle.getSelectedIndex() >= 0 && this.jSCDatePicker1.getSelectedDate() != null) {
             try {
-            cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
-            prestmt = cnx.prepareStatement("INSERT INTO reservation VALUES (?,?,?,?,?,?,?); ");
-            prestmt.setDate(1, new java.sql.Date(this.jSCDatePicker1.getSelectedDate().getTime()));
-            /*prestmt.set
-            prestmt.set
-            prestmt.set
-            prestmt.set
-            prestmt.set
-            prestmt.set*/
-            ResultSet prs = prestmt.executeQuery();  
+                cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
+                cnx.setAutoCommit(false);
+                identifiant_jour = jSCDatePicker1.getSelectedDate().getDay();
+                prestmt = cnx.prepareStatement("INSERT INTO reservation VALUES (NULL,?,?,?,?,?,?); ", Statement.RETURN_GENERATED_KEYS);
+                prestmt.setDate(1, new java.sql.Date(this.jSCDatePicker1.getSelectedDate().getTime()));
+                IntDateDeb = Integer.parseInt(((String)jComboBox_Deb.getSelectedItem()).substring(0,2).trim());
+                prestmt.setTime(2, new Time(IntDateDeb, 0, 0));
+                IntDateFin = Integer.parseInt(((String)jComboBox_fin.getSelectedItem()).substring(0,2).trim());
+                prestmt.setTime(3, new Time(IntDateFin, 59, 00));
+                prestmt.setInt(4, identifiant_jour);
+                prestmt.setInt(5, ((Salarie) jComboBox_Responsable.getSelectedItem()).getIdentifiant());
+                prestmt.setInt(6, ((Salle) jComboBox_Salle.getSelectedItem()).getIdentifiant());
+                prestmt.executeUpdate();
+                idReservation = prestmt.getGeneratedKeys().getInt(1);//ca pas marche
+                //ajouter les autorisés
+                for (Salarie selected : (ArrayList<Salarie>)jList_Personnes.getSelectedValuesList())
+                {
+                    prestmt = cnx.prepareStatement("INSERT INTO autorise VALUES (?,?);");
+                    prestmt.setInt(1, selected.getIdentifiant());
+                    prestmt.setInt(2, idReservation);
+                    prestmt.executeUpdate();
+                }
+                cnx.commit();
+                prestmt = null;
+                cnx.close();
+                this.setVisible(false);
+                this.dispose();
             } catch (Exception ex) {
                 System.out.println(ex.getStackTrace());;
             }
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(null, "Veuillez remplir tout les champs", "Attention !", 2);
         }
-        else
-        {  
-            javax.swing.JOptionPane.showMessageDialog(null,"Veuillez remplir tout les champs", "Attention !", 2); 
-        }
-        
+
     }//GEN-LAST:event_jButton_okActionPerformed
 
     private void jButton_AnnulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_AnnulerActionPerformed
@@ -313,13 +324,60 @@ public class NouvelleResa extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton_RAZActionPerformed
 
     private void jButton_ChercherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ChercherActionPerformed
-        if (jComboBox_Salle.getSelectedIndex() > 0)
-        {
+        Connection cnx = null;
+        PreparedStatement prestmt = null;
+        ResultSet result = null;
+        Time heurDeb1 = null;
+        Time heurDeb2 = null;
+        Time heurFin1 = null;
+        Time heurFin2 = null;
+        int tmp = -1;
+
+        if (jComboBox_Salle.getSelectedIndex() >= 0) {
             jComboBox_Deb.setEnabled(true);
             jComboBox_fin.setEnabled(true);
             jComboBox_Responsable.setEnabled(true);
             jList_Personnes.setEnabled(true);
-            
+
+            try {//A TESTER !!!!
+                cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
+                prestmt = cnx.prepareStatement("SELECT * FROM disponibilite WHERE identifiantSalle = ?;");
+                prestmt.setInt(1, ((Salle) jComboBox_Salle.getSelectedItem()).getIdentifiant());
+                result = prestmt.executeQuery();
+                while (result.next()) {
+                    heurDeb1 = result.getTime("HoraireDebMat");
+                    heurDeb2 = result.getTime("HoraireDebSoir");
+                    heurFin1 = result.getTime("HoraireFinMat");
+                    heurFin2 = result.getTime("HoraireFinSoir");
+
+                    jComboBox_Deb.removeAllItems();
+                    jComboBox_fin.removeAllItems();
+
+                    if (heurDeb1 != null && heurFin1 != null)
+                    {
+                        tmp = heurDeb1.getHours();
+                        while (tmp <= heurFin1.getHours()) {
+                            jComboBox_Deb.addItem(tmp + " : 00");
+                            jComboBox_fin.addItem(tmp + " : 59");
+                            tmp++;
+                        } 
+                    }
+
+
+                    if (heurDeb2 != null && heurFin2 != null)
+                    {
+                        tmp = heurDeb2.getHours();
+                        while (tmp <= heurFin2.getHours()) {
+                            jComboBox_Deb.addItem(tmp + " : 00");
+                            jComboBox_fin.addItem(tmp + " : 59");
+                            tmp++;
+                        }
+                    }
+
+                }
+            } catch (Exception ex) {
+                System.out.println(ex.getStackTrace());
+            }
             //actualiser grace à base
         }
 

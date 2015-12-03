@@ -392,7 +392,6 @@ public class NouvelleResa extends javax.swing.JFrame {
                 System.out.println(ex.getStackTrace());
             }
         }
-
     }//GEN-LAST:event_jButton_ChercherActionPerformed
 
     /**

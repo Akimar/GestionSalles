@@ -5,14 +5,17 @@
  */
 package isis;
 
+import com.iia.osiris.metier.Salle;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -27,47 +30,41 @@ public class MainJFrame extends javax.swing.JFrame {
         Connection cnx = null;
         Statement stmt;
         ResultSet ResultSalles = null;
-        try 
-        {
+        Salle tmpsalle = null;
+        try {
             cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
             stmt = cnx.createStatement();
             ResultSalles = stmt.executeQuery("SELECT *  FROM Salle");
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             System.out.println(ex.getStackTrace());
         }
-        
         initComponents();
-        
         jSCDatePicker1.setSelectedDate(new Date());
         jSCDatePicker1.updateUI();
-        
         this.jComboBox_Salle.removeAllItems();
-        try 
-        {
-            while (ResultSalles.next())
-            {
-                this.jComboBox_Salle.addItem(ResultSalles.getString("NomSalle"));
-            }   
-        }
-        
-        catch (Exception ex)
-        {
+        try {
+            while (ResultSalles.next()) {
+                tmpsalle = new Salle(ResultSalles.getInt("Identifiant"), ResultSalles.getString("NumeroTerminal"), ResultSalles.getString("NomSalle"), null, null);
+                this.jComboBox_Salle.addItem(tmpsalle);
+            }
+            tmpsalle = null;
+        } catch (Exception ex) {
             System.out.println(ex.getStackTrace());
         }
 
         this.jComboBox_Salle.updateUI();
-        
+
         try {
             cnx.close();
         } catch (SQLException ex) {
             System.out.println(ex.getStackTrace());
         }
+        jComboBox_Salle.setSelectedIndex(-1);
         cnx = null;
         stmt = null;
         ResultSalles = null;
     }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -95,17 +92,14 @@ public class MainJFrame extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
-                "De", "A", "Réservé par "
+                "Le", "De", "A", "Réservé par "
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                true, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -202,7 +196,39 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton_ChercherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ChercherActionPerformed
+        PreparedStatement stmt;
+        ResultSet resultResa;
+        DefaultTableModel modelJtable = null;
+        String[]data = new String[4]; 
         
+        if (jComboBox_Salle.getSelectedIndex() > -1 && jSCDatePicker1.getSelectedDate() != null) {
+            try {
+                data[0] = "Le";
+                data[1] = "De";
+                data[2] = "A";
+                data[3] = "Pour";
+                modelJtable = new DefaultTableModel(data, 0);
+                jTable1.setModel(modelJtable);
+                Connection cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
+                stmt = cnx.prepareStatement("SELECT * FROM reservation INNER JOIN salarie WHERE DateRes = ? AND IdentifiantSalle = ?");
+                stmt.setDate(1, new java.sql.Date(jSCDatePicker1.getSelectedDate().getTime()));
+                stmt.setInt(2, ((Salle)jComboBox_Salle.getSelectedItem()).getIdentifiant());
+                resultResa = stmt.executeQuery();
+                while (resultResa.next())
+                {
+                    data[0]= resultResa.getString("DateRes");
+                    data[1] = resultResa.getString("HoraireDeb");
+                    data[2] = resultResa.getString("HoraireFin");
+                    data[3] = resultResa.getString("Nom") + " " + resultResa.getString("Prenom");
+                    modelJtable.addRow(data);
+                 }
+                jTable1.updateUI();
+                
+            } catch (Exception ex) {
+                Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
     }//GEN-LAST:event_jButton_ChercherActionPerformed
 
     /**

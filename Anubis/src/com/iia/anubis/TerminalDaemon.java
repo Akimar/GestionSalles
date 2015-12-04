@@ -1,4 +1,4 @@
-package com.iia.gestionSalles.anubis;
+package com.iia.anubis;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

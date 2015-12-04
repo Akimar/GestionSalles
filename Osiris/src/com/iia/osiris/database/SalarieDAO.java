@@ -7,6 +7,7 @@ package com.iia.osiris.database;
 
 import com.iia.osiris.metier.Salarie;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -52,25 +53,41 @@ public abstract class SalarieDAO {
         }
     }
     
-    public static void addSalarie(Connection cnx, String nom, String prenom, String badge, boolean admin)
+    public static int addSalarie(Connection cnx, String nom, String prenom, String badge, boolean admin)
     {
-        Statement stmt = null;
+
+        PreparedStatement pstmt = null;
+        int id = -1;
         try 
         {
-            stmt = cnx.createStatement();       
-            stmt.executeQuery("INSERT INTO Salarie VALUES(NULL, "+nom+", "+prenom+", "+badge+", "+admin);                
+            /*stmt = cnx.createStatement();       
+            stmt.executeUpdate("INSERT INTO Salarie (Identifiant, Nom, Prenom, Badge, EstAdmin)  VALUES(NULL, "+nom+", "+prenom+", "+badge+", "+admin+");");  */
+    
+            
+            pstmt = cnx.prepareStatement("INSERT INTO Salarie(Nom, Prenom, Badge, EstAdmin) VALUES(?, ?, ?, ?); ", Statement.RETURN_GENERATED_KEYS);
+            pstmt.setString(1, nom);
+            pstmt.setString(2, prenom);
+            pstmt.setString(3, badge);
+            pstmt.setBoolean(4, admin);
+            
+            pstmt.executeUpdate();
+            
+            ResultSet rs = pstmt.getGeneratedKeys();
+            rs.next();
+            id = rs.getInt(1);    
         }
         catch (Exception ex)
         {
+            System.out.println(ex.getStackTrace());
         } 
         
         finally
         {
-            if(stmt != null)
+            if(pstmt != null)
             {
                 try
                 {
-                    stmt.close();
+                    pstmt.close();
                 }
 
                 catch(SQLException ex)
@@ -79,5 +96,47 @@ public abstract class SalarieDAO {
                 }
             }
         }
+        
+        return id;
     }
+    
+    public static void updateSalarie(Connection cnx, int identifiant, String nom, String prenom, String badge, boolean admin)
+    {
+        try 
+        {
+            PreparedStatement pstmt = null;
+            
+            pstmt = cnx.prepareStatement("UPDATE Salarie SET Nom = ?, Prenom = ?, Badge = ?, EstAdmin = ? where Identifiant = ?");
+            pstmt.setString(1, nom);
+            pstmt.setString(2, prenom);
+            pstmt.setString(3, badge);
+            pstmt.setBoolean(4 ,admin);
+            pstmt.setInt(5,identifiant);
+                  
+            pstmt.executeUpdate();
+        } 
+        catch (SQLException ex) 
+        {
+            ex.printStackTrace();
+        }
+    }
+    
+     public static void deleteSalarie(Connection cnx, int identifiant)
+    {
+        try 
+        {
+            PreparedStatement pstmt = null;
+            
+            pstmt = cnx.prepareStatement("DELETE FROM Salarie WHERE Identifiant = ?");
+            pstmt.setInt(1,identifiant);
+                  
+            pstmt.executeUpdate();
+        } 
+        catch (SQLException ex) 
+        {
+            ex.printStackTrace();
+        }
+    }
+    
+    
 }

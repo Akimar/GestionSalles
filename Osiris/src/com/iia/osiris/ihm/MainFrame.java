@@ -13,7 +13,11 @@ import com.iia.osiris.metier.SalleTableModel;
 import com.iia.osiris.metier.TerminalTableModel;
 import java.sql.Connection;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
 
 
@@ -24,6 +28,8 @@ import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
 public class MainFrame extends javax.swing.JFrame {
 
     private Vector<Salle>vectorSalle;
+
+   
     private Vector<Salarie> vectorSalarie;
     
     private SalleTableModel salleTableModel;
@@ -72,6 +78,7 @@ public class MainFrame extends javax.swing.JFrame {
         terminalTableModel.fillTable(vectorSalle);
         
     }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -81,23 +88,6 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuBar2 = new javax.swing.JMenuBar();
-        jMenu3 = new javax.swing.JMenu();
-        jMenu4 = new javax.swing.JMenu();
-        jMenuBar3 = new javax.swing.JMenuBar();
-        jMenu5 = new javax.swing.JMenu();
-        jMenu6 = new javax.swing.JMenu();
-        jMenuBar4 = new javax.swing.JMenuBar();
-        jMenu7 = new javax.swing.JMenu();
-        jMenu8 = new javax.swing.JMenu();
-        jMenuBar5 = new javax.swing.JMenuBar();
-        jMenu9 = new javax.swing.JMenu();
-        jMenu10 = new javax.swing.JMenu();
-        jMenuBar6 = new javax.swing.JMenuBar();
-        jMenu11 = new javax.swing.JMenu();
-        jMenu12 = new javax.swing.JMenu();
-        jRadioButton1 = new javax.swing.JRadioButton();
         panelButtonTab = new javax.swing.JPanel();
         boutonTerminal = new javax.swing.JButton();
         boutonSalles = new javax.swing.JButton();
@@ -108,51 +98,20 @@ public class MainFrame extends javax.swing.JFrame {
         buttonAdd = new javax.swing.JButton();
         buttonMod = new javax.swing.JButton();
         buttonDel = new javax.swing.JButton();
+        panelListe = new javax.swing.JPanel();
+        listeAcces = new javax.swing.JButton();
+        listReservation = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
-
-        jMenuItem1.setText("jMenuItem1");
-
-        jMenu3.setText("File");
-        jMenuBar2.add(jMenu3);
-
-        jMenu4.setText("Edit");
-        jMenuBar2.add(jMenu4);
-
-        jMenu5.setText("File");
-        jMenuBar3.add(jMenu5);
-
-        jMenu6.setText("Edit");
-        jMenuBar3.add(jMenu6);
-
-        jMenu7.setText("File");
-        jMenuBar4.add(jMenu7);
-
-        jMenu8.setText("Edit");
-        jMenuBar4.add(jMenu8);
-
-        jMenu9.setText("File");
-        jMenuBar5.add(jMenu9);
-
-        jMenu10.setText("Edit");
-        jMenuBar5.add(jMenu10);
-
-        jMenu11.setText("File");
-        jMenuBar6.add(jMenu11);
-
-        jMenu12.setText("Edit");
-        jMenuBar6.add(jMenu12);
-
-        jRadioButton1.setText("jRadioButton1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Osiris");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setResizable(false);
 
-        panelButtonTab.setBackground(java.awt.Color.orange);
+        panelButtonTab.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         boutonTerminal.setText("Terminaux");
         boutonTerminal.addActionListener(new java.awt.event.ActionListener() {
@@ -222,7 +181,7 @@ public class MainFrame extends javax.swing.JFrame {
         });
         scrollPane.setViewportView(myTable);
 
-        panelOptions.setBackground(java.awt.Color.cyan);
+        panelOptions.setBorder(new javax.swing.border.MatteBorder(null));
 
         buttonAdd.setText("Ajouter");
         buttonAdd.addActionListener(new java.awt.event.ActionListener() {
@@ -232,16 +191,16 @@ public class MainFrame extends javax.swing.JFrame {
         });
 
         buttonMod.setText("Modifier");
-        buttonMod.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonModActionPerformed(evt);
+        buttonMod.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                buttonModMouseReleased(evt);
             }
         });
 
         buttonDel.setText("Supprimer");
-        buttonDel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonDelActionPerformed(evt);
+        buttonDel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                buttonDelMouseReleased(evt);
             }
         });
 
@@ -269,6 +228,34 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGap(43, 43, 43))
         );
 
+        listeAcces.setText("Liste des accès");
+        listeAcces.setMaximumSize(new java.awt.Dimension(137, 23));
+        listeAcces.setMinimumSize(new java.awt.Dimension(137, 23));
+        listeAcces.setPreferredSize(new java.awt.Dimension(137, 23));
+
+        listReservation.setText("Liste des réservations");
+
+        javax.swing.GroupLayout panelListeLayout = new javax.swing.GroupLayout(panelListe);
+        panelListe.setLayout(panelListeLayout);
+        panelListeLayout.setHorizontalGroup(
+            panelListeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelListeLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(listeAcces, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                .addComponent(listReservation)
+                .addContainerGap())
+        );
+        panelListeLayout.setVerticalGroup(
+            panelListeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelListeLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelListeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(listeAcces, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(listReservation))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         jMenu1.setText("Fichier");
 
         jMenuItem2.setText("Quitter");
@@ -290,11 +277,16 @@ public class MainFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelButtonTab, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(87, 87, 87)
-                .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(panelListe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(panelButtonTab, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(87, 87, 87)
+                        .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE)))
                 .addGap(87, 87, 87)
                 .addComponent(panelOptions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -307,7 +299,9 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(panelButtonTab, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(panelOptions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(106, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(panelListe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(73, 73, 73))
         );
 
         panelButtonTab.getAccessibleContext().setAccessibleName("");
@@ -362,6 +356,12 @@ public class MainFrame extends javax.swing.JFrame {
         
         myTable.setModel(salarieTableModel);
         indexTableModel = 1;
+        
+        if(myTable.getColumnCount() == 5)
+        {
+            myTable.removeColumn(myTable.getColumnModel().getColumn(0));
+        }
+       
     }//GEN-LAST:event_boutonSalarieActionPerformed
 
     private void boutonTerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boutonTerminalActionPerformed
@@ -395,7 +395,49 @@ public class MainFrame extends javax.swing.JFrame {
     private void buttonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddActionPerformed
         // TODO add your handling code here:
         
+        
         if(indexTableModel == 1)
+        {
+           /* Set the Nimbus look and feel */
+            //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Temp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Temp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Temp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Temp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+          /* Create and display the dialog */
+
+            JDialog ajoutSalarie = new AjoutSalarie(new javax.swing.JFrame(), true, vectorSalarie);
+            ajoutSalarie.setModal(true);
+            ajoutSalarie.setLocationRelativeTo(null);
+            ajoutSalarie.setVisible(true);
+            salarieTableModel.fillTable(vectorSalarie);
+            myTable.setModel(salarieTableModel);
+        }  
+    }//GEN-LAST:event_buttonAddActionPerformed
+
+    private void buttonModMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonModMouseReleased
+        // TODO add your handling code here:
+        
+          
+          
+          if(indexTableModel == 1)
         {
             /* Set the Nimbus look and feel */
             //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -410,35 +452,58 @@ public class MainFrame extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AjoutSalarie.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Temp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AjoutSalarie.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Temp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AjoutSalarie.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Temp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AjoutSalarie.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Temp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        
             /* Create and display the form */
-            java.awt.EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                
-                    AjoutSalarie ajoutSalarie = new AjoutSalarie();
-                    ajoutSalarie.setLocationRelativeTo(null);
-                    ajoutSalarie.setVisible(true);
+        
+            JDialog modifierSalarie = new ModifierSalarie(new javax.swing.JFrame(), true, vectorSalarie, vectorSalarie.indexOf(vectorSalarie.elementAt(myTable.getSelectedRow())));
+            modifierSalarie.setModal(true);
+            modifierSalarie.setLocationRelativeTo(null);
+            modifierSalarie.setVisible(true);
+            salarieTableModel.fillTable(vectorSalarie);
+            myTable.setModel(salarieTableModel);
+        }  
+    }//GEN-LAST:event_buttonModMouseReleased
+
+    private void buttonDelMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonDelMouseReleased
+        // TODO add your handling code here:
+
+        int reponse = JOptionPane.showConfirmDialog(null, "Attention !\nLa suppression du salarié supprimera également ses réservations et l'historique de ses accès.\nVoulez-vous continuer ?", "Confirm",
+        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        
+        if(reponse == JOptionPane.YES_OPTION)
+        {
+             try 
+                {
+                    Connection cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
+                    SalarieDAO.deleteSalarie(cnx, vectorSalarie.elementAt(myTable.getSelectedRow()).getIdentifiant());
+                    vectorSalarie.removeElementAt(vectorSalarie.indexOf(vectorSalarie.elementAt(myTable.getSelectedRow())));
+                    
+                    JOptionPane.showMessageDialog(null, "Le salarié a été supprimé.");
+                    cnx.close();
+                    cnx=null;
+                } 
+                catch (Exception ex) 
+                {
+                    Logger.getLogger(Temp.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(null, "Une erreur s'est produite, la suppression a échoué.");
                 }
-            });
-         }  
-    }//GEN-LAST:event_buttonAddActionPerformed
 
-    private void buttonModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonModActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_buttonModActionPerformed
-
-    private void buttonDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDelActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_buttonDelActionPerformed
+                finally
+                {
+                    salarieTableModel.fillTable(vectorSalarie);
+                    myTable.setModel(salarieTableModel);
+                }
+        }
+    }//GEN-LAST:event_buttonDelMouseReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -449,28 +514,14 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton buttonDel;
     private javax.swing.JButton buttonMod;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu10;
-    private javax.swing.JMenu jMenu11;
-    private javax.swing.JMenu jMenu12;
     private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenu jMenu5;
-    private javax.swing.JMenu jMenu6;
-    private javax.swing.JMenu jMenu7;
-    private javax.swing.JMenu jMenu8;
-    private javax.swing.JMenu jMenu9;
-    private javax.swing.JMenuBar jMenuBar2;
-    private javax.swing.JMenuBar jMenuBar3;
-    private javax.swing.JMenuBar jMenuBar4;
-    private javax.swing.JMenuBar jMenuBar5;
-    private javax.swing.JMenuBar jMenuBar6;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JRadioButton jRadioButton1;
+    private javax.swing.JButton listReservation;
+    private javax.swing.JButton listeAcces;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JTable myTable;
     private javax.swing.JPanel panelButtonTab;
+    private javax.swing.JPanel panelListe;
     private javax.swing.JPanel panelOptions;
     private javax.swing.JScrollPane scrollPane;
     // End of variables declaration//GEN-END:variables

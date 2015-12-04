@@ -3,9 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/metier/Salarie.java</file>
             <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/ihm/MainFrame.java</file>
+            <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/ihm/Temp.java</file>
             <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/ihm/AjoutSalarie.java</file>
+            <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/metier/SalarieTableModel.java</file>
             <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/metier/Salle.java</file>
+            <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/database/SalarieDAO.java</file>
+            <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/ihm/ModifierSalarie.java</file>
         </group>
     </open-files>
 </project-private>

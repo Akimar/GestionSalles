@@ -67,6 +67,19 @@ public class Salarie {
         this.EstAdmin = EstAdmin;
     }
 
+   public boolean badgeExists(String badgeSaisi)
+   {
+       if(this.Badge.equals(badgeSaisi))
+       {
+         return true;   
+       }
+       
+       else
+       {
+           return false;
+       } 
+   }
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -99,7 +112,6 @@ public class Salarie {
         }
         return true;
     }
-    
-    
-    
+   
+   
 }

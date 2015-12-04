@@ -12,24 +12,43 @@ import java.sql.Connection;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author Akimar
  */
-public class AjoutSalarie extends javax.swing.JDialog {
+public class ModifierSalarie extends javax.swing.JDialog {
 
-        
     private Vector<Salarie> vectorSalarie;
+    private int indexSalarie;
     /**
-     * Creates new form test
+     * Creates new form ModifierSalarie
      */
-    public AjoutSalarie(java.awt.Frame parent, boolean modal, Vector<Salarie> vS) {
+    public ModifierSalarie(java.awt.Frame parent, boolean modal, Vector<Salarie> vS, int index) {
         super(parent, modal);
-        initComponents();
+       initComponents();
+       
+       vectorSalarie = vS;
+       indexSalarie = index ;
+       
+        this.nomSalarieField.setText(vectorSalarie.elementAt(indexSalarie).getNom());
+        this.prenomSalarieField.setText(vectorSalarie.elementAt(indexSalarie).getPrenom());
+        this.badgeSalarieField.setText(vectorSalarie.elementAt(indexSalarie).getBadge());
+       
+      
         
-        vectorSalarie = vS;
+        
+        if(vectorSalarie.elementAt(indexSalarie).isEstAdmin())
+        {
+            this.estAdminRadio.setSelected(true);
+        }
+        else
+        {
+            this.nonAdminRadio.setSelected(true);
+        }
+     
     }
 
     /**
@@ -42,22 +61,59 @@ public class AjoutSalarie extends javax.swing.JDialog {
     private void initComponents() {
 
         adminGroup = new javax.swing.ButtonGroup();
+        buttonPanel = new javax.swing.JPanel();
+        validerModSalarie = new javax.swing.JButton();
+        annulerModSalarie = new javax.swing.JButton();
         ajoutSalariePanel = new javax.swing.JPanel();
         nomSalarieLabel = new javax.swing.JLabel();
         prenomSalarieLabel = new javax.swing.JLabel();
         badgeSalarieLabel = new javax.swing.JLabel();
         adminSalarieLabel = new javax.swing.JLabel();
-        titreLabel = new javax.swing.JLabel();
         estAdminRadio = new javax.swing.JRadioButton();
         nonAdminRadio = new javax.swing.JRadioButton();
         nomSalarieField = new javax.swing.JTextField();
         prenomSalarieField = new javax.swing.JTextField();
         badgeSalarieField = new javax.swing.JTextField();
-        buttonPanel = new javax.swing.JPanel();
-        validerAjoutSalarie = new javax.swing.JButton();
-        annulerAjoutSalarie = new javax.swing.JButton();
+        titreLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Osiris");
+        setResizable(false);
+
+        validerModSalarie.setText("Modifier");
+        validerModSalarie.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                validerModSalarieActionPerformed(evt);
+            }
+        });
+
+        annulerModSalarie.setText("Annuler");
+        annulerModSalarie.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                annulerModSalarieActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout buttonPanelLayout = new javax.swing.GroupLayout(buttonPanel);
+        buttonPanel.setLayout(buttonPanelLayout);
+        buttonPanelLayout.setHorizontalGroup(
+            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(buttonPanelLayout.createSequentialGroup()
+                .addGap(41, 41, 41)
+                .addComponent(validerModSalarie)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
+                .addComponent(annulerModSalarie)
+                .addGap(41, 41, 41))
+        );
+        buttonPanelLayout.setVerticalGroup(
+            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(buttonPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(validerModSalarie)
+                    .addComponent(annulerModSalarie))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         nomSalarieLabel.setText("Nom : ");
 
@@ -66,8 +122,6 @@ public class AjoutSalarie extends javax.swing.JDialog {
         badgeSalarieLabel.setText("Badge : ");
 
         adminSalarieLabel.setText("Administrateur : ");
-
-        titreLabel.setText("Ajouter un salarié");
 
         adminGroup.add(estAdminRadio);
         estAdminRadio.setText("Oui");
@@ -99,17 +153,12 @@ public class AjoutSalarie extends javax.swing.JDialog {
                             .addComponent(prenomSalarieField, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
                             .addComponent(badgeSalarieField)
                             .addComponent(nomSalarieField))))
-                .addContainerGap(12, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ajoutSalariePanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(titreLabel)
-                .addGap(58, 58, 58))
+                .addContainerGap(10, Short.MAX_VALUE))
         );
         ajoutSalariePanelLayout.setVerticalGroup(
             ajoutSalariePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ajoutSalariePanelLayout.createSequentialGroup()
-                .addComponent(titreLabel)
-                .addGap(15, 15, 15)
+                .addGap(29, 29, 29)
                 .addGroup(ajoutSalariePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nomSalarieLabel)
                     .addComponent(nomSalarieField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -129,40 +178,7 @@ public class AjoutSalarie extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        validerAjoutSalarie.setText("Ajouter");
-        validerAjoutSalarie.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                validerAjoutSalarieActionPerformed(evt);
-            }
-        });
-
-        annulerAjoutSalarie.setText("Annuler");
-        annulerAjoutSalarie.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                annulerAjoutSalarieActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout buttonPanelLayout = new javax.swing.GroupLayout(buttonPanel);
-        buttonPanel.setLayout(buttonPanelLayout);
-        buttonPanelLayout.setHorizontalGroup(
-            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(buttonPanelLayout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addComponent(validerAjoutSalarie)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
-                .addComponent(annulerAjoutSalarie)
-                .addGap(23, 23, 23))
-        );
-        buttonPanelLayout.setVerticalGroup(
-            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(buttonPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(validerAjoutSalarie)
-                    .addComponent(annulerAjoutSalarie))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        titreLabel.setText("Modifier les informations d'un salarié");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -171,29 +187,39 @@ public class AjoutSalarie extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(55, 55, 55)
-                        .addComponent(ajoutSalariePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap()
+                        .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(35, 35, 35)
-                        .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(35, 35, 35))
+                        .addGap(60, 60, 60)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(titreLabel)
+                            .addComponent(ajoutSalariePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(titreLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ajoutSalariePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void validerAjoutSalarieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_validerAjoutSalarieActionPerformed
+    private void annulerModSalarieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_annulerModSalarieActionPerformed
         // TODO add your handling code here:
-          
+        
+        this.dispose();
+    }//GEN-LAST:event_annulerModSalarieActionPerformed
+
+    private void validerModSalarieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_validerModSalarieActionPerformed
+        // TODO add your handling code here:
+      
         if(nomSalarieField.getText().isEmpty() || prenomSalarieField.getText().isEmpty() || badgeSalarieField.getText().isEmpty() )
         {
             JOptionPane.showMessageDialog(null, "Veuillez compléter tous les champs.");
@@ -203,9 +229,10 @@ public class AjoutSalarie extends javax.swing.JDialog {
         {
            JOptionPane.showMessageDialog(null, "Les informations contiennent des caractères non pris en compte");
         }
-   
         else
         {
+            String ancientBadge = vectorSalarie.elementAt(indexSalarie).getBadge();
+            
             int i = 0;
             boolean dejaPresent = false;
             while(i < vectorSalarie.size() && ! dejaPresent)
@@ -218,57 +245,53 @@ public class AjoutSalarie extends javax.swing.JDialog {
                 i++;
             }
             
-            if(!dejaPresent)
+            if(!dejaPresent || badgeSalarieField.getText().equals(ancientBadge))
             {
+            
                 int id;
                 boolean admin = (nonAdminRadio.isSelected()) ? false : true;
-            
+
+                
+
                 try 
                 {
-                    Connection cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
-                    id = SalarieDAO.addSalarie(cnx,nomSalarieField.getText(), prenomSalarieField.getText(), badgeSalarieField.getText(), admin);
-                    cnx.close();
-                    cnx=null;
 
-                    if(id != -1)
-                    {
-                        vectorSalarie.add(new Salarie(id, nomSalarieField.getText(), prenomSalarieField.getText(), badgeSalarieField.getText(), admin));
-                        JOptionPane.showMessageDialog(null, "Le salarié a été ajouté avec succès !");
-                    }   
+                    Connection cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
+                    SalarieDAO.updateSalarie(cnx, vectorSalarie.elementAt(indexSalarie).getIdentifiant(), this.nomSalarieField.getText(), this.prenomSalarieField.getText(), this.badgeSalarieField.getText(), admin);
+                    
+                    vectorSalarie.elementAt(indexSalarie).setNom(this.nomSalarieField.getText());
+                    vectorSalarie.elementAt(indexSalarie).setPrenom(this.prenomSalarieField.getText());
+                    vectorSalarie.elementAt(indexSalarie).setBadge(this.badgeSalarieField.getText());
+                    vectorSalarie.elementAt(indexSalarie).setEstAdmin(admin);
+                    
+                    JOptionPane.showMessageDialog(null, "Les informations ont été modifiées avec succès !");
+
+
+
+                    cnx.close();
+                    cnx=null;   
                 } 
                 catch (Exception ex) 
                 {
-                    Logger.getLogger(Temp.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(null, "Une erreur s'est produite, l'enregistrement a échoué.");
+                    Logger.getLogger(ModifierSalarie.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(null, "Une erreur s'est produite, les modifications ont échoué.");
                 }
 
                 finally
                 {
-                  this.dispose();
+                
+                    this.dispose();
                 }
             }
-            
-            else
-            {
-               JOptionPane.showMessageDialog(null, "Le numéro de badge saisi est déjà utilisé.");
-            }
         }
-        
-        
-    }//GEN-LAST:event_validerAjoutSalarieActionPerformed
-
-    private void annulerAjoutSalarieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_annulerAjoutSalarieActionPerformed
-        // TODO add your handling code here:
-
-        this.dispose();
-    }//GEN-LAST:event_annulerAjoutSalarieActionPerformed
+    }//GEN-LAST:event_validerModSalarieActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup adminGroup;
     private javax.swing.JLabel adminSalarieLabel;
     private javax.swing.JPanel ajoutSalariePanel;
-    private javax.swing.JButton annulerAjoutSalarie;
+    private javax.swing.JButton annulerModSalarie;
     private javax.swing.JTextField badgeSalarieField;
     private javax.swing.JLabel badgeSalarieLabel;
     private javax.swing.JPanel buttonPanel;
@@ -279,6 +302,6 @@ public class AjoutSalarie extends javax.swing.JDialog {
     private javax.swing.JTextField prenomSalarieField;
     private javax.swing.JLabel prenomSalarieLabel;
     private javax.swing.JLabel titreLabel;
-    private javax.swing.JButton validerAjoutSalarie;
+    private javax.swing.JButton validerModSalarie;
     // End of variables declaration//GEN-END:variables
 }

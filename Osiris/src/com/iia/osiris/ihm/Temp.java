@@ -12,21 +12,20 @@ import java.sql.Connection;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author Akimar
  */
-public class AjoutSalarie extends javax.swing.JDialog {
+public class Temp extends javax.swing.JFrame {
 
-        
     private Vector<Salarie> vectorSalarie;
     /**
-     * Creates new form test
+     * Creates new form AjoutSalarie
      */
-    public AjoutSalarie(java.awt.Frame parent, boolean modal, Vector<Salarie> vS) {
-        super(parent, modal);
+    public Temp(Vector<Salarie> vS) {
         initComponents();
         
         vectorSalarie = vS;
@@ -42,6 +41,9 @@ public class AjoutSalarie extends javax.swing.JDialog {
     private void initComponents() {
 
         adminGroup = new javax.swing.ButtonGroup();
+        buttonPanel = new javax.swing.JPanel();
+        validerAjoutSalarie = new javax.swing.JButton();
+        annulerAjoutSalarie = new javax.swing.JButton();
         ajoutSalariePanel = new javax.swing.JPanel();
         nomSalarieLabel = new javax.swing.JLabel();
         prenomSalarieLabel = new javax.swing.JLabel();
@@ -53,11 +55,45 @@ public class AjoutSalarie extends javax.swing.JDialog {
         nomSalarieField = new javax.swing.JTextField();
         prenomSalarieField = new javax.swing.JTextField();
         badgeSalarieField = new javax.swing.JTextField();
-        buttonPanel = new javax.swing.JPanel();
-        validerAjoutSalarie = new javax.swing.JButton();
-        annulerAjoutSalarie = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Osiris");
+        setResizable(false);
+
+        validerAjoutSalarie.setText("Ajouter");
+        validerAjoutSalarie.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                validerAjoutSalarieActionPerformed(evt);
+            }
+        });
+
+        annulerAjoutSalarie.setText("Annuler");
+        annulerAjoutSalarie.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                annulerAjoutSalarieActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout buttonPanelLayout = new javax.swing.GroupLayout(buttonPanel);
+        buttonPanel.setLayout(buttonPanelLayout);
+        buttonPanelLayout.setHorizontalGroup(
+            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(buttonPanelLayout.createSequentialGroup()
+                .addGap(57, 57, 57)
+                .addComponent(validerAjoutSalarie)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
+                .addComponent(annulerAjoutSalarie)
+                .addGap(57, 57, 57))
+        );
+        buttonPanelLayout.setVerticalGroup(
+            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(buttonPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(validerAjoutSalarie)
+                    .addComponent(annulerAjoutSalarie))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         nomSalarieLabel.setText("Nom : ");
 
@@ -99,9 +135,9 @@ public class AjoutSalarie extends javax.swing.JDialog {
                             .addComponent(prenomSalarieField, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
                             .addComponent(badgeSalarieField)
                             .addComponent(nomSalarieField))))
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ajoutSalariePanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(69, Short.MAX_VALUE)
                 .addComponent(titreLabel)
                 .addGap(58, 58, 58))
         );
@@ -129,71 +165,40 @@ public class AjoutSalarie extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        validerAjoutSalarie.setText("Ajouter");
-        validerAjoutSalarie.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                validerAjoutSalarieActionPerformed(evt);
-            }
-        });
-
-        annulerAjoutSalarie.setText("Annuler");
-        annulerAjoutSalarie.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                annulerAjoutSalarieActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout buttonPanelLayout = new javax.swing.GroupLayout(buttonPanel);
-        buttonPanel.setLayout(buttonPanelLayout);
-        buttonPanelLayout.setHorizontalGroup(
-            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(buttonPanelLayout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addComponent(validerAjoutSalarie)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
-                .addComponent(annulerAjoutSalarie)
-                .addGap(23, 23, 23))
-        );
-        buttonPanelLayout.setVerticalGroup(
-            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(buttonPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(validerAjoutSalarie)
-                    .addComponent(annulerAjoutSalarie))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(55, 55, 55)
-                        .addComponent(ajoutSalariePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(35, 35, 35)
-                        .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(35, 35, 35))
+                .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(53, 53, 53)
+                .addComponent(ajoutSalariePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(ajoutSalariePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addGap(5, 5, 5))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void annulerAjoutSalarieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_annulerAjoutSalarieActionPerformed
+        // TODO add your handling code here:
+        
+        this.dispose();
+    }//GEN-LAST:event_annulerAjoutSalarieActionPerformed
+
     private void validerAjoutSalarieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_validerAjoutSalarieActionPerformed
         // TODO add your handling code here:
-          
+        
         if(nomSalarieField.getText().isEmpty() || prenomSalarieField.getText().isEmpty() || badgeSalarieField.getText().isEmpty() )
         {
             JOptionPane.showMessageDialog(null, "Veuillez compléter tous les champs.");
@@ -203,65 +208,40 @@ public class AjoutSalarie extends javax.swing.JDialog {
         {
            JOptionPane.showMessageDialog(null, "Les informations contiennent des caractères non pris en compte");
         }
-   
+        
         else
         {
-            int i = 0;
-            boolean dejaPresent = false;
-            while(i < vectorSalarie.size() && ! dejaPresent)
+            int id;
+            boolean admin = (nonAdminRadio.isSelected()) ? false : true;
+            
+            try 
             {
-                if(vectorSalarie.elementAt(i).badgeExists(badgeSalarieField.getText()))
-                {
-                    dejaPresent = true;
-                }
+                Connection cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
+                id = SalarieDAO.addSalarie(cnx,nomSalarieField.getText(), prenomSalarieField.getText(), badgeSalarieField.getText(), admin);
+                cnx.close();
+                cnx=null;
                 
-                i++;
-            }
-            
-            if(!dejaPresent)
-            {
-                int id;
-                boolean admin = (nonAdminRadio.isSelected()) ? false : true;
-            
-                try 
+                if(id != -1)
                 {
-                    Connection cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
-                    id = SalarieDAO.addSalarie(cnx,nomSalarieField.getText(), prenomSalarieField.getText(), badgeSalarieField.getText(), admin);
-                    cnx.close();
-                    cnx=null;
-
-                    if(id != -1)
-                    {
-                        vectorSalarie.add(new Salarie(id, nomSalarieField.getText(), prenomSalarieField.getText(), badgeSalarieField.getText(), admin));
-                        JOptionPane.showMessageDialog(null, "Le salarié a été ajouté avec succès !");
-                    }   
+                    vectorSalarie.add(new Salarie(id, nomSalarieField.getText(), prenomSalarieField.getText(), badgeSalarieField.getText(), admin));
+                    JOptionPane.showMessageDialog(null, "Le salarié a été ajouté avec succès !");
                 } 
-                catch (Exception ex) 
-                {
-                    Logger.getLogger(Temp.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(null, "Une erreur s'est produite, l'enregistrement a échoué.");
-                }
-
-                finally
-                {
-                  this.dispose();
-                }
+                
+                
+                
+            } 
+            catch (Exception ex) 
+            {
+                Logger.getLogger(Temp.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(null, "Une erreur s'est produite, l'enregistrement a échoué.");
             }
             
-            else
+            finally
             {
-               JOptionPane.showMessageDialog(null, "Le numéro de badge saisi est déjà utilisé.");
+              this.dispose();
             }
         }
-        
-        
     }//GEN-LAST:event_validerAjoutSalarieActionPerformed
-
-    private void annulerAjoutSalarieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_annulerAjoutSalarieActionPerformed
-        // TODO add your handling code here:
-
-        this.dispose();
-    }//GEN-LAST:event_annulerAjoutSalarieActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

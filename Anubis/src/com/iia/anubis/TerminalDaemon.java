@@ -5,6 +5,8 @@ package com.iia.anubis;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import com.iia.osiris.database.BDD_Util;
+import com.iia.osiris.metier.Salarie;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +15,9 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 /**
  *
@@ -52,6 +57,9 @@ public class TerminalDaemon extends Thread {
     @Override
     public void run() {
         String line;
+        Connection cnx;
+        Statement stmt;
+        ResultSet resultSet;
         try {
             //Lors de premiere co, affichage de l'adresse serveur
             this.envoyer("    Connected_to_" + InetAddress.getLocalHost().toString());
@@ -63,7 +71,17 @@ public class TerminalDaemon extends Thread {
             line = br.readLine();//le terminal envoie son identité
             this.setIdentifiantTerminal(line.substring(line.length() - 4));//récupérée et mise en attribut
             System.out.println(this.getIdentifiantTerminal());
-
+            try {
+                cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
+                stmt = cnx.createStatement();
+                resultSet = stmt.executeQuery("SELECT identifiant FROM salle WHERE NumeroTerminal = " + this.getIdentifiantTerminal());
+                if (!resultSet.next()) {
+                    stmt.executeUpdate("INSERT INTO salle VALUES (NULL, '" + this.getIdentifiantTerminal() + "', NULL, NULL)");
+                    //a tester
+                }
+            } catch (Exception ex) {
+                System.out.println(ex.getStackTrace());
+            }
             //lancement processus attente message
             this.reception();
         } catch (IOException ex) {
@@ -73,8 +91,13 @@ public class TerminalDaemon extends Thread {
 
     public void reception() {
         String line;
+        Connection cnx = null;
+        Statement stmt = null;
+        ResultSet resultSet = null;
+        Salarie scanne = null;
         try {
-            Thread.sleep((3000));
+            Thread.sleep((3000));//pour affichage
+            cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
             this.envoyer("    En attente.");
             while ((line = br.readLine()) != null)//attend lecture terminal
             {
@@ -84,17 +107,28 @@ public class TerminalDaemon extends Thread {
                 {
                     this.envoyer("    Bonjour Merlin");
                 }
-                if (line.equals("CSTAT"))
-                {
+                if (line.equals("CSTAT")) {
                     this.envoyer("    Connected_to_" + InetAddress.getLocalHost().toString());
                 }
-                
-                if (line.equals("CWHO"))
-                {
-                    this.envoyer("    Identifiant terminal : "+this.getIdentifiantTerminal());
+
+                if (line.equals("CWHO")) {
+                    this.envoyer("    Identifiant terminal : " + this.getIdentifiantTerminal());
                 }
-                if (line.equals("M0042949747464")) {
-                    this.envoyer("    Badge reconnu");
+                if (line.matches("[A-Za-z0-9]+")) {
+                    stmt = cnx.createStatement();
+                    resultSet = stmt.executeQuery("SELECT * FROM salarie WHERE Badge = '"+ line +"';");
+                    if (resultSet.next())
+                    {
+                        scanne = new Salarie (resultSet.getInt("Identifiant"), resultSet.getString("Nom"), resultSet.getString("Prenom"), resultSet.getString("Badge"), resultSet.getBoolean("EstAdmin"));
+                        
+                        //verifier qu'il a le droit d'entrer, ouvrir ou non la porte
+                        
+                    }
+                    else
+                    {
+                        this.envoyer("    Badge detecté mais non reconnu");                       
+                    }
+
                 }
                 Thread.sleep((5000));
                 this.envoyer("    En attente.");
@@ -110,12 +144,9 @@ public class TerminalDaemon extends Thread {
     }
 
     public String transformerChaineMessage(String input) {
-        if (!input.equals("T042CINIT"))
-        {
-            return input.substring(4, this.Message.length() - 9);        
-        }
-        else
-        {
+        if (!input.equals("T042CINIT")) {
+            return input.substring(4, this.Message.length() - 9);
+        } else {
             return input;
         }
 

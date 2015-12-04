@@ -210,7 +210,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 modelJtable = new DefaultTableModel(data, 0);
                 jTable1.setModel(modelJtable);
                 Connection cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
-                stmt = cnx.prepareStatement("SELECT * FROM reservation INNER JOIN salarie WHERE DateRes = ? AND IdentifiantSalle = ?");
+                stmt = cnx.prepareStatement("SELECT * FROM reservation INNER JOIN salarie ON Salarie.Identifiant = reservation.IdentifiantSalarie WHERE DateRes = ? AND IdentifiantSalle = ?");
                 stmt.setDate(1, new java.sql.Date(jSCDatePicker1.getSelectedDate().getTime()));
                 stmt.setInt(2, ((Salle)jComboBox_Salle.getSelectedItem()).getIdentifiant());
                 resultResa = stmt.executeQuery();
@@ -221,9 +221,7 @@ public class MainJFrame extends javax.swing.JFrame {
                     data[2] = resultResa.getString("HoraireFin");
                     data[3] = resultResa.getString("Nom") + " " + resultResa.getString("Prenom");
                     modelJtable.addRow(data);
-                 }
-                jTable1.updateUI();
-                
+                }                
             } catch (Exception ex) {
                 Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
             }

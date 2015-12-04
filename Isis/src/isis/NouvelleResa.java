@@ -336,6 +336,12 @@ public class NouvelleResa extends javax.swing.JFrame {
         this.jComboBox_Responsable.setSelectedIndex(-1);
         this.jComboBox_Salle.setSelectedIndex(-1);
         this.jSCDatePicker1.setSelectedDate(null);
+        jComboBox_Deb.setEnabled(false);
+        jComboBox_fin.setEnabled(false);
+        jComboBox_Responsable.setEnabled(false);
+        jList_Personnes.setEnabled(false);
+        jComboBox_Deb.removeAllItems();
+        jComboBox_fin.removeAllItems();
     }//GEN-LAST:event_jButton_RAZActionPerformed
 
     private void jButton_ChercherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ChercherActionPerformed
@@ -353,8 +359,9 @@ public class NouvelleResa extends javax.swing.JFrame {
             jComboBox_fin.setEnabled(true);
             jComboBox_Responsable.setEnabled(true);
             jList_Personnes.setEnabled(true);
-
-            try {//A TESTER !!!!
+            jComboBox_Deb.removeAllItems();
+            jComboBox_fin.removeAllItems();
+            try {
                 cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
                 prestmt = cnx.prepareStatement("SELECT * FROM disponibilite WHERE identifiantSalle = ?;");
                 prestmt.setInt(1, ((Salle) jComboBox_Salle.getSelectedItem()).getIdentifiant());
@@ -364,9 +371,6 @@ public class NouvelleResa extends javax.swing.JFrame {
                     heurDeb2 = result.getTime("HoraireDebSoir");
                     heurFin1 = result.getTime("HoraireFinMat");
                     heurFin2 = result.getTime("HoraireFinSoir");
-
-                    jComboBox_Deb.removeAllItems();
-                    jComboBox_fin.removeAllItems();
 
                     if (heurDeb1 != null && heurFin1 != null) {
                         tmp = heurDeb1.getHours();

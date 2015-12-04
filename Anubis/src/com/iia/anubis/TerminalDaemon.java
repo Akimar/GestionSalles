@@ -7,6 +7,7 @@ package com.iia.anubis;
  */
 import com.iia.osiris.database.BDD_Util;
 import com.iia.osiris.metier.Salarie;
+import com.iia.osiris.metier.Salle;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,8 +17,10 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Date;
 
 /**
  *
@@ -30,7 +33,7 @@ public class TerminalDaemon extends Thread {
     private BufferedReader br;
     private OutputStream os;
     private PrintWriter pw;
-    private String IdentifiantTerminal;
+    private Salle salle ;
     private String Message;
 
     public TerminalDaemon(Socket socket) throws IOException {
@@ -43,11 +46,25 @@ public class TerminalDaemon extends Thread {
     }
 
     public String getIdentifiantTerminal() {
-        return IdentifiantTerminal;
+        if (salle != null)
+        {
+            return salle.getNumeroTerminal();
+        }
+        else
+        {
+            return null;
+        }
     }
-
     public void setIdentifiantTerminal(String IdentifiantTerminal) {
-        this.IdentifiantTerminal = IdentifiantTerminal;
+        if (salle == null)
+        {
+            salle = new Salle(-1, IdentifiantTerminal, null, null, null);
+        }
+        else
+        {
+            this.salle.setNumeroTerminal(IdentifiantTerminal);
+        }
+       
     }
 
     public String getMessage() {
@@ -79,6 +96,10 @@ public class TerminalDaemon extends Thread {
                     stmt.executeUpdate("INSERT INTO salle VALUES (NULL, '" + this.getIdentifiantTerminal() + "', NULL, NULL)");
                     //a tester
                 }
+                else
+                {
+                    this.salle = new Salle(resultSet.getInt("Identifiant"), resultSet.getString("NumeroTerminal"), resultSet.getString("NomSalle"), null, null);
+                }
             } catch (Exception ex) {
                 System.out.println(ex.getStackTrace());
             }
@@ -93,6 +114,7 @@ public class TerminalDaemon extends Thread {
         String line;
         Connection cnx = null;
         Statement stmt = null;
+        PreparedStatement prstmt = null;
         ResultSet resultSet = null;
         Salarie scanne = null;
         try {
@@ -122,6 +144,14 @@ public class TerminalDaemon extends Thread {
                         scanne = new Salarie (resultSet.getInt("Identifiant"), resultSet.getString("Nom"), resultSet.getString("Prenom"), resultSet.getString("Badge"), resultSet.getBoolean("EstAdmin"));
                         
                         //verifier qu'il a le droit d'entrer, ouvrir ou non la porte
+                        prstmt = cnx.prepareStatement("SELECT * FROM reservation WHERE DateRes = ? AND IdentifiantSalle = ? ");
+                        prstmt.setDate(1, new java.sql.Date(new java.util.Date().getTime()));
+                        prstmt.setInt(2, salle.getIdentifiant());
+                        resultSet = prstmt.executeQuery();// a tester
+                        while (resultSet.next())
+                        {
+                            // a finir
+                        }
                         
                     }
                     else
@@ -130,7 +160,7 @@ public class TerminalDaemon extends Thread {
                     }
 
                 }
-                Thread.sleep((5000));
+                Thread.sleep((5000));//pour affichage
                 this.envoyer("    En attente.");
             }
         } catch (Exception ex) {

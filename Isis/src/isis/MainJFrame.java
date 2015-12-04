@@ -209,7 +209,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 modelJtable = new DefaultTableModel(data, 0);
                 jTable1.setModel(modelJtable);
                 Connection cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
-                stmt = cnx.prepareStatement("SELECT * FROM reservation INNER JOIN salarie ON Salarie.Identifiant = reservation.IdentifiantSalarie WHERE DateRes = ? AND IdentifiantSalle = ?");
+                stmt = cnx.prepareStatement("SELECT * FROM reservation INNER JOIN salarie ON Salarie.Identifiant = reservation.IdentifiantSalarie WHERE DateRes = ? AND IdentifiantSalle = ? ;");
                 stmt.setDate(1, new java.sql.Date(jSCDatePicker1.getSelectedDate().getTime()));
                 stmt.setInt(2, ((Salle)jComboBox_Salle.getSelectedItem()).getIdentifiant());
                 resultResa = stmt.executeQuery();

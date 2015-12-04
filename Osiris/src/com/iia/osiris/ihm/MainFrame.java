@@ -49,8 +49,17 @@ public class MainFrame extends javax.swing.JFrame {
         
         buttonMod.setEnabled(false);
         buttonDel.setEnabled(false);
-        
+        listDisponibiliteButton.setEnabled(false);
+        listDisponibiliteButton.setVisible(false);
+        listeAccesButton.setEnabled(false);
+        listReservationButton.setEnabled(false);
+        buttonAdd.setEnabled(false);
         myTable.setSelectionMode(SINGLE_SELECTION);
+        
+ 
+       
+        
+        
         
         try
         {
@@ -76,6 +85,7 @@ public class MainFrame extends javax.swing.JFrame {
         
         terminalTableModel = new TerminalTableModel();
         terminalTableModel.fillTable(vectorSalle);
+        myTable.setModel(terminalTableModel);
         
     }
     
@@ -99,8 +109,9 @@ public class MainFrame extends javax.swing.JFrame {
         buttonMod = new javax.swing.JButton();
         buttonDel = new javax.swing.JButton();
         panelListe = new javax.swing.JPanel();
-        listeAcces = new javax.swing.JButton();
-        listReservation = new javax.swing.JButton();
+        listeAccesButton = new javax.swing.JButton();
+        listReservationButton = new javax.swing.JButton();
+        listDisponibiliteButton = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
@@ -181,7 +192,7 @@ public class MainFrame extends javax.swing.JFrame {
         });
         scrollPane.setViewportView(myTable);
 
-        panelOptions.setBorder(new javax.swing.border.MatteBorder(null));
+        panelOptions.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         buttonAdd.setText("Ajouter");
         buttonAdd.addActionListener(new java.awt.event.ActionListener() {
@@ -228,22 +239,27 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGap(43, 43, 43))
         );
 
-        listeAcces.setText("Liste des accès");
-        listeAcces.setMaximumSize(new java.awt.Dimension(137, 23));
-        listeAcces.setMinimumSize(new java.awt.Dimension(137, 23));
-        listeAcces.setPreferredSize(new java.awt.Dimension(137, 23));
+        listeAccesButton.setText("Liste des accès");
+        listeAccesButton.setMaximumSize(new java.awt.Dimension(137, 23));
+        listeAccesButton.setMinimumSize(new java.awt.Dimension(137, 23));
+        listeAccesButton.setPreferredSize(new java.awt.Dimension(137, 23));
 
-        listReservation.setText("Liste des réservations");
+        listReservationButton.setText("Liste des réservations");
+
+        listDisponibiliteButton.setText("Liste des disponibilités");
+        listDisponibiliteButton.setToolTipText("");
 
         javax.swing.GroupLayout panelListeLayout = new javax.swing.GroupLayout(panelListe);
         panelListe.setLayout(panelListeLayout);
         panelListeLayout.setHorizontalGroup(
             panelListeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelListeLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(listeAcces, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
-                .addComponent(listReservation)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(listDisponibiliteButton)
+                .addGap(46, 46, 46)
+                .addComponent(listeAccesButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(46, 46, 46)
+                .addComponent(listReservationButton)
                 .addContainerGap())
         );
         panelListeLayout.setVerticalGroup(
@@ -251,8 +267,9 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(panelListeLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelListeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(listeAcces, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(listReservation))
+                    .addComponent(listeAccesButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(listReservationButton)
+                    .addComponent(listDisponibiliteButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -279,14 +296,14 @@ public class MainFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(panelListe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(panelButtonTab, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(87, 87, 87)
-                        .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE)))
+                        .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 703, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(panelListe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(87, 87, 87)
                 .addComponent(panelOptions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -356,11 +373,14 @@ public class MainFrame extends javax.swing.JFrame {
         
         myTable.setModel(salarieTableModel);
         indexTableModel = 1;
+        buttonAdd.setEnabled(true);
         
         if(myTable.getColumnCount() == 5)
         {
             myTable.removeColumn(myTable.getColumnModel().getColumn(0));
         }
+        
+        
        
     }//GEN-LAST:event_boutonSalarieActionPerformed
 
@@ -369,6 +389,11 @@ public class MainFrame extends javax.swing.JFrame {
         
         myTable.setModel(terminalTableModel);
         indexTableModel = 2;
+        
+        if(myTable.getColumnCount() == 3)
+        {
+            myTable.removeColumn(myTable.getColumnModel().getColumn(0));
+        }
     }//GEN-LAST:event_boutonTerminalActionPerformed
 
     private void boutonSallesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boutonSallesActionPerformed
@@ -381,8 +406,14 @@ public class MainFrame extends javax.swing.JFrame {
     private void myTableFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_myTableFocusGained
         // TODO add your handling code here:
         
+        if(indexTableModel == 1)
+        {
+            buttonDel.setEnabled(true);
+        }
+        
         buttonMod.setEnabled(true);
-        buttonDel.setEnabled(true);
+        listeAccesButton.setEnabled(true);
+        listReservationButton.setEnabled(true);
     }//GEN-LAST:event_myTableFocusGained
 
     private void myTableFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_myTableFocusLost
@@ -390,6 +421,8 @@ public class MainFrame extends javax.swing.JFrame {
         
         buttonMod.setEnabled(false);
         buttonDel.setEnabled(false);
+        listeAccesButton.setEnabled(false);
+        listReservationButton.setEnabled(false);
     }//GEN-LAST:event_myTableFocusLost
 
     private void buttonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddActionPerformed
@@ -516,8 +549,9 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JButton listReservation;
-    private javax.swing.JButton listeAcces;
+    private javax.swing.JButton listDisponibiliteButton;
+    private javax.swing.JButton listReservationButton;
+    private javax.swing.JButton listeAccesButton;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JTable myTable;
     private javax.swing.JPanel panelButtonTab;

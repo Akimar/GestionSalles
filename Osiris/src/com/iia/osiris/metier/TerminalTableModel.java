@@ -14,9 +14,9 @@ import javax.swing.table.DefaultTableModel;
  */
 public class TerminalTableModel extends DefaultTableModel {
     
-    private String[] columns = new String[] { "Numéro", "Salle", "Accès"};
-    private Class[] classs = new Class[] { String.class, String.class, String.class };
-    private boolean[] editables = new boolean[] { true, true, true};
+    private String[] columns = new String[] { "Numéro", "Salle"};
+    private Class[] classs = new Class[] { String.class, String.class };
+    private boolean[] editables = new boolean[] {false, false};
 
     public TerminalTableModel() {
         super(0, 0);

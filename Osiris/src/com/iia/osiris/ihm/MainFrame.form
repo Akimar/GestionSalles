@@ -57,15 +57,15 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Group type="102" attributes="0">
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      <Component id="panelListe" min="-2" max="-2" attributes="0"/>
-                  </Group>
+              <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Component id="panelButtonTab" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="87" max="-2" attributes="0"/>
-                      <Component id="scrollPane" pref="705" max="32767" attributes="0"/>
+                      <Component id="scrollPane" pref="703" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Component id="panelListe" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" pref="87" max="-2" attributes="0"/>
@@ -216,8 +216,8 @@
     <Container class="javax.swing.JPanel" name="panelOptions">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.MatteColorBorderInfo">
-            <MatteColorBorder/>
+          <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
+            <BevelBorder/>
           </Border>
         </Property>
       </Properties>
@@ -283,10 +283,12 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="listeAcces" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="50" max="32767" attributes="0"/>
-                  <Component id="listReservation" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
+                  <Component id="listDisponibiliteButton" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
+                  <Component id="listeAccesButton" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
+                  <Component id="listReservationButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -296,8 +298,9 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="listeAcces" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="listReservation" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="listeAccesButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="listReservationButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="listDisponibiliteButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -305,7 +308,7 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JButton" name="listeAcces">
+        <Component class="javax.swing.JButton" name="listeAccesButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="Liste des acc&#xe8;s"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -319,9 +322,15 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="listReservation">
+        <Component class="javax.swing.JButton" name="listReservationButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="Liste des r&#xe9;servations"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="listDisponibiliteButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Liste des disponibilit&#xe9;s"/>
+            <Property name="toolTipText" type="java.lang.String" value=""/>
           </Properties>
         </Component>
       </SubComponents>

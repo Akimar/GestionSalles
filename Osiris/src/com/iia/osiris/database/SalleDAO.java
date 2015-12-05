@@ -5,13 +5,17 @@
  */
 package com.iia.osiris.database;
 
+import com.iia.osiris.metier.HoraireJour;
 import com.iia.osiris.metier.Salarie;
 import com.iia.osiris.metier.Salle;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -21,20 +25,37 @@ public abstract class SalleDAO {
     
      public static void getAllSalle(Connection cnx, Vector<Salle> vectorSalle)
     {
-        Statement stmtSalle = null;
-        Statement stmtHoraire = null;
+        PreparedStatement pstmtSalle = null;
+        PreparedStatement pstmtHoraire = null;
+        
         try 
         {
-            stmtSalle = cnx.createStatement();       
-            ResultSet rsSalle = stmtSalle.executeQuery("SELECT Identifiant, NomSalle, NomTerminal FROM Salle"); 
-                 
-            stmtHoraire = cnx.createStatement();
+            HoraireJour[] disponibilite;
+            int countDispo = 0;
+            int i = 0;
+            
+            pstmtSalle = cnx.prepareStatement("SELECT Identifiant, NomSalle, NomTerminal FROM Salle");  
+            pstmtHoraire = cnx.prepareStatement("SELECT IdentifiantJour, HoraireDebMat, HoraireFinMat, HoraireDebSoir, HoraireFinSoir , Jour.Identifiant, Libelle  FROM Disponibilite INNER JOIN Jour ON Disponibilite.IdentifiantJour = Jour.Identifiant WHERE Disponibilite.IdentifiantSalle = ?");
+            
+            
+            ResultSet rsSalle = pstmtSalle.executeQuery(); 
             ResultSet rsHoraire = null;
+           
             
             while(rsSalle.next()) // pour chaque salle
             {
-               rsHoraire = stmtHoraire.executeQuery()
-              vectorSalle.add(new Salle(rs.getInt("Identifiant"), rs.getString("NumeroTerminal"), ));
+              pstmtHoraire.setInt(1, rsSalle.getInt("Identifiant"));
+              rsHoraire = pstmtHoraire.executeQuery();
+              
+              countDispo = getCountDispo(cnx, rsSalle.getInt("Identifiant"));
+              
+              disponibilite = new HoraireJour[countDispo];
+              
+              while(rsHoraire.next() && i< countDispo)
+              {
+                disponibilite[i] = new HoraireJour(rsHoraire.getInt("Identifiant"), rsHoraire.getString("Libelle"),  rsHoraire.getTime("HoraireDebMat") , rsHoraire.getTime("HoraireFinMat"),  rsHoraire.getTime("HoraireDebSoir"),  rsHoraire.getTime("HoraireFinSoir"));
+              }
+              //vectorSalle.add(new Salle(rs.getInt("Identifiant"), rs.getString("NumeroTerminal"), ));
             }
                 
         /*SELECT Salle.Identifiant AS 'IdentifientSalle', Jour.Identifiant AS 'IdentifientJour', NumeroTerminal, NomSalle, HoraireDebMat, HoraireFinMat, HoraireDebSoir, HoraireFinSoir, Jour FROM Salle INNER JOIN Disponibilite ON Salle.Identifiant = Disponibilite.IdentifiantSalle INNER JOIN Jour ON Disponibilite.IdentifiantJour = Jour.Identifiant;"); */
@@ -45,11 +66,11 @@ public abstract class SalleDAO {
         
         finally
         {
-            if(stmt != null)
+            if(pstmtHoraire != null)
             {
                 try
                 {
-                    stmt.close();
+                    pstmtHoraire.close();
                 }
 
                 catch(SQLException ex)
@@ -57,6 +78,56 @@ public abstract class SalleDAO {
 
                 }
             }
+            
+             if(pstmtSalle != null)
+            {
+                try
+                {
+                    pstmtSalle.close();
+                }
+
+                catch(SQLException ex)
+                {
+
+                }
+            }
+        }
+    }
+     
+    public static int getCountDispo(Connection cnx, int id)
+    {
+        int nbDispo = 0;
+         PreparedStatement pstmt = null;
+        try 
+        {
+           pstmt = cnx.prepareStatement("SELECT COUNT(IdentifiantJour) FROM Disponibilite WHERE IdentifiantSalle =? ;");
+           pstmt.setInt(1, id);
+           ResultSet rs = pstmt.executeQuery();
+           rs.next();
+           
+           nbDispo = rs.getInt(1);
+        } 
+        catch (SQLException ex) 
+        {
+           Logger.getLogger(SalleDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        finally
+        {
+            if(pstmt != null)
+            {
+                try
+                {
+                    pstmt.close();
+                }
+
+                catch(SQLException ex)
+                {
+
+                }
+            }
+            
+            return  id;
         }
     }
 }

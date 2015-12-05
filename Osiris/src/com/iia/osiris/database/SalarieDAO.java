@@ -21,11 +21,11 @@ public abstract class SalarieDAO {
     
     public static void getAllSalarie(Connection cnx, Vector<Salarie> vectorSalarie)
     {
-        Statement stmt = null;
+        PreparedStatement pstmt = null;
         try 
         {
-            stmt = cnx.createStatement();       
-            ResultSet rs = stmt.executeQuery("SELECT *  FROM Salarie"); 
+            pstmt = cnx.prepareStatement("SELECT *  FROM Salarie");       
+            ResultSet rs = pstmt.executeQuery(); 
                  
             while(rs.next()) // pour chaque salle
             {
@@ -38,11 +38,11 @@ public abstract class SalarieDAO {
         
         finally
         {
-            if(stmt != null)
+            if(pstmt != null)
             {
                 try
                 {
-                    stmt.close();
+                    pstmt.close();
                 }
 
                 catch(SQLException ex)

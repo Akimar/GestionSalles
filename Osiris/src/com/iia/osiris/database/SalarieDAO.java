@@ -12,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -60,10 +62,7 @@ public abstract class SalarieDAO {
         int id = -1;
         try 
         {
-            /*stmt = cnx.createStatement();       
-            stmt.executeUpdate("INSERT INTO Salarie (Identifiant, Nom, Prenom, Badge, EstAdmin)  VALUES(NULL, "+nom+", "+prenom+", "+badge+", "+admin+");");  */
-    
-            
+
             pstmt = cnx.prepareStatement("INSERT INTO Salarie(Nom, Prenom, Badge, EstAdmin) VALUES(?, ?, ?, ?); ", Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, nom);
             pstmt.setString(2, prenom);
@@ -102,9 +101,10 @@ public abstract class SalarieDAO {
     
     public static void updateSalarie(Connection cnx, int identifiant, String nom, String prenom, String badge, boolean admin)
     {
+        PreparedStatement pstmt = null;
         try 
         {
-            PreparedStatement pstmt = null;
+            
             
             pstmt = cnx.prepareStatement("UPDATE Salarie SET Nom = ?, Prenom = ?, Badge = ?, EstAdmin = ? where Identifiant = ?");
             pstmt.setString(1, nom);
@@ -119,13 +119,31 @@ public abstract class SalarieDAO {
         {
             ex.printStackTrace();
         }
+        
+        finally
+        {
+            if(pstmt != null)
+            {
+                try
+                {
+                    pstmt.close();
+                }
+
+                catch(SQLException ex)
+                {
+
+                }
+            }
+        }
     }
     
      public static void deleteSalarie(Connection cnx, int identifiant)
     {
+        PreparedStatement pstmt = null;
+        
         try 
         {
-            PreparedStatement pstmt = null;
+            
             
             pstmt = cnx.prepareStatement("DELETE FROM Salarie WHERE Identifiant = ?");
             pstmt.setInt(1,identifiant);
@@ -136,7 +154,131 @@ public abstract class SalarieDAO {
         {
             ex.printStackTrace();
         }
+        
+        
+        finally
+        {
+            if(pstmt != null)
+            {
+                try
+                {
+                    pstmt.close();
+                }
+
+                catch(SQLException ex)
+                {
+
+                }
+            }
+        }
+        
     }
     
+     public static String[][] getSalarieAccess(Connection cnx, int id)
+     {
+        PreparedStatement pstmt = null;
+        int countAcces = 0;
+        int i = 0;
+        String date;
+        String time;
+        
+        String[][] access = null;
+        
+        try 
+        {
+            
+            countAcces = getCountAccess(cnx, id);
+            
+            if(countAcces == 0)
+            {
+                return null;
+            }
+            
+            pstmt = cnx.prepareStatement("SELECT DateAcces, NomSalle, NumeroTerminal FROM HistoriqueAcces INNER JOIN Salle ON IdentifiantSalle = Identifiant WHERE IdentifiantSalarie = ?");
+            pstmt.setInt(1,id);
+                  
+            ResultSet rs = pstmt.executeQuery();
+            
+            access = new String [countAcces][4];
+            
+            while(rs.next() && i<countAcces)
+            {
+                
+               date = SalleDAO.getDateFromDateTime(String.valueOf(rs.getTimestamp("DateAcces")));
+               time = SalleDAO.getTimeFromDateTime(String.valueOf(rs.getTimestamp("DateAcces")));
+               date = SalleDAO.changeDateFormat(date, true);
+               access[i][0] = rs.getString("NomSalle");
+               access[i][1] = rs.getString("NumeroTerminal");
+               access[i][2] = date;
+               access[i][3] = time;
+               
+               
+               i++;
+            }
+            
+            
+        } 
+        catch (SQLException ex) 
+        {
+            ex.printStackTrace();
+        }
+        
+        
+        finally
+        {
+            if(pstmt != null)
+            {
+                try
+                {
+                    pstmt.close();
+                }
+
+                catch(SQLException ex)
+                {
+
+                }
+            }
+        }
+         
+          return access;
+    }
     
+     
+    public static int getCountAccess(Connection cnx, int id)
+    {
+        int nbAcces = 0;
+        
+        PreparedStatement pstmt = null;
+        try 
+        {
+           pstmt = cnx.prepareStatement("SELECT COUNT(*) FROM HistoriqueAcces WHERE IdentifiantSalarie =? ;");
+           pstmt.setInt(1, id);
+           ResultSet rs = pstmt.executeQuery();
+           rs.next();
+           
+           nbAcces = rs.getInt(1);
+        } 
+        catch (SQLException ex) 
+        {
+           Logger.getLogger(SalleDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        finally
+        {
+            if(pstmt != null)
+            {
+                try
+                {
+                    pstmt.close();
+                }
+
+                catch(SQLException ex)
+                {
+
+                }
+            }
+            
+            return  nbAcces;
+        }
+    } 
 }

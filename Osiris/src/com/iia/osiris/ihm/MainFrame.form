@@ -321,6 +321,9 @@
               <Dimension value="[137, 23]"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="listeAccesButtonMouseReleased"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="listReservationButton">
           <Properties>

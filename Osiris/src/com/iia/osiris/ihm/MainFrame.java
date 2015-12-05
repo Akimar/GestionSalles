@@ -245,6 +245,11 @@ public class MainFrame extends javax.swing.JFrame {
         listeAccesButton.setMaximumSize(new java.awt.Dimension(137, 23));
         listeAccesButton.setMinimumSize(new java.awt.Dimension(137, 23));
         listeAccesButton.setPreferredSize(new java.awt.Dimension(137, 23));
+        listeAccesButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                listeAccesButtonMouseReleased(evt);
+            }
+        });
 
         listReservationButton.setText("Liste des réservations");
 
@@ -428,6 +433,13 @@ public class MainFrame extends javax.swing.JFrame {
             buttonDel.setEnabled(true);
         }
         
+          if(indexTableModel == 3)
+        {
+            listDisponibiliteButton.setVisible(true);
+            listDisponibiliteButton.setEnabled(true);
+        }
+        
+        
         buttonMod.setEnabled(true);
         listeAccesButton.setEnabled(true);
         listReservationButton.setEnabled(true);
@@ -440,6 +452,12 @@ public class MainFrame extends javax.swing.JFrame {
         buttonDel.setEnabled(false);
         listeAccesButton.setEnabled(false);
         listReservationButton.setEnabled(false);
+        
+        if(listDisponibiliteButton.isVisible())
+        {
+           listDisponibiliteButton.setVisible(false);
+           listDisponibiliteButton.setEnabled(false); 
+        }     
     }//GEN-LAST:event_myTableFocusLost
 
     private void buttonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddActionPerformed
@@ -461,13 +479,13 @@ public class MainFrame extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Temp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AjoutSalarie.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Temp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AjoutSalarie.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Temp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AjoutSalarie.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Temp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AjoutSalarie.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -502,13 +520,13 @@ public class MainFrame extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Temp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ModifierSalarie.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Temp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ModifierSalarie.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Temp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ModifierSalarie.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Temp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ModifierSalarie.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         
@@ -543,7 +561,7 @@ public class MainFrame extends javax.swing.JFrame {
                 } 
                 catch (Exception ex) 
                 {
-                    Logger.getLogger(Temp.class.getName()).log(Level.SEVERE, null, ex);
+            
                     JOptionPane.showMessageDialog(null, "Une erreur s'est produite, la suppression a échoué.");
                 }
 
@@ -554,6 +572,85 @@ public class MainFrame extends javax.swing.JFrame {
                 }
         }
     }//GEN-LAST:event_buttonDelMouseReleased
+
+    private void listeAccesButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listeAccesButtonMouseReleased
+        // TODO add your handling code here:
+        
+        if(indexTableModel == 1)
+        {
+            /* Set the Nimbus look and feel */
+            //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+      /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+       * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+       */
+      try {
+          for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+              if ("Nimbus".equals(info.getName())) {
+                  javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                  break;
+              }
+          }
+      } catch (ClassNotFoundException ex) {
+          java.util.logging.Logger.getLogger(AccesFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+      } catch (InstantiationException ex) {
+          java.util.logging.Logger.getLogger(AccesFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+      } catch (IllegalAccessException ex) {
+          java.util.logging.Logger.getLogger(AccesFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+      } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+          java.util.logging.Logger.getLogger(AccesFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+      }
+      //</editor-fold>
+
+            /* Create and display the form */
+            java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+              AccesFrame accesFrame =  new AccesFrame(indexTableModel, vectorSalarie.elementAt(myTable.getSelectedRow()).getIdentifiant());
+
+              accesFrame.setLocationRelativeTo(null);
+              accesFrame.setVisible(true);
+            }
+          });
+        }
+        
+        else
+        {
+            
+            /* Set the Nimbus look and feel */
+            //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+      /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+       * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+       */
+      try {
+          for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+              if ("Nimbus".equals(info.getName())) {
+                  javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                  break;
+              }
+          }
+      } catch (ClassNotFoundException ex) {
+          java.util.logging.Logger.getLogger(AccesFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+      } catch (InstantiationException ex) {
+          java.util.logging.Logger.getLogger(AccesFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+      } catch (IllegalAccessException ex) {
+          java.util.logging.Logger.getLogger(AccesFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+      } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+          java.util.logging.Logger.getLogger(AccesFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+      }
+      //</editor-fold>
+
+            /* Create and display the form */
+            java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+              AccesFrame accesFrame =  new AccesFrame(indexTableModel, vectorSalle.elementAt(myTable.getSelectedRow()).getIdentifiant());
+              accesFrame.setLocationRelativeTo(null);
+              accesFrame.setVisible(true);
+            }
+          });
+        }
+         
+        
+          
+    }//GEN-LAST:event_listeAccesButtonMouseReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -77,8 +77,6 @@ public class HoraireJour {
     public void setHeureFinSoir(Time HeureFinSoir) {
         this.HeureFinSoir = HeureFinSoir;
     }
-
-  
-
+    
     
 }

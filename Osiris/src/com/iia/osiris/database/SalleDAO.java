@@ -13,9 +13,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.binding.Bindings;
 
 /**
  *
@@ -131,5 +137,152 @@ public abstract class SalleDAO {
             
             return  id;
         }
+    }
+    
+    public static String[][] getSalleAccess(Connection cnx, int id)
+     {
+        PreparedStatement pstmt = null;
+        int countAcces = 0;
+        int i = 0;
+        String date;
+        String time;
+        
+        String[][] access = null;
+        
+        try 
+        {
+            
+            countAcces = getCountAccess(cnx, id);
+            
+            if(countAcces == 0)
+            {
+                return null;
+            }
+            
+            pstmt = cnx.prepareStatement("SELECT DateAcces, Nom, Prenom, Badge, EstAdmin FROM HistoriqueAcces INNER JOIN Salarie ON IdentifiantSalarie = Identifiant WHERE IdentifiantSalle = ?");
+            pstmt.setInt(1,id);
+                  
+            ResultSet rs = pstmt.executeQuery();
+            
+            access = new String [countAcces][6];
+            
+            while(rs.next() && i<countAcces)
+            {
+               date = getDateFromDateTime(String.valueOf(rs.getTimestamp("DateAcces")));
+               time = getTimeFromDateTime(String.valueOf(rs.getTimestamp("DateAcces")));
+               access[i][0] = rs.getString("Nom");
+               access[i][1] = rs.getString("Prenom");
+               access[i][2] = rs.getString("Badge");
+               access[i][3] = rs.getString("EstAdmin");
+               access[i][4] = date;
+               access[i][5] = time;
+               
+               i++;
+            }
+            
+            
+        } 
+        catch (SQLException ex) 
+        {
+            ex.printStackTrace();
+        }
+        
+        
+        finally
+        {
+            if(pstmt != null)
+            {
+                try
+                {
+                    pstmt.close();
+                }
+
+                catch(SQLException ex)
+                {
+
+                }
+            }
+        }
+         
+          return access;
+    }
+    
+     
+    public static int getCountAccess(Connection cnx, int id)
+    {
+        int nbAcces = 0;
+        
+        PreparedStatement pstmt = null;
+        try 
+        {
+           pstmt = cnx.prepareStatement("SELECT COUNT(*) FROM HistoriqueAcces WHERE IdentifiantSalle =? ;");
+           pstmt.setInt(1, id);
+           ResultSet rs = pstmt.executeQuery();
+           rs.next();
+           
+           nbAcces = rs.getInt(1);
+        } 
+        catch (SQLException ex) 
+        {
+           Logger.getLogger(SalleDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        finally
+        {
+            if(pstmt != null)
+            {
+                try
+                {
+                    pstmt.close();
+                }
+
+                catch(SQLException ex)
+                {
+
+                }
+            }
+            
+            return  nbAcces;
+        }
+    } 
+    
+    public static String getDateFromDateTime(String dateTime)
+    {
+        String date;
+        return date = dateTime.substring(0, 10);
+    }
+    
+    
+    public static String getTimeFromDateTime(String dateTime)
+    {
+        String time;
+        return time = dateTime.substring(11, 19);
+    }
+    
+    public static String changeDateFormat(String date, boolean mysqlFormat)
+    {
+       
+        if(mysqlFormat)
+        {
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+            
+            String jour = date.substring(8);
+            String mois = date.substring(5, 7);
+            String annee = date.substring(0, 4);
+            
+            date = jour+"/"+mois+"/"+annee;
+        }
+        
+        else
+        {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            
+            String jour = date.substring(0, 2);
+            String mois = date.substring(3, 5);
+            String annee = date.substring(7);
+            
+            date = annee+"-"+mois+"-"+jour;
+        }
+       return date;  
     }
 }

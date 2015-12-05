@@ -238,7 +238,6 @@ public class AjoutSalarie extends javax.swing.JDialog {
                 } 
                 catch (Exception ex) 
                 {
-                    Logger.getLogger(Temp.class.getName()).log(Level.SEVERE, null, ex);
                     JOptionPane.showMessageDialog(null, "Une erreur s'est produite, l'enregistrement a échoué.");
                 }
 

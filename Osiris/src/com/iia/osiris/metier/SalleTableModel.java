@@ -5,9 +5,14 @@
  */
 package com.iia.osiris.metier;
 
+import com.iia.osiris.database.BDD_Util;
+import com.iia.osiris.database.SalarieDAO;
+import com.iia.osiris.database.SalleDAO;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 import com.iia.osiris.metier.Salle;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  *
@@ -45,6 +50,17 @@ public class SalleTableModel extends DefaultTableModel {
     
     public void fillTable(Vector<Salle> vectorSalle)
     {
+        if(this.getRowCount() > 0)
+        {
+            int rowCount =  this.getRowCount();
+            
+            for(int i = 0; i < rowCount; i++)
+            {
+               this.removeRow(0);
+            }
+         
+        }
+         
         for(Salle salle : vectorSalle)
         {
             this.addRow(new Object[] { salle.getNom(), salle.getNumeroTerminal()}); 

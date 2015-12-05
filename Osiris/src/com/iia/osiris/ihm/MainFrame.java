@@ -6,6 +6,7 @@
 package com.iia.osiris.ihm;
 import com.iia.osiris.database.BDD_Util;
 import com.iia.osiris.database.SalarieDAO;
+import com.iia.osiris.database.SalleDAO;
 import com.iia.osiris.metier.Salle;
 import com.iia.osiris.metier.Salarie;
 import com.iia.osiris.metier.SalarieTableModel;
@@ -66,6 +67,7 @@ public class MainFrame extends javax.swing.JFrame {
            Connection cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
            
            SalarieDAO.getAllSalarie(cnx, vectorSalarie);
+           SalleDAO.getAllSalle(cnx, vectorSalle);
            
            cnx.close();
            
@@ -399,8 +401,13 @@ public class MainFrame extends javax.swing.JFrame {
     private void boutonSallesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boutonSallesActionPerformed
         // TODO add your handling code here:
         
-        myTable.setModel(salarieTableModel);
-        indexTableModel = 0;
+        myTable.setModel(salleTableModel);
+        indexTableModel = 3;
+        
+        if(myTable.getColumnCount() == 3)
+        {
+            myTable.removeColumn(myTable.getColumnModel().getColumn(0));
+        }
     }//GEN-LAST:event_boutonSallesActionPerformed
 
     private void myTableFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_myTableFocusGained

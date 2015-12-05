@@ -15,9 +15,9 @@ import com.iia.osiris.metier.Salle;
  */
 public class SalleTableModel extends DefaultTableModel {
     
-    private String[] columns = new String[] {"Nom", "Disponibilités", "Réservations"};
-    private Class[] classs = new Class[] { String.class, String.class, String.class};
-    private boolean[] editables = new boolean[] { false, false, true, false, false };
+    private String[] columns = new String[] {"Nom", "Numéro du terminal"};
+    private Class[] classs = new Class[] { String.class, String.class};
+    private boolean[] editables = new boolean[] { false, false };
 
     public SalleTableModel() {
         super(0, 0);
@@ -47,7 +47,7 @@ public class SalleTableModel extends DefaultTableModel {
     {
         for(Salle salle : vectorSalle)
         {
-            this.addRow(new Object[] { salle.getNom(), "Liste des disponibilités", "Liste des réservations"}); 
+            this.addRow(new Object[] { salle.getNom(), salle.getNumeroTerminal()}); 
         }
     }
 }

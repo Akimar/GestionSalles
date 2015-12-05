@@ -34,10 +34,11 @@ public abstract class SalleDAO {
             int countDispo = 0;
             int i = 0;
             
-            pstmtSalle = cnx.prepareStatement("SELECT Identifiant, NomSalle, NomTerminal FROM Salle");  
+            pstmtSalle = cnx.prepareStatement("SELECT Identifiant, NomSalle, NumeroTerminal FROM Salle;");  
             pstmtHoraire = cnx.prepareStatement("SELECT IdentifiantJour, HoraireDebMat, HoraireFinMat, HoraireDebSoir, HoraireFinSoir , Jour.Identifiant, Libelle  FROM Disponibilite INNER JOIN Jour ON Disponibilite.IdentifiantJour = Jour.Identifiant WHERE Disponibilite.IdentifiantSalle = ?");
             
             
+
             ResultSet rsSalle = pstmtSalle.executeQuery(); 
             ResultSet rsHoraire = null;
            
@@ -54,11 +55,12 @@ public abstract class SalleDAO {
               while(rsHoraire.next() && i< countDispo)
               {
                 disponibilite[i] = new HoraireJour(rsHoraire.getInt("Identifiant"), rsHoraire.getString("Libelle"),  rsHoraire.getTime("HoraireDebMat") , rsHoraire.getTime("HoraireFinMat"),  rsHoraire.getTime("HoraireDebSoir"),  rsHoraire.getTime("HoraireFinSoir"));
+                i++;
               }
-              //vectorSalle.add(new Salle(rs.getInt("Identifiant"), rs.getString("NumeroTerminal"), ));
+              
+              i = 0;
+              vectorSalle.add(new Salle(rsSalle.getInt("Identifiant"), rsSalle.getString("NumeroTerminal"), rsSalle.getString("NomSalle"), disponibilite));
             }
-                
-        /*SELECT Salle.Identifiant AS 'IdentifientSalle', Jour.Identifiant AS 'IdentifientJour', NumeroTerminal, NomSalle, HoraireDebMat, HoraireFinMat, HoraireDebSoir, HoraireFinSoir, Jour FROM Salle INNER JOIN Disponibilite ON Salle.Identifiant = Disponibilite.IdentifiantSalle INNER JOIN Jour ON Disponibilite.IdentifiantJour = Jour.Identifiant;"); */
         }
         catch (Exception ex)
         {

@@ -46,7 +46,7 @@ public class TerminalTableModel extends DefaultTableModel {
     {
         for(Salle salle : vectorSalle)
         {
-          this.addRow(new Object[] { salle.getNom(), "Liste des disponibilités", "Liste des réservations"}); 
+          this.addRow(new Object[] { salle.getNumeroTerminal(), salle.getNom()}); 
         }
     }
 }

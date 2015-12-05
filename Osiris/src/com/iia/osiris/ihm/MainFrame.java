@@ -389,6 +389,11 @@ public class MainFrame extends javax.swing.JFrame {
     private void boutonTerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boutonTerminalActionPerformed
         // TODO add your handling code here:
         
+        if(buttonAdd.isEnabled())
+        {
+            buttonAdd.setEnabled(false);
+        }
+        
         myTable.setModel(terminalTableModel);
         indexTableModel = 2;
         
@@ -400,6 +405,11 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void boutonSallesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boutonSallesActionPerformed
         // TODO add your handling code here:
+        
+        if(buttonAdd.isEnabled())
+        {
+            buttonAdd.setEnabled(false);
+        }
         
         myTable.setModel(salleTableModel);
         indexTableModel = 3;

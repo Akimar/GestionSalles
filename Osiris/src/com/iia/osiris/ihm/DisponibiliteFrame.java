@@ -5,11 +5,21 @@
  */
 package com.iia.osiris.ihm;
 
+import com.iia.osiris.database.BDD_Util;
+import com.iia.osiris.database.SalarieDAO;
+import com.iia.osiris.database.SalleDAO;
+import com.iia.osiris.metier.HoraireJour;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
 
@@ -19,13 +29,18 @@ import javax.swing.SpinnerDateModel;
  */
 public class DisponibiliteFrame extends javax.swing.JFrame {
 
+    private HoraireJour[] Disponibilite;
+    private int Identfiant;
     /**
      * Creates new form DisponibiliteFrame
      */
-    public DisponibiliteFrame() {
+    public DisponibiliteFrame(HoraireJour[] dispo, int idSalle) {
         initComponents();
         
-     
+        Disponibilite = dispo;
+        Identfiant = idSalle;
+        
+        changeTime();
     }
 
     /**
@@ -45,42 +60,51 @@ public class DisponibiliteFrame extends javax.swing.JFrame {
         Date dateMatDeb = new Date();
         SpinnerDateModel smMatDeb =
         new SpinnerDateModel(dateMatDeb, null, null, Calendar.HOUR_OF_DAY);
-        HoraireMatDebSpinner = new javax.swing.JSpinner(smMatDeb);
+        horaireMatDebSpinner = new javax.swing.JSpinner(smMatDeb);
         Date dateSoirDeb = new Date();
         SpinnerDateModel smSoirDeb =
         new SpinnerDateModel(dateSoirDeb, null, null, Calendar.HOUR_OF_DAY);
-        HoraireSoirDebSpinner = new javax.swing.JSpinner(smSoirDeb);
+        horaireSoirDebSpinner = new javax.swing.JSpinner(smSoirDeb);
         Date dateMatFin = new Date();
         SpinnerDateModel smMatFin =
         new SpinnerDateModel(dateMatFin, null, null, Calendar.HOUR_OF_DAY);
-        HoraireMatFinSpinner = new javax.swing.JSpinner(smMatFin);
+        horaireMatFinSpinner = new javax.swing.JSpinner(smMatFin);
         Date dateSoirFin = new Date();
         SpinnerDateModel smSoirFin =
         new SpinnerDateModel(dateSoirFin, null, null, Calendar.HOUR_OF_DAY);
-        HoraireSoirFinSpinner = new javax.swing.JSpinner(smSoirFin);
+        horaireSoirFinSpinner = new javax.swing.JSpinner(smSoirFin);
+        textLabel = new javax.swing.JLabel();
+        buttonPanel = new javax.swing.JPanel();
+        saveButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         titreLabel.setText("Disponibilités");
         titreLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         joursComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche" }));
+        joursComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                joursComboBoxActionPerformed(evt);
+            }
+        });
 
         matinLabel.setText("Matin : ");
 
         soirLabel.setText("Après-midi : ");
 
-        JSpinner.DateEditor deMatDeb = new JSpinner.DateEditor(HoraireMatDebSpinner, "HH:mm:ss");
-        HoraireMatDebSpinner.setEditor(deMatDeb);
+        JSpinner.DateEditor deMatDeb = new JSpinner.DateEditor(horaireMatDebSpinner, "HH:mm:ss");
+        horaireMatDebSpinner.setEditor(deMatDeb);
 
-        JSpinner.DateEditor deSoirDeb = new JSpinner.DateEditor(HoraireSoirDebSpinner, "HH:mm:ss");
-        HoraireSoirDebSpinner.setEditor(deSoirDeb);
+        JSpinner.DateEditor deSoirDeb = new JSpinner.DateEditor(horaireSoirDebSpinner, "HH:mm:ss");
+        horaireSoirDebSpinner.setEditor(deSoirDeb);
 
-        JSpinner.DateEditor deMatFin = new JSpinner.DateEditor(HoraireMatFinSpinner, "HH:mm:ss");
-        HoraireMatFinSpinner.setEditor(deMatFin);
+        JSpinner.DateEditor deMatFin = new JSpinner.DateEditor(horaireMatFinSpinner, "HH:mm:ss");
+        horaireMatFinSpinner.setEditor(deMatFin);
 
-        JSpinner.DateEditor deSoirFin = new JSpinner.DateEditor(HoraireSoirFinSpinner, "HH:mm:ss");
-        HoraireSoirFinSpinner.setEditor(deSoirFin);
+        JSpinner.DateEditor deSoirFin = new JSpinner.DateEditor(horaireSoirFinSpinner, "HH:mm:ss");
+        horaireSoirFinSpinner.setEditor(deSoirFin);
 
         javax.swing.GroupLayout dispoPanelLayout = new javax.swing.GroupLayout(dispoPanel);
         dispoPanel.setLayout(dispoPanelLayout);
@@ -97,12 +121,12 @@ public class DisponibiliteFrame extends javax.swing.JFrame {
                         .addComponent(soirLabel)
                         .addGap(18, 18, 18)))
                 .addGroup(dispoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(HoraireMatDebSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
-                    .addComponent(HoraireSoirDebSpinner))
+                    .addComponent(horaireMatDebSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                    .addComponent(horaireSoirDebSpinner))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
                 .addGroup(dispoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(HoraireMatFinSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
-                    .addComponent(HoraireSoirFinSpinner))
+                    .addComponent(horaireMatFinSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                    .addComponent(horaireSoirFinSpinner))
                 .addGap(43, 43, 43))
         );
         dispoPanelLayout.setVerticalGroup(
@@ -111,14 +135,53 @@ public class DisponibiliteFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(dispoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(matinLabel)
-                    .addComponent(HoraireMatDebSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(HoraireMatFinSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(horaireMatDebSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(horaireMatFinSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                 .addGroup(dispoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(soirLabel)
-                    .addComponent(HoraireSoirDebSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(HoraireSoirFinSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(horaireSoirDebSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(horaireSoirFinSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26))
+        );
+
+        textLabel.setText("Une salle est indisponible pour la journée si tous ses horaires sont à 00:00:00.");
+
+        saveButton.setText("Sauvegarder");
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveButtonActionPerformed(evt);
+            }
+        });
+
+        cancelButton.setText("Annuler");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout buttonPanelLayout = new javax.swing.GroupLayout(buttonPanel);
+        buttonPanel.setLayout(buttonPanelLayout);
+        buttonPanelLayout.setHorizontalGroup(
+            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(buttonPanelLayout.createSequentialGroup()
+                .addGap(47, 47, 47)
+                .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
+                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(47, 47, 47))
+        );
+        buttonPanelLayout.setVerticalGroup(
+            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, buttonPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(buttonPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(saveButton))
+                    .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -135,7 +198,16 @@ public class DisponibiliteFrame extends javax.swing.JFrame {
                         .addComponent(joursComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(dispoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 93, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(textLabel)
+                        .addGap(66, 66, 66))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(93, 93, 93))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -146,56 +218,131 @@ public class DisponibiliteFrame extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(joursComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(dispoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(textLabel)
+                .addGap(41, 41, 41)
+                .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(DisponibiliteFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(DisponibiliteFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(DisponibiliteFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(DisponibiliteFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void joursComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_joursComboBoxActionPerformed
+        // TODO add your handling code here:
+        
+        changeTime();
+    }//GEN-LAST:event_joursComboBoxActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new DisponibiliteFrame().setVisible(true);
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        // TODO add your handling code here:
+        
+        String pattern = "^[01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]#";
+               
+        //if(horaireMatDebSpinner.getValue().toString().matches(pattern) && horaireMatFinSpinner.getValue().toString().matches(pattern) && horaireSoirDebSpinner.getValue().toString().matches(pattern) && horaireSoirFinSpinner.getValue().toString().matches(pattern))
+        //{
+
+            Connection cnx =null;
+            int reponse = JOptionPane.showConfirmDialog(null, "Attention !\nLa modification des horaires supprimera les réservations dont les horaires ne correspondent plus.\nVoulez-vous continuer ?", "Confirm",
+            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+            if(reponse == JOptionPane.YES_OPTION)
+            {
+                SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
+                String time = localDateFormat.format(Utils.getDateObject(DateObject));
+                java.sql.Time horaireMatDeb = java.sql.Time.valueOf(horaireMatDebSpinner.getValue().toString());
+                java.sql.Time horaireMatFin = java.sql.Time.valueOf(horaireMatFinSpinner.getValue().toString());
+                java.sql.Time horaireSoirDeb = java.sql.Time.valueOf(horaireSoirDebSpinner.getValue().toString());
+                java.sql.Time horaireSoirFin = java.sql.Time.valueOf(horaireSoirFinSpinner.getValue().toString());
+                
+                 try 
+                    {
+                        java.sql.Time sqlTime1 = new java.sql.Time((long) horaireMatDebSpinner.getValue());
+                        java.sql.Time sqlTime2 = new java.sql.Time((long) horaireMatFinSpinner.getValue());
+                        java.sql.Time sqlTime3 = new java.sql.Time((long) horaireSoirDebSpinner.getValue());
+                        java.sql.Time sqlTime4 = new java.sql.Time((long) horaireSoirFinSpinner.getValue());
+                        
+                        cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
+                        SalleDAO.updateDispo(cnx, joursComboBox.getSelectedItem().toString(), horaireMatDeb, horaireMatFin, horaireSoirDeb, horaireSoirFin);
+
+                        JOptionPane.showMessageDialog(null, "Les modifications ont été enregistrées.");
+
+                    } 
+                    catch (Exception ex) 
+                    {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Une erreur s'est produite, les modifications ont échoué.");
+                    }
+
+                      finally
+                    {
+
+                        if(cnx != null)
+                        {
+                            try
+                            {
+                                cnx.close();
+                                cnx = null;
+                            }
+
+                            catch(SQLException ex)
+                            {
+
+                            }
+                        }
+                    }
             }
-        });
+       // }
+        
+        /*else
+        {
+          JOptionPane.showMessageDialog(null, "Saisies incorrectes, les horaires doivent être au format HH:MM:SS.");  
+        }*/
+    }//GEN-LAST:event_saveButtonActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        // TODO add your handling code here:
+        
+        this.dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
+    
+    public void changeTime()
+    {
+        int i = 0;
+        boolean ok = false;
+        
+    
+        while(i < Disponibilite.length && !ok)
+        {
+            if(joursComboBox.getSelectedItem().toString().equals(Disponibilite[i].getJour()))
+            {
+                ok = true;
+                
+                horaireMatDebSpinner.setValue(Disponibilite[i].getHeureDebMatin());
+                horaireMatFinSpinner.setValue(Disponibilite[i].getHeureFinMatin());
+                horaireSoirDebSpinner.setValue(Disponibilite[i].getHeureDebSoir());
+                horaireSoirFinSpinner.setValue(Disponibilite[i].getHeureFinSoir());
+            }
+            
+            i++;
+        }
     }
+ 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JSpinner HoraireMatDebSpinner;
-    private javax.swing.JSpinner HoraireMatFinSpinner;
-    private javax.swing.JSpinner HoraireSoirDebSpinner;
-    private javax.swing.JSpinner HoraireSoirFinSpinner;
+    private javax.swing.JPanel buttonPanel;
+    private javax.swing.JButton cancelButton;
     private javax.swing.JPanel dispoPanel;
+    private javax.swing.JSpinner horaireMatDebSpinner;
+    private javax.swing.JSpinner horaireMatFinSpinner;
+    private javax.swing.JSpinner horaireSoirDebSpinner;
+    private javax.swing.JSpinner horaireSoirFinSpinner;
     private javax.swing.JComboBox joursComboBox;
     private javax.swing.JLabel matinLabel;
+    private javax.swing.JButton saveButton;
     private javax.swing.JLabel soirLabel;
+    private javax.swing.JLabel textLabel;
     private javax.swing.JLabel titreLabel;
     // End of variables declaration//GEN-END:variables
 }

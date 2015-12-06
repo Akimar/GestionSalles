@@ -135,7 +135,7 @@ public abstract class SalleDAO {
                 }
             }
             
-            return  id;
+            return  nbDispo;
         }
     }
     
@@ -284,5 +284,41 @@ public abstract class SalleDAO {
             date = annee+"-"+mois+"-"+jour;
         }
        return date;  
+    }
+    
+    public static void updateDispo(Connection cnx, String jour, Time horaireDebMat, Time horaireFinMat, Time horaireDebSoir, Time horaireFinSoir)
+    {
+        PreparedStatement pstmt = null;
+        try 
+        {
+           pstmt = cnx.prepareStatement("UPDATE Disponibilte SET HoraireDebMat = ?, HoraireFinMat = ?, HoraireDebSoir = ?, HoraireFinSoir = ? WHERE IdentifiantJour = (SELECT Identifiant FROM Jour WHERE Libelle = ?);");
+           pstmt.setTime(1, horaireDebMat);
+           pstmt.setTime(2, horaireFinMat);
+           pstmt.setTime(3, horaireDebSoir);
+           pstmt.setTime(4, horaireFinSoir);
+           pstmt.setString(5, jour);
+         
+           pstmt.executeUpdate();
+         
+        } 
+        catch (SQLException ex) 
+        {
+        }
+        
+        finally
+        {
+            if(pstmt != null)
+            {
+                try
+                {
+                    pstmt.close();
+                }
+
+                catch(SQLException ex)
+                {
+
+                }
+            }
+        }
     }
 }

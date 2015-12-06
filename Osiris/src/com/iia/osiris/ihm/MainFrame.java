@@ -13,6 +13,7 @@ import com.iia.osiris.metier.SalarieTableModel;
 import com.iia.osiris.metier.SalleTableModel;
 import com.iia.osiris.metier.TerminalTableModel;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -78,6 +79,7 @@ public class MainFrame extends javax.swing.JFrame {
         {
             ex.printStackTrace();
         }
+        
         
         salleTableModel = new SalleTableModel();
         salleTableModel.fillTable(vectorSalle);
@@ -548,7 +550,8 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void buttonDelMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonDelMouseReleased
         // TODO add your handling code here:
-
+        
+        Connection cnx=null;
         int reponse = JOptionPane.showConfirmDialog(null, "Attention !\nLa suppression du salarié supprimera également ses réservations et l'historique de ses accès.\nVoulez-vous continuer ?", "Confirm",
         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         
@@ -556,13 +559,11 @@ public class MainFrame extends javax.swing.JFrame {
         {
              try 
                 {
-                    Connection cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
+                    cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
                     SalarieDAO.deleteSalarie(cnx, vectorSalarie.elementAt(myTable.getSelectedRow()).getIdentifiant());
                     vectorSalarie.removeElementAt(vectorSalarie.indexOf(vectorSalarie.elementAt(myTable.getSelectedRow())));
                     
                     JOptionPane.showMessageDialog(null, "Le salarié a été supprimé.");
-                    cnx.close();
-                    cnx=null;
                 } 
                 catch (Exception ex) 
                 {
@@ -572,6 +573,20 @@ public class MainFrame extends javax.swing.JFrame {
 
                 finally
                 {
+                    
+                    if(cnx != null)
+                    {
+                        try
+                        {
+                            cnx.close();
+                            cnx = null;
+                        }
+
+                        catch(SQLException ex)
+                        {
+
+                        }
+                    }
                     salarieTableModel.fillTable(vectorSalarie);
                     myTable.setModel(salarieTableModel);
                 }
@@ -659,6 +674,38 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void listDisponibiliteButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listDisponibiliteButtonMouseReleased
         // TODO add your handling code here:
+        
+         /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(DisponibiliteFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(DisponibiliteFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(DisponibiliteFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(DisponibiliteFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+               DisponibiliteFrame disponibiliteSalle =  new DisponibiliteFrame(vectorSalle.elementAt(myTable.getSelectedRow()).getDisponibilite(), vectorSalle.elementAt(myTable.getSelectedRow()).getIdentifiant());
+               disponibiliteSalle.setLocationRelativeTo(null);
+               disponibiliteSalle.setVisible(true);
+            }
+        });
         
     }//GEN-LAST:event_listDisponibiliteButtonMouseReleased
 

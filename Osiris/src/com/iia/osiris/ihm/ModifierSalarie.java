@@ -9,6 +9,7 @@ import com.iia.osiris.database.BDD_Util;
 import com.iia.osiris.database.SalarieDAO;
 import com.iia.osiris.metier.Salarie;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -250,13 +251,13 @@ public class ModifierSalarie extends javax.swing.JDialog {
             
                 int id;
                 boolean admin = (nonAdminRadio.isSelected()) ? false : true;
-
+                Connection cnx=null;
                 
 
                 try 
                 {
 
-                    Connection cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
+                    cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
                     SalarieDAO.updateSalarie(cnx, vectorSalarie.elementAt(indexSalarie).getIdentifiant(), this.nomSalarieField.getText(), this.prenomSalarieField.getText(), this.badgeSalarieField.getText(), admin);
                     
                     vectorSalarie.elementAt(indexSalarie).setNom(this.nomSalarieField.getText());
@@ -268,8 +269,8 @@ public class ModifierSalarie extends javax.swing.JDialog {
 
 
 
-                    cnx.close();
-                    cnx=null;   
+                   
+                       
                 } 
                 catch (Exception ex) 
                 {
@@ -279,6 +280,19 @@ public class ModifierSalarie extends javax.swing.JDialog {
 
                 finally
                 {
+                    if(cnx != null)
+                    {
+                        try
+                        {
+                            cnx.close();
+                            cnx = null;
+                        }
+
+                        catch(SQLException ex)
+                        {
+
+                        }
+                    }
                 
                     this.dispose();
                 }

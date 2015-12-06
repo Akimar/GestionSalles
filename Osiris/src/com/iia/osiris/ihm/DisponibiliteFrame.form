@@ -2,7 +2,7 @@
 
 <Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <Properties>
-    <Property name="defaultCloseOperation" type="int" value="3"/>
+    <Property name="defaultCloseOperation" type="int" value="2"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -36,7 +36,20 @@
                       <Component id="dispoPanel" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="40" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace min="0" pref="93" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
+                      <Component id="textLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="66" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="1" attributes="0">
+                      <Component id="buttonPanel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="93" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
           </Group>
       </Group>
     </DimensionLayout>
@@ -50,7 +63,11 @@
                   <Component id="joursComboBox" min="-2" max="-2" attributes="0"/>
                   <Component id="dispoPanel" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="59" max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="textLabel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
+              <Component id="buttonPanel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -76,6 +93,9 @@
           </StringArray>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="joursComboBoxActionPerformed"/>
+      </Events>
     </Component>
     <Container class="javax.swing.JPanel" name="dispoPanel">
 
@@ -96,13 +116,13 @@
                       </Group>
                   </Group>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="HoraireMatDebSpinner" pref="100" max="32767" attributes="0"/>
-                      <Component id="HoraireSoirDebSpinner" max="32767" attributes="0"/>
+                      <Component id="horaireMatDebSpinner" pref="100" max="32767" attributes="0"/>
+                      <Component id="horaireSoirDebSpinner" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace pref="47" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="HoraireMatFinSpinner" pref="100" max="32767" attributes="0"/>
-                      <Component id="HoraireSoirFinSpinner" max="32767" attributes="0"/>
+                      <Component id="horaireMatFinSpinner" pref="100" max="32767" attributes="0"/>
+                      <Component id="horaireSoirFinSpinner" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
               </Group>
@@ -114,14 +134,14 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="matinLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="HoraireMatDebSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="HoraireMatFinSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="horaireMatDebSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="horaireMatFinSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="32" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="soirLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="HoraireSoirDebSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="HoraireSoirFinSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="horaireSoirDebSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="horaireSoirFinSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
               </Group>
@@ -139,33 +159,87 @@
             <Property name="text" type="java.lang.String" value="Apr&#xe8;s-midi : "/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JSpinner" name="HoraireMatDebSpinner">
+        <Component class="javax.swing.JSpinner" name="horaireMatDebSpinner">
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JSpinner(smMatDeb)"/>
             <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="Date dateMatDeb = new Date();&#xa;SpinnerDateModel smMatDeb =&#xa;new SpinnerDateModel(dateMatDeb, null, null, Calendar.HOUR_OF_DAY);"/>
-            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="JSpinner.DateEditor deMatDeb = new JSpinner.DateEditor(HoraireMatDebSpinner, &quot;HH:mm:ss&quot;);&#xa;HoraireMatDebSpinner.setEditor(deMatDeb);"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="JSpinner.DateEditor deMatDeb = new JSpinner.DateEditor(horaireMatDebSpinner, &quot;HH:mm:ss&quot;);&#xa;horaireMatDebSpinner.setEditor(deMatDeb);"/>
           </AuxValues>
         </Component>
-        <Component class="javax.swing.JSpinner" name="HoraireSoirDebSpinner">
+        <Component class="javax.swing.JSpinner" name="horaireSoirDebSpinner">
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JSpinner(smSoirDeb)"/>
             <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="Date dateSoirDeb = new Date();&#xa;SpinnerDateModel smSoirDeb =&#xa;new SpinnerDateModel(dateSoirDeb, null, null, Calendar.HOUR_OF_DAY);"/>
-            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="JSpinner.DateEditor deSoirDeb = new JSpinner.DateEditor(HoraireSoirDebSpinner, &quot;HH:mm:ss&quot;);&#xa;HoraireSoirDebSpinner.setEditor(deSoirDeb);"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="JSpinner.DateEditor deSoirDeb = new JSpinner.DateEditor(horaireSoirDebSpinner, &quot;HH:mm:ss&quot;);&#xa;horaireSoirDebSpinner.setEditor(deSoirDeb);"/>
           </AuxValues>
         </Component>
-        <Component class="javax.swing.JSpinner" name="HoraireMatFinSpinner">
+        <Component class="javax.swing.JSpinner" name="horaireMatFinSpinner">
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JSpinner(smMatFin)"/>
             <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="Date dateMatFin = new Date();&#xa;SpinnerDateModel smMatFin =&#xa;new SpinnerDateModel(dateMatFin, null, null, Calendar.HOUR_OF_DAY);"/>
-            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="JSpinner.DateEditor deMatFin = new JSpinner.DateEditor(HoraireMatFinSpinner, &quot;HH:mm:ss&quot;);&#xa;HoraireMatFinSpinner.setEditor(deMatFin);"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="JSpinner.DateEditor deMatFin = new JSpinner.DateEditor(horaireMatFinSpinner, &quot;HH:mm:ss&quot;);&#xa;horaireMatFinSpinner.setEditor(deMatFin);"/>
           </AuxValues>
         </Component>
-        <Component class="javax.swing.JSpinner" name="HoraireSoirFinSpinner">
+        <Component class="javax.swing.JSpinner" name="horaireSoirFinSpinner">
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JSpinner(smSoirFin)"/>
             <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="Date dateSoirFin = new Date();&#xa;SpinnerDateModel smSoirFin =&#xa;new SpinnerDateModel(dateSoirFin, null, null, Calendar.HOUR_OF_DAY);"/>
-            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="JSpinner.DateEditor deSoirFin = new JSpinner.DateEditor(HoraireSoirFinSpinner, &quot;HH:mm:ss&quot;);&#xa;HoraireSoirFinSpinner.setEditor(deSoirFin);"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="JSpinner.DateEditor deSoirFin = new JSpinner.DateEditor(horaireSoirFinSpinner, &quot;HH:mm:ss&quot;);&#xa;horaireSoirFinSpinner.setEditor(deSoirFin);"/>
           </AuxValues>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Component class="javax.swing.JLabel" name="textLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Une salle est indisponible pour la journ&#xe9;e si tous ses horaires sont &#xe0; 00:00:00."/>
+      </Properties>
+    </Component>
+    <Container class="javax.swing.JPanel" name="buttonPanel">
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
+                  <Component id="saveButton" min="-2" pref="103" max="-2" attributes="0"/>
+                  <EmptySpace pref="110" max="32767" attributes="0"/>
+                  <Component id="cancelButton" min="-2" pref="102" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <Component id="saveButton" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Component id="cancelButton" max="32767" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JButton" name="saveButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Sauvegarder"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveButtonActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="cancelButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Annuler"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cancelButtonActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

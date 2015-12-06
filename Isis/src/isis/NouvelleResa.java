@@ -29,6 +29,8 @@ public class NouvelleResa extends javax.swing.JFrame {
     ArrayList<Salle> listSalles = new ArrayList<>();
 
     public NouvelleResa() {
+        //POUVOIR SUPPR RESA SI PARENT
+        
         Connection cnx = null;
         Statement stmt = null;
         ResultSet ResultSalles = null;

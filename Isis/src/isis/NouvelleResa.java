@@ -93,7 +93,6 @@ public class NouvelleResa extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jSCDatePicker1 = new com.javaswingcomponents.datepicker.JSCDatePicker();
         jComboBox_Salle = new javax.swing.JComboBox();
         jComboBox_Responsable = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -179,10 +178,8 @@ public class NouvelleResa extends javax.swing.JFrame {
                         .addGap(129, 129, 129)
                         .addComponent(jButton_Chercher))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jSCDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(50, 50, 50)
+                        .addComponent(jLabel1)
+                        .addGap(208, 208, 208)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(jComboBox_Salle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -231,8 +228,7 @@ public class NouvelleResa extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jSCDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(41, 41, 41)
+                                .addGap(57, 57, 57)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jButton_RAZ)
                                     .addComponent(jButton_Chercher)))
@@ -448,7 +444,6 @@ public class NouvelleResa extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JList jList_Personnes;
     private javax.swing.JPanel jPanel1;
-    private com.javaswingcomponents.datepicker.JSCDatePicker jSCDatePicker1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

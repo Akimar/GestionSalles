@@ -255,6 +255,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         listDisponibiliteButton.setText("Liste des disponibilités");
         listDisponibiliteButton.setToolTipText("");
+        listDisponibiliteButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                listDisponibiliteButtonMouseReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelListeLayout = new javax.swing.GroupLayout(panelListe);
         panelListe.setLayout(panelListeLayout);
@@ -651,6 +656,11 @@ public class MainFrame extends javax.swing.JFrame {
         
           
     }//GEN-LAST:event_listeAccesButtonMouseReleased
+
+    private void listDisponibiliteButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listDisponibiliteButtonMouseReleased
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_listDisponibiliteButtonMouseReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

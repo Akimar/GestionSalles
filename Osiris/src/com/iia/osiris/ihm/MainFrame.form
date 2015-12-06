@@ -335,6 +335,9 @@
             <Property name="text" type="java.lang.String" value="Liste des disponibilit&#xe9;s"/>
             <Property name="toolTipText" type="java.lang.String" value=""/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="listDisponibiliteButtonMouseReleased"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

@@ -56,11 +56,8 @@
                           <Component id="jButton_Chercher" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                              <Component id="jSCDatePicker1" alignment="0" min="-2" pref="181" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
+                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="208" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                               <Component id="jComboBox_Salle" min="-2" max="-2" attributes="0"/>
@@ -124,8 +121,7 @@
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
-                                  <Component id="jSCDatePicker1" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="jButton_RAZ" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="jButton_Chercher" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -168,8 +164,6 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Personnes autoris&#xe9;es"/>
           </Properties>
-        </Component>
-        <Component class="com.javaswingcomponents.datepicker.JSCDatePicker" name="jSCDatePicker1">
         </Component>
         <Component class="javax.swing.JComboBox" name="jComboBox_Salle">
           <Properties>

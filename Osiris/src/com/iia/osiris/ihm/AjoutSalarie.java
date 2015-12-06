@@ -58,6 +58,7 @@ public class AjoutSalarie extends javax.swing.JDialog {
         annulerAjoutSalarie = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         nomSalarieLabel.setText("Nom : ");
 

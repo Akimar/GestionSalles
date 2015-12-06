@@ -89,7 +89,7 @@ public  class HistoriqueSalleTableModel extends DefaultTableModel {
         {
             for(int i = 0; i< acces.length; i++)
             {
-             this.addRow(new Object[] {acces[i][0], acces[i][1], acces[i][2], acces[i][3],  acces[i][4], acces[i][5]}); 
+             this.addRow(new Object[] {acces[i][0], acces[i][1], acces[i][2], Boolean.parseBoolean(acces[i][3]),  acces[i][4], acces[i][5]}); 
             } 
         }
     }

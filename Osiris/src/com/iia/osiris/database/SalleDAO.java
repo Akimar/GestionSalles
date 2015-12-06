@@ -173,7 +173,7 @@ public abstract class SalleDAO {
                access[i][0] = rs.getString("Nom");
                access[i][1] = rs.getString("Prenom");
                access[i][2] = rs.getString("Badge");
-               access[i][3] = rs.getString("EstAdmin");
+               access[i][3] = String.valueOf(rs.getBoolean("EstAdmin"));
                access[i][4] = date;
                access[i][5] = time;
                

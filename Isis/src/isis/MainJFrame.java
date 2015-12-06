@@ -26,6 +26,9 @@ public class MainJFrame extends javax.swing.JFrame {
      * Creates new form MainJFrame
      */
     public MainJFrame() {
+        //INTERFACE DE CONNEXION A FAIRE !
+        
+        
         Connection cnx = null;
         Statement stmt;
         ResultSet ResultSalles = null;

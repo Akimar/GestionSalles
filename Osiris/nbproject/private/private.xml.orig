@@ -2,19 +2,25 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
 <<<<<<< HEAD
-            <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/metier/Salarie.java</file>
+        <group>
             <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/ihm/MainFrame.java</file>
-            <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/ihm/Temp.java</file>
-            <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/ihm/AjoutSalarie.java</file>
-            <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/metier/SalarieTableModel.java</file>
-            <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/metier/Salle.java</file>
+            <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/database/SalleDAO.java</file>
+            <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/metier/HistoriqueSalarieTableModel.java</file>
+            <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/metier/HistoriqueSalleTableModel.java</file>
+            <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/ihm/DisponibiliteFrame.java</file>
             <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/database/SalarieDAO.java</file>
+            <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/metier/HoraireJour.java</file>
+            <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/metier/Salle.java</file>
             <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/ihm/ModifierSalarie.java</file>
-=======
-            <file>file:/D:/Prog/Java/projet%20final/GestionSalles/Osiris/src/com/iia/osiris/metier/SalleTableModel.java</file>
->>>>>>> 5f9cba79761883ee09ca655553fdefb16e0fc1df
+            <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/ihm/AccesFrame.java</file>
+            <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/metier/Salarie.java</file>
+            <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/metier/SalleTableModel.java</file>
+            <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/ihm/AjoutSalarie.java</file>
+            <file>file:/C:/Users/Akimar/Debian/Java/Java/Projets/GestionSalles/Osiris/src/com/iia/osiris/ihm/ModifierSalle.java</file>
         </group>
+=======
+        <group/>
+>>>>>>> 976f3c73b4807c6d4d559900fea03b53fc1a43eb
     </open-files>
 </project-private>

@@ -55,19 +55,23 @@ public abstract class SalarieDAO {
         }
     }
     
-    public static int addSalarie(Connection cnx, String nom, String prenom, String badge, boolean admin)
+    public static int addSalarie(Connection cnx, String nom, String prenom, String badge, String mdp, boolean admin)
     {
+       
 
         PreparedStatement pstmt = null;
         int id = -1;
+        
         try 
         {
+            mdp = passEncrypt(mdp);
 
-            pstmt = cnx.prepareStatement("INSERT INTO Salarie(Nom, Prenom, Badge, EstAdmin) VALUES(?, ?, ?, ?); ", Statement.RETURN_GENERATED_KEYS);
+            pstmt = cnx.prepareStatement("INSERT INTO Salarie(Nom, Prenom, Badge, MotDePasse, EstAdmin) VALUES(?, ?, ?, ?, ?); ", Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, nom);
             pstmt.setString(2, prenom);
             pstmt.setString(3, badge);
-            pstmt.setBoolean(4, admin);
+            pstmt.setString(4, mdp);
+            pstmt.setBoolean(5, admin);
             
             pstmt.executeUpdate();
             
@@ -77,7 +81,7 @@ public abstract class SalarieDAO {
         }
         catch (Exception ex)
         {
-            System.out.println(ex.getStackTrace());
+           ex.printStackTrace();
         } 
         
         finally
@@ -282,4 +286,14 @@ public abstract class SalarieDAO {
             return  nbAcces;
         }
     } 
+    
+    public static String passEncrypt(String mdp) throws Exception 
+    {
+        
+        java.security.MessageDigest d = null;
+        d = java.security.MessageDigest.getInstance("SHA-1");
+        d.reset();
+        d.update(mdp.getBytes());
+        return String.valueOf(d.digest());
+    }
 }

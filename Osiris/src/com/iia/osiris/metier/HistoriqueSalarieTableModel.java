@@ -19,7 +19,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class HistoriqueSalarieTableModel extends DefaultTableModel {
     
-    private String[] columns = new String[] {"Salle", "Terminal", "Date", "Heure, Autorisé"};
+    private String[] columns = new String[] {"Salle", "Terminal", "Date", "Heure", "Autorisé"};
     private Class[] classs = new Class[] { String.class, String.class, String.class, String.class, Boolean.class};
     private boolean[] editables = new boolean[] {false, false, false, false, false};
 

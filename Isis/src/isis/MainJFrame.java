@@ -5,6 +5,7 @@
  */
 package isis;
 
+import com.iia.osiris.metier.Salarie;
 import com.iia.osiris.metier.Salle;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,6 +15,7 @@ import java.sql.Statement;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -22,17 +24,25 @@ import javax.swing.table.DefaultTableModel;
  */
 public class MainJFrame extends javax.swing.JFrame {
 
-    /**
-     * Creates new form MainJFrame
-     */
+    private Salarie NomSession;
+
+    public Salarie getNomSession() {
+        return NomSession;
+    }
+
+    public void setNomSession(Salarie NomSession) {
+        this.NomSession = NomSession;
+    }
+    
     public MainJFrame() {
         //INTERFACE DE CONNEXION A FAIRE !
-        
+        this.setLocation(150, 150);
         
         Connection cnx = null;
         Statement stmt;
         ResultSet ResultSalles = null;
         Salle tmpsalle = null;
+        
         try {
             cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
             stmt = cnx.createStatement();
@@ -80,6 +90,7 @@ public class MainJFrame extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jComboBox_Salle = new javax.swing.JComboBox();
         jButton_Chercher = new javax.swing.JButton();
+        jButton_Supprimer = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -121,6 +132,13 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
 
+        jButton_Supprimer.setLabel("Supprimer");
+        jButton_Supprimer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_SupprimerActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -137,8 +155,10 @@ public class MainJFrame extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jSCDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(33, 33, 33)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(251, Short.MAX_VALUE))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(42, 42, 42)
+                        .addComponent(jButton_Supprimer)))
+                .addContainerGap(130, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -147,14 +167,19 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSCDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jComboBox_Salle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(39, 39, 39)
-                        .addComponent(jButton_Chercher)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jSCDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jComboBox_Salle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(39, 39, 39)
+                                .addComponent(jButton_Chercher))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(189, 189, 189)
+                        .addComponent(jButton_Supprimer)))
                 .addContainerGap(53, Short.MAX_VALUE))
         );
 
@@ -194,12 +219,16 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         NouvelleResa fenetre_resa = new NouvelleResa();
+        fenetre_resa.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        fenetre_resa.setLocation(100, 100);
         fenetre_resa.setVisible(true);
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton_ChercherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ChercherActionPerformed
         PreparedStatement stmt;
         ResultSet resultResa;
+        Connection cnx;
         DefaultTableModel modelJtable = null;
         String[]data = new String[4]; 
         
@@ -211,7 +240,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 data[3] = "Pour";
                 modelJtable = new DefaultTableModel(data, 0);
                 jTable1.setModel(modelJtable);
-                Connection cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
+                cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
                 stmt = cnx.prepareStatement("SELECT * FROM reservation INNER JOIN salarie ON Salarie.Identifiant = reservation.IdentifiantSalarie WHERE DateRes = ? AND IdentifiantSalle = ? ;");
                 stmt.setDate(1, new java.sql.Date(jSCDatePicker1.getSelectedDate().getTime()));
                 stmt.setInt(2, ((Salle)jComboBox_Salle.getSelectedItem()).getIdentifiant());
@@ -230,6 +259,36 @@ public class MainJFrame extends javax.swing.JFrame {
 
         }
     }//GEN-LAST:event_jButton_ChercherActionPerformed
+
+    private void jButton_SupprimerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_SupprimerActionPerformed
+        PreparedStatement stmt;
+        Connection cnx;
+        if (jTable1.getSelectedRowCount() != 1)
+        {
+            javax.swing.JOptionPane.showMessageDialog(null, "Veuillez selectionner une ligne", "Attention !", 2);
+        }
+        else
+        {
+            if (this.getNomSession() != jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 3) )
+            {
+                javax.swing.JOptionPane.showMessageDialog(null, "Vous devez être le responsable de la réservation pour pouvoir la supprimer", "Attention !", 2);
+            }
+            else
+            {
+                try {
+                    cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
+                    //stmt = cnx.prepareStatement("DELETE FROM reservation WHERE dateRes = ? AND "); A FINIR !!! 
+                    
+                } catch (Exception ex) {
+                    Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                
+                
+                jButton_ChercherActionPerformed(null);
+            }
+        }
+    }//GEN-LAST:event_jButton_SupprimerActionPerformed
 
     /**
      * @param args the command line arguments
@@ -269,6 +328,7 @@ public class MainJFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton_Chercher;
+    private javax.swing.JButton jButton_Supprimer;
     private javax.swing.JComboBox jComboBox_Salle;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

@@ -26,7 +26,7 @@ public abstract class SalarieDAO {
         PreparedStatement pstmt = null;
         try 
         {
-            pstmt = cnx.prepareStatement("SELECT *  FROM Salarie");       
+            pstmt = cnx.prepareStatement("SELECT *  FROM Salarie ORDER BY Nom, Prenom;");       
             ResultSet rs = pstmt.executeQuery(); 
                  
             while(rs.next()) // pour chaque salle
@@ -194,12 +194,12 @@ public abstract class SalarieDAO {
                 return null;
             }
             
-            pstmt = cnx.prepareStatement("SELECT DateAcces, NomSalle, NumeroTerminal FROM HistoriqueAcces INNER JOIN Salle ON IdentifiantSalle = Identifiant WHERE IdentifiantSalarie = ?");
+            pstmt = cnx.prepareStatement("SELECT DateAcces, NomSalle, NumeroTerminal, Autorise FROM HistoriqueAcces INNER JOIN Salle ON IdentifiantSalle = Identifiant WHERE IdentifiantSalarie = ?");
             pstmt.setInt(1,id);
                   
             ResultSet rs = pstmt.executeQuery();
             
-            access = new String [countAcces][4];
+            access = new String [countAcces][5];
             
             while(rs.next() && i<countAcces)
             {
@@ -211,7 +211,8 @@ public abstract class SalarieDAO {
                access[i][1] = rs.getString("NumeroTerminal");
                access[i][2] = date;
                access[i][3] = time;
-               
+               access[i][4] = String.valueOf(rs.getBoolean("Autorise"));
+             
                
                i++;
             }

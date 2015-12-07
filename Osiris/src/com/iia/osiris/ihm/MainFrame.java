@@ -38,7 +38,7 @@ public class MainFrame extends javax.swing.JFrame {
     private SalarieTableModel salarieTableModel;
     private TerminalTableModel terminalTableModel;
     private int indexTableModel; // permet de savoir quel TableModel est utilisé (getModel renvoie une chaine difficilement exploitable)
-    // -1 par défaut, 0 pour SalleTableModel, 1 pour SalarieTableModel, 2 pour TerminalTableModel
+    // -1 par défaut, 1 pour SalarieTableModel, 2 pour TerminalTableModel, 3 pour SalleTableModel
     /**
      * Creates new form MainFrame
      */
@@ -546,6 +546,27 @@ public class MainFrame extends javax.swing.JFrame {
             salarieTableModel.fillTable(vectorSalarie);
             myTable.setModel(salarieTableModel);
         }  
+        
+          else
+          {
+               JDialog modifierSalle = new ModifierSalle(new javax.swing.JFrame(), true, vectorSalle, vectorSalle.indexOf(vectorSalle.elementAt(myTable.getSelectedRow())));
+            modifierSalle.setModal(true);
+            modifierSalle.setLocationRelativeTo(null);
+            modifierSalle.setVisible(true);
+            salleTableModel.fillTable(vectorSalle);
+            terminalTableModel.fillTable(vectorSalle);
+            
+            if(indexTableModel == 2 )
+            {
+                myTable.setModel(terminalTableModel);
+            }
+            
+            else
+            {
+               myTable.setModel(salleTableModel); 
+            }
+           
+          }
     }//GEN-LAST:event_buttonModMouseReleased
 
     private void buttonDelMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonDelMouseReleased

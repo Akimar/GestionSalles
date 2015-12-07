@@ -249,7 +249,7 @@ public class ModifierSalarie extends javax.swing.JDialog {
             if(!dejaPresent || badgeSalarieField.getText().equals(ancientBadge))
             {
             
-                int id;
+          
                 boolean admin = (nonAdminRadio.isSelected()) ? false : true;
                 Connection cnx=null;
                 

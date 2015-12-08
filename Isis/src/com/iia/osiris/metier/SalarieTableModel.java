@@ -14,9 +14,9 @@ import javax.swing.table.DefaultTableModel;
  */
 public class SalarieTableModel extends DefaultTableModel {
     
-    private String[] columns = new String[] { "Nom", "Prénom", "Badge", "Administrateur" };
-    private Class[] classs = new Class[] { String.class, String.class, String.class, Boolean.class};
-    private boolean[] editables = new boolean[] { false, false, false, true};
+    private String[] columns = new String[] {"Identifiant", "Nom", "Prénom", "Badge", "Administrateur" };
+    private Class[] classs = new Class[] {int.class, String.class, String.class, String.class, Boolean.class};
+    private boolean[] editables = new boolean[] {false, false, false, false, false};
 
     public SalarieTableModel() {
         super(0, 0);
@@ -45,9 +45,19 @@ public class SalarieTableModel extends DefaultTableModel {
     public void fillTable(Vector<Salarie> vectorSalarie)
     {
         
+        if(this.getRowCount() > 0)
+        {
+            int rowCount =  this.getRowCount();
+            
+            for(int i = 0; i < rowCount; i++)
+            {
+               this.removeRow(0);
+            }
+         
+        }
         for(Salarie salarie : vectorSalarie)
         {
-            this.addRow(new Object[] { salarie.getNom(),salarie.getPrenom(),salarie.getBadge(), salarie.isEstAdmin()}); 
+            this.addRow(new Object[] {salarie.getIdentifiant(), salarie.getNom(),salarie.getPrenom(),salarie.getBadge(), salarie.isEstAdmin()}); 
         }
     }
 }

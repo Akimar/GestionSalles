@@ -5,9 +5,14 @@
  */
 package com.iia.osiris.metier;
 
+import com.iia.osiris.database.BDD_Util;
+import com.iia.osiris.database.SalarieDAO;
+import com.iia.osiris.database.SalleDAO;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 import com.iia.osiris.metier.Salle;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  *
@@ -15,9 +20,9 @@ import com.iia.osiris.metier.Salle;
  */
 public class SalleTableModel extends DefaultTableModel {
     
-    private String[] columns = new String[] {"Nom", "Disponibilités", "Réservations"};
-    private Class[] classs = new Class[] { String.class, String.class, String.class};
-    private boolean[] editables = new boolean[] { false, false, true, false, false };
+    private String[] columns = new String[] {"Nom", "Numéro du terminal"};
+    private Class[] classs = new Class[] { String.class, String.class};
+    private boolean[] editables = new boolean[] { false, false };
 
     public SalleTableModel() {
         super(0, 0);
@@ -45,9 +50,20 @@ public class SalleTableModel extends DefaultTableModel {
     
     public void fillTable(Vector<Salle> vectorSalle)
     {
+        if(this.getRowCount() > 0)
+        {
+            int rowCount =  this.getRowCount();
+            
+            for(int i = 0; i < rowCount; i++)
+            {
+               this.removeRow(0);
+            }
+         
+        }
+         
         for(Salle salle : vectorSalle)
         {
-            this.addRow(new Object[] { salle.getNom(), "Liste des disponibilités", "Liste des réservations"}); 
+            this.addRow(new Object[] { salle.getNom(), salle.getNumeroTerminal()}); 
         }
     }
 }

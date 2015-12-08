@@ -67,6 +67,19 @@ public class Salarie {
         this.EstAdmin = EstAdmin;
     }
 
+   public boolean badgeExists(String badgeSaisi)
+   {
+       if(this.Badge.equals(badgeSaisi))
+       {
+         return true;   
+       }
+       
+       else
+       {
+           return false;
+       } 
+   }
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -99,12 +112,29 @@ public class Salarie {
         }
         return true;
     }
+   
+    
+    public static String passEncrypt(String mdp)
+    {
+       String mdpEncrypt= "";
+       int mdpTemp;
+       
+        for(int i = 0; i < mdp.length(); i++)
+        {
+            int test = (int)mdp.charAt(0);
+            mdpTemp = ((int)mdp.charAt(i)%3)+1024;
+            mdpTemp = mdpTemp%5;
+            mdpEncrypt = mdpEncrypt+String.valueOf(mdpTemp);
+        }
+       
+       return mdpEncrypt;
+    }
 
     @Override
     public String toString() {
-        return Nom + " " + Prenom ;
+        return Nom + " "+ Prenom ;
     }
     
     
-    
+   
 }

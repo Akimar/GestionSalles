@@ -14,9 +14,9 @@ import javax.swing.table.DefaultTableModel;
  */
 public class TerminalTableModel extends DefaultTableModel {
     
-    private String[] columns = new String[] { "Numéro", "Salle", "Accès"};
-    private Class[] classs = new Class[] { String.class, String.class, String.class };
-    private boolean[] editables = new boolean[] { true, true, true};
+    private String[] columns = new String[] { "Numéro", "Salle"};
+    private Class[] classs = new Class[] { String.class, String.class };
+    private boolean[] editables = new boolean[] {false, false};
 
     public TerminalTableModel() {
         super(0, 0);
@@ -44,9 +44,20 @@ public class TerminalTableModel extends DefaultTableModel {
     
     public void fillTable(Vector<Salle> vectorSalle)
     {
+         if(this.getRowCount() > 0)
+        {
+            int rowCount =  this.getRowCount();
+            
+            for(int i = 0; i < rowCount; i++)
+            {
+               this.removeRow(0);
+            }
+         
+        }
+         
         for(Salle salle : vectorSalle)
         {
-          this.addRow(new Object[] { salle.getNom(), "Liste des disponibilités", "Liste des réservations"}); 
+          this.addRow(new Object[] { salle.getNumeroTerminal(), salle.getNom()}); 
         }
     }
 }

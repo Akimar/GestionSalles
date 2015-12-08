@@ -5,6 +5,7 @@
  */
 package com.iia.isis;
 
+import com.iia.osiris.database.BDD_Util;
 import com.iia.osiris.metier.Salarie;
 import com.iia.osiris.metier.Salle;
 import java.sql.Connection;
@@ -46,7 +47,7 @@ public class NouvelleResa extends javax.swing.JFrame {
         try {
             this.jComboBox_Salle.removeAllItems();
             while (ResultSalles.next()) {
-                this.jComboBox_Salle.addItem(new Salle(ResultSalles.getInt("Identifiant"), ResultSalles.getString("NumeroTerminal"), ResultSalles.getString("NomSalle"), null, null));
+                this.jComboBox_Salle.addItem(new Salle(ResultSalles.getInt("Identifiant"), ResultSalles.getString("NumeroTerminal"), ResultSalles.getString("NomSalle"), null));
             }
             this.jComboBox_Salle.updateUI();
 

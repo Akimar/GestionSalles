@@ -5,6 +5,7 @@
  */
 package com.iia.isis;
 
+import com.iia.osiris.database.BDD_Util;
 import com.iia.osiris.metier.Salarie;
 import com.iia.osiris.metier.Salle;
 import java.sql.Connection;
@@ -15,6 +16,7 @@ import java.sql.Statement;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
 
@@ -22,7 +24,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Darkadok
  */
-public class MainJFrame extends javax.swing.JFrame {
+public class MainIsis extends javax.swing.JFrame {
 
     private Salarie NomSession;
 
@@ -34,7 +36,7 @@ public class MainJFrame extends javax.swing.JFrame {
         this.NomSession = NomSession;
     }
     
-    public MainJFrame() {
+    public MainIsis() {
         //INTERFACE DE CONNEXION A FAIRE !
         this.setLocation(150, 150);
         
@@ -56,7 +58,7 @@ public class MainJFrame extends javax.swing.JFrame {
         this.jComboBox_Salle.removeAllItems();
         try {
             while (ResultSalles.next()) {
-                tmpsalle = new Salle(ResultSalles.getInt("Identifiant"), ResultSalles.getString("NumeroTerminal"), ResultSalles.getString("NomSalle"), null, null);
+                tmpsalle = new Salle(ResultSalles.getInt("Identifiant"), ResultSalles.getString("NumeroTerminal"), ResultSalles.getString("NomSalle"), null);
                 this.jComboBox_Salle.addItem(tmpsalle);
             }
             tmpsalle = null;
@@ -94,6 +96,11 @@ public class MainJFrame extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(204, 255, 255));
 
@@ -108,7 +115,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Le", "De", "A", "Réservé par "
+                "Le", "De", "A", "Pour"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -222,7 +229,6 @@ public class MainJFrame extends javax.swing.JFrame {
         fenetre_resa.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         fenetre_resa.setLocation(100, 100);
         fenetre_resa.setVisible(true);
-        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton_ChercherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ChercherActionPerformed
@@ -230,7 +236,7 @@ public class MainJFrame extends javax.swing.JFrame {
         ResultSet resultResa;
         Connection cnx;
         DefaultTableModel modelJtable = null;
-        String[]data = new String[4]; 
+        String[]data = new String[5]; 
         
         if (jComboBox_Salle.getSelectedIndex() > -1 && jSCDatePicker1.getSelectedDate() != null) {
             try {
@@ -238,8 +244,12 @@ public class MainJFrame extends javax.swing.JFrame {
                 data[1] = "De";
                 data[2] = "A";
                 data[3] = "Pour";
+                data[4] = "Id";
                 modelJtable = new DefaultTableModel(data, 0);
                 jTable1.setModel(modelJtable);
+                
+                jTable1.removeColumn(jTable1.getColumnModel().getColumn(4));
+                
                 cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
                 stmt = cnx.prepareStatement("SELECT * FROM reservation INNER JOIN salarie ON Salarie.Identifiant = reservation.IdentifiantSalarie WHERE DateRes = ? AND IdentifiantSalle = ? ;");
                 stmt.setDate(1, new java.sql.Date(jSCDatePicker1.getSelectedDate().getTime()));
@@ -251,10 +261,11 @@ public class MainJFrame extends javax.swing.JFrame {
                     data[1] = resultResa.getString("HoraireDeb");
                     data[2] = resultResa.getString("HoraireFin");
                     data[3] = resultResa.getString("Nom") + " " + resultResa.getString("Prenom");
+                    data[4] = resultResa.getString("Identifiant");
                     modelJtable.addRow(data);
                 }                
             } catch (Exception ex) {
-                Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainIsis.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
@@ -270,7 +281,7 @@ public class MainJFrame extends javax.swing.JFrame {
         }
         else
         {
-            if (this.getNomSession() != jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 3) )
+            if (!((this.getNomSession().getNom() + " "+ this.getNomSession().getPrenom()).equals(jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 3))))
             {
                 javax.swing.JOptionPane.showMessageDialog(null, "Vous devez être le responsable de la réservation pour pouvoir la supprimer", "Attention !", 2);
             }
@@ -278,18 +289,57 @@ public class MainJFrame extends javax.swing.JFrame {
             {
                 try {
                     cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
-                    //stmt = cnx.prepareStatement("DELETE FROM reservation WHERE dateRes = ? AND "); A FINIR !!! 
-                    
+                    stmt = cnx.prepareStatement("DELETE FROM reservation WHERE Identifiant = ?");
+                    stmt.setInt(1, Integer.parseInt((String)jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 4)));
+                    stmt.executeUpdate();
+                    javax.swing.JOptionPane.showMessageDialog(null, "Supprimé avec succès", "Information", 1);
+                    stmt = null;
+                    cnx.close();
                 } catch (Exception ex) {
-                    Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(MainIsis.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
-                
-                
+               
                 jButton_ChercherActionPerformed(null);
             }
         }
     }//GEN-LAST:event_jButton_SupprimerActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Authentification.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Authentification.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Authentification.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Authentification.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+        
+            Authentification authentification = new Authentification(new javax.swing.JFrame(), true);
+            authentification.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+            authentification.setModal(true);
+            authentification.setLocationRelativeTo(null);
+            authentification.setVisible(true);
+            this.setNomSession(authentification.getSalarie());
+    }//GEN-LAST:event_formWindowOpened
 
     /**
      * @param args the command line arguments
@@ -308,20 +358,21 @@ public class MainJFrame extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainIsis.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainIsis.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainIsis.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainIsis.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainJFrame().setVisible(true);
+                new MainIsis().setVisible(true);
             }
         });
     }

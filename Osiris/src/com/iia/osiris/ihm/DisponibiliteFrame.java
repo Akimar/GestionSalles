@@ -12,11 +12,14 @@ import com.iia.osiris.metier.HoraireJour;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
@@ -236,68 +239,83 @@ public class DisponibiliteFrame extends javax.swing.JFrame {
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         // TODO add your handling code here:
-        
-        String pattern = "^[01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]#";
-               
-        //if(horaireMatDebSpinner.getValue().toString().matches(pattern) && horaireMatFinSpinner.getValue().toString().matches(pattern) && horaireSoirDebSpinner.getValue().toString().matches(pattern) && horaireSoirFinSpinner.getValue().toString().matches(pattern))
-        //{
+ 
 
-            Connection cnx =null;
-            int reponse = JOptionPane.showConfirmDialog(null, "Attention !\nLa modification des horaires supprimera les réservations dont les horaires ne correspondent plus.\nVoulez-vous continuer ?", "Confirm",
-            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        Connection cnx =null;
+        int reponse = JOptionPane.showConfirmDialog(null, "Attention !\nLa modification des horaires supprimera les réservations dont les horaires ne correspondent plus.\nVoulez-vous continuer ?", "Confirm",
+        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
-            if(reponse == JOptionPane.YES_OPTION)
+        if(reponse == JOptionPane.YES_OPTION)
+        { 
+
+
+            Pattern p = Pattern.compile("[0-1][0-9]:[0-5][0-9]:[0-5][0-9]");
+            Matcher matcherDebMat = p.matcher(horaireMatDebSpinner.getValue().toString());
+            Matcher matcherFinMat = p.matcher(horaireMatFinSpinner.getValue().toString());
+            Matcher matcherDebSoir = p.matcher(horaireSoirDebSpinner.getValue().toString());
+            Matcher matcherFinSoir = p.matcher(horaireSoirFinSpinner.getValue().toString());
+
+            if (matcherDebMat.find() && matcherDebSoir.find() && matcherFinMat.find() && matcherFinSoir.find()) 
             {
-                SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
-                String time = localDateFormat.format(Utils.getDateObject(DateObject));
-                java.sql.Time horaireMatDeb = java.sql.Time.valueOf(horaireMatDebSpinner.getValue().toString());
-                java.sql.Time horaireMatFin = java.sql.Time.valueOf(horaireMatFinSpinner.getValue().toString());
-                java.sql.Time horaireSoirDeb = java.sql.Time.valueOf(horaireSoirDebSpinner.getValue().toString());
-                java.sql.Time horaireSoirFin = java.sql.Time.valueOf(horaireSoirFinSpinner.getValue().toString());
+                try 
+                {
+                    int i = 0;
+                    boolean trouve = false;
+                    SimpleDateFormat formatter = new SimpleDateFormat("hh:mm:ss");
                 
-                 try 
+                    Time horaireMatDeb =new Time((formatter.parse(matcherDebMat.group()).getTime()));
+                    Time horaireMatFin = new Time((formatter.parse(matcherFinMat.group()).getTime())); 
+                    Time horaireSoirDeb = new Time((formatter.parse(matcherDebSoir.group()).getTime())); 
+                    Time horaireSoirFin = new Time((formatter.parse(matcherFinSoir.group()).getTime())); 
+                  
+
+                    cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
+                    SalleDAO.updateDispo(cnx, joursComboBox.getSelectedItem().toString(), horaireMatDeb, horaireMatFin, horaireSoirDeb, horaireSoirFin);
+                    
+                   while(i < Disponibilite.length && !trouve)
+                   {
+                       if(Disponibilite[i].getJour().equals(joursComboBox.getSelectedItem().toString()))
+                       {
+                           Disponibilite[i].setHeureDebMatin(horaireMatDeb);
+                           Disponibilite[i].setHeureDebSoir(horaireSoirDeb);
+                           Disponibilite[i].setHeureFinMatin(horaireMatFin);
+                           Disponibilite[i].setHeureFinSoir(horaireSoirFin);
+                           
+                           trouve = true;
+                       }
+                       
+                       i++;
+                   }
+                   
+
+                    JOptionPane.showMessageDialog(null, "Les modifications ont été enregistrées.");
+
+                } 
+                catch (Exception ex) 
+                {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Une erreur s'est produite, les modifications ont échoué.");
+                }
+
+                  finally
+                {
+
+                    if(cnx != null)
                     {
-                        java.sql.Time sqlTime1 = new java.sql.Time((long) horaireMatDebSpinner.getValue());
-                        java.sql.Time sqlTime2 = new java.sql.Time((long) horaireMatFinSpinner.getValue());
-                        java.sql.Time sqlTime3 = new java.sql.Time((long) horaireSoirDebSpinner.getValue());
-                        java.sql.Time sqlTime4 = new java.sql.Time((long) horaireSoirFinSpinner.getValue());
-                        
-                        cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
-                        SalleDAO.updateDispo(cnx, joursComboBox.getSelectedItem().toString(), horaireMatDeb, horaireMatFin, horaireSoirDeb, horaireSoirFin);
-
-                        JOptionPane.showMessageDialog(null, "Les modifications ont été enregistrées.");
-
-                    } 
-                    catch (Exception ex) 
-                    {
-                        ex.printStackTrace();
-                        JOptionPane.showMessageDialog(null, "Une erreur s'est produite, les modifications ont échoué.");
-                    }
-
-                      finally
-                    {
-
-                        if(cnx != null)
+                        try
                         {
-                            try
-                            {
-                                cnx.close();
-                                cnx = null;
-                            }
+                            cnx.close();
+                            cnx = null;
+                        }
 
-                            catch(SQLException ex)
-                            {
+                        catch(SQLException ex)
+                        {
 
-                            }
                         }
                     }
+                }
             }
-       // }
-        
-        /*else
-        {
-          JOptionPane.showMessageDialog(null, "Saisies incorrectes, les horaires doivent être au format HH:MM:SS.");  
-        }*/
+        }
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed

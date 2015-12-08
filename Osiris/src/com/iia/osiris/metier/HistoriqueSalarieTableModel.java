@@ -19,9 +19,9 @@ import javax.swing.table.DefaultTableModel;
  */
 public class HistoriqueSalarieTableModel extends DefaultTableModel {
     
-    private String[] columns = new String[] {"Salle", "Terminal", "Date", "Heure"};
-    private Class[] classs = new Class[] { String.class, String.class, String.class, String.class};
-    private boolean[] editables = new boolean[] {false, false, false, false};
+    private String[] columns = new String[] {"Salle", "Terminal", "Date", "Heure", "Autorisé"};
+    private Class[] classs = new Class[] { String.class, String.class, String.class, String.class, Boolean.class};
+    private boolean[] editables = new boolean[] {false, false, false, false, false};
 
     public HistoriqueSalarieTableModel() {
         super(0, 0);
@@ -89,7 +89,7 @@ public class HistoriqueSalarieTableModel extends DefaultTableModel {
         {
             for(int i = 0; i< acces.length; i++)
             {
-             this.addRow(new Object[] {acces[i][0], acces[i][1], acces[i][2], acces[i][3]}); 
+             this.addRow(new Object[] {acces[i][0], acces[i][1], acces[i][2], acces[i][3], Boolean.parseBoolean(acces[i][4])}); 
             } 
         }
     }

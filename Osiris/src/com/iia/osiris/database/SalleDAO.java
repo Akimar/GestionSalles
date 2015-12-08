@@ -40,8 +40,8 @@ public abstract class SalleDAO {
             int countDispo = 0;
             int i = 0;
             
-            pstmtSalle = cnx.prepareStatement("SELECT Identifiant, NomSalle, NumeroTerminal FROM Salle;");  
-            pstmtHoraire = cnx.prepareStatement("SELECT IdentifiantJour, HoraireDebMat, HoraireFinMat, HoraireDebSoir, HoraireFinSoir , Jour.Identifiant, Libelle  FROM Disponibilite INNER JOIN Jour ON Disponibilite.IdentifiantJour = Jour.Identifiant WHERE Disponibilite.IdentifiantSalle = ?");
+            pstmtSalle = cnx.prepareStatement("SELECT Identifiant, NomSalle, NumeroTerminal FROM Salle ORDER BY NomSalle;");  
+            pstmtHoraire = cnx.prepareStatement("SELECT IdentifiantJour, HoraireDebMat, HoraireFinMat, HoraireDebSoir, HoraireFinSoir , Jour.Identifiant, Libelle  FROM Disponibilite INNER JOIN Jour ON Disponibilite.IdentifiantJour = Jour.Identifiant WHERE Disponibilite.IdentifiantSalle = ? ORDER BY Libelle;");
             
             
 
@@ -159,12 +159,12 @@ public abstract class SalleDAO {
                 return null;
             }
             
-            pstmt = cnx.prepareStatement("SELECT DateAcces, Nom, Prenom, Badge, EstAdmin FROM HistoriqueAcces INNER JOIN Salarie ON IdentifiantSalarie = Identifiant WHERE IdentifiantSalle = ?");
+            pstmt = cnx.prepareStatement("SELECT DateAcces, Nom, Prenom, Badge, EstAdmin, Autorise  FROM HistoriqueAcces INNER JOIN Salarie ON IdentifiantSalarie = Identifiant WHERE IdentifiantSalle = ?");
             pstmt.setInt(1,id);
                   
             ResultSet rs = pstmt.executeQuery();
             
-            access = new String [countAcces][6];
+            access = new String [countAcces][7];
             
             while(rs.next() && i<countAcces)
             {
@@ -176,6 +176,7 @@ public abstract class SalleDAO {
                access[i][3] = String.valueOf(rs.getBoolean("EstAdmin"));
                access[i][4] = date;
                access[i][5] = time;
+               access[i][6] = String.valueOf(rs.getBoolean("Autorise"));
                
                i++;
             }
@@ -291,7 +292,7 @@ public abstract class SalleDAO {
         PreparedStatement pstmt = null;
         try 
         {
-           pstmt = cnx.prepareStatement("UPDATE Disponibilte SET HoraireDebMat = ?, HoraireFinMat = ?, HoraireDebSoir = ?, HoraireFinSoir = ? WHERE IdentifiantJour = (SELECT Identifiant FROM Jour WHERE Libelle = ?);");
+           pstmt = cnx.prepareStatement("UPDATE Disponibilite SET HoraireDebMat = ?, HoraireFinMat = ?, HoraireDebSoir = ?, HoraireFinSoir = ? WHERE IdentifiantJour = (SELECT Identifiant FROM Jour WHERE Libelle = ?);");
            pstmt.setTime(1, horaireDebMat);
            pstmt.setTime(2, horaireFinMat);
            pstmt.setTime(3, horaireDebSoir);
@@ -303,6 +304,43 @@ public abstract class SalleDAO {
         } 
         catch (SQLException ex) 
         {
+        }
+        
+        finally
+        {
+            if(pstmt != null)
+            {
+                try
+                {
+                    pstmt.close();
+                }
+
+                catch(SQLException ex)
+                {
+
+                }
+            }
+        }
+    }
+    
+    public static void updateSalle(Connection cnx, int identifiant, String terminal, String salle)
+    {
+        PreparedStatement pstmt = null;
+        try 
+        {
+            
+            
+            pstmt = cnx.prepareStatement("UPDATE Salle SET NomSalle = ?, NumeroTerminal = ? WHERE Identifiant = ?");
+            pstmt.setString(1, salle);
+            pstmt.setString(2, terminal);
+           
+            pstmt.setInt(3,identifiant);
+                  
+            pstmt.executeUpdate();
+        } 
+        catch (SQLException ex) 
+        {
+            ex.printStackTrace();
         }
         
         finally

@@ -38,7 +38,7 @@ public class MainFrame extends javax.swing.JFrame {
     private SalarieTableModel salarieTableModel;
     private TerminalTableModel terminalTableModel;
     private int indexTableModel; // permet de savoir quel TableModel est utilisé (getModel renvoie une chaine difficilement exploitable)
-    // -1 par défaut, 0 pour SalleTableModel, 1 pour SalarieTableModel, 2 pour TerminalTableModel
+    // -1 par défaut, 1 pour SalarieTableModel, 2 pour TerminalTableModel, 3 pour SalleTableModel
     /**
      * Creates new form MainFrame
      */
@@ -125,6 +125,11 @@ public class MainFrame extends javax.swing.JFrame {
         setTitle("Osiris");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         panelButtonTab.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
@@ -546,6 +551,27 @@ public class MainFrame extends javax.swing.JFrame {
             salarieTableModel.fillTable(vectorSalarie);
             myTable.setModel(salarieTableModel);
         }  
+        
+          else
+          {
+               JDialog modifierSalle = new ModifierSalle(new javax.swing.JFrame(), true, vectorSalle, vectorSalle.indexOf(vectorSalle.elementAt(myTable.getSelectedRow())));
+            modifierSalle.setModal(true);
+            modifierSalle.setLocationRelativeTo(null);
+            modifierSalle.setVisible(true);
+            salleTableModel.fillTable(vectorSalle);
+            terminalTableModel.fillTable(vectorSalle);
+            
+            if(indexTableModel == 2 )
+            {
+                myTable.setModel(terminalTableModel);
+            }
+            
+            else
+            {
+               myTable.setModel(salleTableModel); 
+            }
+           
+          }
     }//GEN-LAST:event_buttonModMouseReleased
 
     private void buttonDelMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonDelMouseReleased
@@ -708,6 +734,43 @@ public class MainFrame extends javax.swing.JFrame {
         });
         
     }//GEN-LAST:event_listDisponibiliteButtonMouseReleased
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        // TODO add your handling code here:
+          /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Authentification.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Authentification.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Authentification.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Authentification.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+        
+            JDialog authentification = new Authentification(new javax.swing.JFrame(), true);
+            authentification.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+            authentification.setModal(true);
+            authentification.setLocationRelativeTo(null);
+            authentification.setVisible(true);
+    }//GEN-LAST:event_formWindowOpened
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

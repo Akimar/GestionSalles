@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -94,7 +95,7 @@ public class TerminalDaemon extends Thread {
                 resultSet = stmt.executeQuery("SELECT identifiant FROM salle WHERE NumeroTerminal = " + this.getIdentifiantTerminal());
                 if (!resultSet.next()) {
                     stmt.executeUpdate("INSERT INTO salle VALUES (NULL, '" + this.getIdentifiantTerminal() + "', NULL, NULL)");
-                    //a tester + ajouter disponibilité pour chaque jours à 00:00:00
+                    //a tester
                 }
                 else
                 {
@@ -114,9 +115,11 @@ public class TerminalDaemon extends Thread {
         String line;
         Connection cnx = null;
         Statement stmt = null;
+        CallableStatement costmt = null;
         PreparedStatement prstmt = null;
         ResultSet resultSet = null;
         Salarie scanne = null;
+        boolean open = false;
         try {
             Thread.sleep((3000));//pour affichage
             cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
@@ -144,13 +147,24 @@ public class TerminalDaemon extends Thread {
                         scanne = new Salarie (resultSet.getInt("Identifiant"), resultSet.getString("Nom"), resultSet.getString("Prenom"), resultSet.getString("Badge"), resultSet.getBoolean("EstAdmin"));
                         
                         //verifier qu'il a le droit d'entrer, ouvrir ou non la porte
-                        prstmt = cnx.prepareStatement("SELECT * FROM reservation WHERE DateRes = ? AND IdentifiantSalle = ? ");
-                        prstmt.setDate(1, new java.sql.Date(new java.util.Date().getTime()));
-                        prstmt.setInt(2, salle.getIdentifiant());
-                        resultSet = prstmt.executeQuery();// a tester
+                        costmt = cnx.prepareCall("{call ProctStock(?,?)}"); // DE EN DESSOUS
+                        costmt.setDate(1, new java.sql.Date(new java.util.Date().getTime()));
+                        costmt.setInt(2, salle.getIdentifiant());
+                        
+                        resultSet = costmt.executeQuery();
+                        
                         while (resultSet.next())
                         {
-                            // a finir
+                            open = resultSet.getBoolean("para");
+                        }
+                        
+                        if (open)
+                        {
+                           this.envoyer("    Entrée autorisée");  
+                        }
+                        else
+                        {
+                            this.envoyer("    Entrée non autorisée"); 
                         }
                         
                     }
@@ -158,7 +172,6 @@ public class TerminalDaemon extends Thread {
                     {
                         this.envoyer("    Badge detecté mais non reconnu");                       
                     }
-
                 }
                 Thread.sleep((5000));//pour affichage
                 this.envoyer("    En attente.");

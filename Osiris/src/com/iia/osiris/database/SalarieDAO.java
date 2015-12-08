@@ -64,7 +64,7 @@ public abstract class SalarieDAO {
         
         try 
         {
-           // mdp = passEncrypt(mdp);
+           mdp = Salarie.passEncrypt(mdp);
 
             pstmt = cnx.prepareStatement("INSERT INTO Salarie(Nom, Prenom, Badge, MotDePasse, EstAdmin) VALUES(?, ?, ?, ?, ?); ", Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, nom);
@@ -103,20 +103,31 @@ public abstract class SalarieDAO {
         return id;
     }
     
-    public static void updateSalarie(Connection cnx, int identifiant, String nom, String prenom, String badge, boolean admin)
+    public static void updateSalarie(Connection cnx, int identifiant, String nom, String prenom, String badge, String mdp, boolean admin)
     {
         PreparedStatement pstmt = null;
         try 
         {
             
+            if(mdp.isEmpty())
+            {
+                pstmt = cnx.prepareStatement("UPDATE Salarie SET Nom = ?, Prenom = ?, Badge = ?, EstAdmin = ? WHERE Identifiant = ?");         
+                pstmt.setInt(5,identifiant);
+            }
             
-            pstmt = cnx.prepareStatement("UPDATE Salarie SET Nom = ?, Prenom = ?, Badge = ?, EstAdmin = ? where Identifiant = ?");
+            else
+            {
+                pstmt = cnx.prepareStatement("UPDATE Salarie SET Nom = ?, Prenom = ?, Badge = ?, EstAdmin = ?,  MotdePasse = ? WHERE Identifiant = ?");
+                
+                pstmt.setString(5, Salarie.passEncrypt(mdp));
+                pstmt.setInt(6,identifiant);
+            }
+            
             pstmt.setString(1, nom);
             pstmt.setString(2, prenom);
             pstmt.setString(3, badge);
             pstmt.setBoolean(4 ,admin);
-            pstmt.setInt(5,identifiant);
-                  
+            
             pstmt.executeUpdate();
         } 
         catch (SQLException ex) 

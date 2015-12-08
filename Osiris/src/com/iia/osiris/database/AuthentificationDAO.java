@@ -6,12 +6,11 @@
 package com.iia.osiris.database;
 
 
-import static com.iia.osiris.ihm.Authentification.passEncrypt;
+import com.iia.osiris.metier.Salarie;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
  *      
@@ -24,11 +23,11 @@ public abstract class AuthentificationDAO {
         PreparedStatement pstmt = null;
         try 
         {
-            String password = passEncrypt(String.valueOf(mdp));
+            String password = Salarie.passEncrypt(String.valueOf(mdp));
            
             pstmt = cnx.prepareStatement("SELECT Nom, Prenom FROM Salarie WHERE Badge = ? AND MotDePasse = ?;");
             pstmt.setString(1, badge);
-            pstmt.setString(2, mdp);
+            pstmt.setString(2, password);
             
        
             ResultSet rs  =  pstmt.executeQuery() ;

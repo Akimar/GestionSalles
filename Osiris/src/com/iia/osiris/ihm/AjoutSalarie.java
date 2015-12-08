@@ -248,6 +248,7 @@ public class AjoutSalarie extends javax.swing.JDialog {
    
         else
         {
+            
             int i = 0;
             boolean dejaPresent = false;
             while(i < vectorSalarie.size() && ! dejaPresent)
@@ -268,7 +269,7 @@ public class AjoutSalarie extends javax.swing.JDialog {
                 try 
                 {
                     cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
-                    id = SalarieDAO.addSalarie(cnx,nomSalarieField.getText(), prenomSalarieField.getText(), badgeSalarieField.getText(),mdp, admin);
+                    id = SalarieDAO.addSalarie(cnx,nomSalarieField.getText(), prenomSalarieField.getText(), badgeSalarieField.getText(), Salarie.passEncrypt(mdp), admin);
                     cnx.close();
                     cnx=null;
 

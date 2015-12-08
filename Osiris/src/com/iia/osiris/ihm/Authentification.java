@@ -175,10 +175,11 @@ public class Authentification extends javax.swing.JDialog {
         {
             boolean auth = false;
             Connection cnx = null;
+           
             try 
             {
                 cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
-                auth = AuthentificationDAO.auhtenticator(cnx, badgeField.getText(), String.valueOf(mdpField.getPassword()));
+                auth = AuthentificationDAO.authenticator(cnx, badgeField.getText(), String.valueOf(mdpField.getPassword()));
             } 
             
             catch (Exception ex) 
@@ -214,7 +215,24 @@ public class Authentification extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_validerButtonActionPerformed
 
- 
+    public static String passEncrypt(String mdp)
+    {
+       String mdpEncrypt= "";
+       int mdpTemp;
+       
+        for(int i = 0; i < mdp.length(); i++)
+        {
+            int test = (int)mdp.charAt(0);
+            mdpTemp = ((int)mdp.charAt(i)%3)+1024;
+            mdpTemp = mdpTemp%5;
+            mdpEncrypt = mdpEncrypt+String.valueOf(mdpTemp);
+        }
+       
+       return mdpEncrypt;
+       
+    }
+  
+  
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton annulerButton;
     private javax.swing.JPanel authPanel;

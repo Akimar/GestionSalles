@@ -5,7 +5,8 @@
  */
 package com.iia.osiris.database;
 
-import static com.iia.osiris.database.SalarieDAO.passEncrypt;
+
+import static com.iia.osiris.ihm.Authentification.passEncrypt;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,18 +14,18 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- *
+ *      
  * @author Akimar
  */
 public abstract class AuthentificationDAO {
     
-    public static boolean auhtenticator(Connection cnx, String badge, String mdp)
+    public static boolean authenticator(Connection cnx, String badge, String mdp)
     {
         PreparedStatement pstmt = null;
         try 
         {
-            mdp = passEncrypt(mdp);
-
+            String password = passEncrypt(String.valueOf(mdp));
+           
             pstmt = cnx.prepareStatement("SELECT Nom, Prenom FROM Salarie WHERE Badge = ? AND MotDePasse = ?;");
             pstmt.setString(1, badge);
             pstmt.setString(2, mdp);

@@ -147,15 +147,14 @@ public class TerminalDaemon extends Thread {
                         scanne = new Salarie (resultSet.getInt("Identifiant"), resultSet.getString("Nom"), resultSet.getString("Prenom"), resultSet.getString("Badge"), resultSet.getBoolean("EstAdmin"));
                         
                         //verifier qu'il a le droit d'entrer, ouvrir ou non la porte
-                        costmt = cnx.prepareCall("{call ProctStock(?,?)}"); // DE EN DESSOUS
+                        costmt = cnx.prepareCall("{call ProcStockPassageBadge(?, ?, ?, ?)}"); // DE EN DESSOUS
                         costmt.setDate(1, new java.sql.Date(new java.util.Date().getTime()));
                         costmt.setInt(2, salle.getIdentifiant());
-                        
                         resultSet = costmt.executeQuery();
                         
                         while (resultSet.next())
                         {
-                            open = resultSet.getBoolean("para");
+                            open = resultSet.getBoolean("Ouvrir");
                         }
                         
                         if (open)
@@ -165,8 +164,7 @@ public class TerminalDaemon extends Thread {
                         else
                         {
                             this.envoyer("    Entrée non autorisée"); 
-                        }
-                        
+                        } 
                     }
                     else
                     {

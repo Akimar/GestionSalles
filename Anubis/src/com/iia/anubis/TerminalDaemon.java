@@ -94,7 +94,7 @@ public class TerminalDaemon extends Thread {
                 resultSet = stmt.executeQuery("SELECT identifiant FROM salle WHERE NumeroTerminal = " + this.getIdentifiantTerminal());
                 if (!resultSet.next()) {
                     stmt.executeUpdate("INSERT INTO salle VALUES (NULL, '" + this.getIdentifiantTerminal() + "', NULL, NULL)");
-                    //a tester
+                    //a tester + ajouter disponibilité pour chaque jours à 00:00:00
                 }
                 else
                 {

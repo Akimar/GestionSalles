@@ -261,6 +261,7 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton_ChercherActionPerformed
 
     private void jButton_SupprimerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_SupprimerActionPerformed
+        //POUVOIR SUPPR RESA SI PARENT
         PreparedStatement stmt;
         Connection cnx;
         if (jTable1.getSelectedRowCount() != 1)

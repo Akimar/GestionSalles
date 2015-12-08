@@ -13,12 +13,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultRowSorter;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -35,16 +40,16 @@ public class MainIsis extends javax.swing.JFrame {
     public void setNomSession(Salarie NomSession) {
         this.NomSession = NomSession;
     }
-    
+
     public MainIsis() {
         //INTERFACE DE CONNEXION A FAIRE !
         this.setLocation(150, 150);
-        
+
         Connection cnx = null;
         Statement stmt;
         ResultSet ResultSalles = null;
         Salle tmpsalle = null;
-        
+
         try {
             cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
             stmt = cnx.createStatement();
@@ -226,8 +231,9 @@ public class MainIsis extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         NouvelleResa fenetre_resa = new NouvelleResa();
+
         fenetre_resa.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        fenetre_resa.setLocation(100, 100);
+        fenetre_resa.setLocationRelativeTo(null);
         fenetre_resa.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -236,8 +242,8 @@ public class MainIsis extends javax.swing.JFrame {
         ResultSet resultResa;
         Connection cnx;
         DefaultTableModel modelJtable = null;
-        String[]data = new String[5]; 
-        
+        String[] data = new String[5];
+
         if (jComboBox_Salle.getSelectedIndex() > -1 && jSCDatePicker1.getSelectedDate() != null) {
             try {
                 data[0] = "Le";
@@ -247,23 +253,28 @@ public class MainIsis extends javax.swing.JFrame {
                 data[4] = "Id";
                 modelJtable = new DefaultTableModel(data, 0);
                 jTable1.setModel(modelJtable);
-                
+
                 jTable1.removeColumn(jTable1.getColumnModel().getColumn(4));
-                
+
                 cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
                 stmt = cnx.prepareStatement("SELECT * FROM reservation INNER JOIN salarie ON Salarie.Identifiant = reservation.IdentifiantSalarie WHERE DateRes = ? AND IdentifiantSalle = ? ;");
                 stmt.setDate(1, new java.sql.Date(jSCDatePicker1.getSelectedDate().getTime()));
-                stmt.setInt(2, ((Salle)jComboBox_Salle.getSelectedItem()).getIdentifiant());
+                stmt.setInt(2, ((Salle) jComboBox_Salle.getSelectedItem()).getIdentifiant());
                 resultResa = stmt.executeQuery();
-                while (resultResa.next())
-                {
-                    data[0]= resultResa.getString("DateRes");
+                while (resultResa.next()) {
+                    data[0] = resultResa.getString("DateRes");
                     data[1] = resultResa.getString("HoraireDeb");
                     data[2] = resultResa.getString("HoraireFin");
                     data[3] = resultResa.getString("Nom") + " " + resultResa.getString("Prenom");
                     data[4] = resultResa.getString("Identifiant");
                     modelJtable.addRow(data);
-                }                
+                }
+                jTable1.setAutoCreateRowSorter(true);
+                DefaultRowSorter sorter = ((DefaultRowSorter) jTable1.getRowSorter());
+                ArrayList list = new ArrayList();
+                list.add(new RowSorter.SortKey(2, SortOrder.ASCENDING));
+                sorter.setSortKeys(list);
+                sorter.sort();
             } catch (Exception ex) {
                 Logger.getLogger(MainIsis.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -275,22 +286,16 @@ public class MainIsis extends javax.swing.JFrame {
         //POUVOIR SUPPR RESA SI PARENT
         PreparedStatement stmt;
         Connection cnx;
-        if (jTable1.getSelectedRowCount() != 1)
-        {
+        if (jTable1.getSelectedRowCount() != 1) {
             javax.swing.JOptionPane.showMessageDialog(null, "Veuillez selectionner une ligne", "Attention !", 2);
-        }
-        else
-        {
-            if (!((this.getNomSession().getNom() + " "+ this.getNomSession().getPrenom()).equals(jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 3))))
-            {
+        } else {
+            if (!((this.getNomSession().getNom() + " " + this.getNomSession().getPrenom()).equals(jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 3)))) {
                 javax.swing.JOptionPane.showMessageDialog(null, "Vous devez être le responsable de la réservation pour pouvoir la supprimer", "Attention !", 2);
-            }
-            else
-            {
+            } else {
                 try {
                     cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
                     stmt = cnx.prepareStatement("DELETE FROM reservation WHERE Identifiant = ?");
-                    stmt.setInt(1, Integer.parseInt((String)jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 4)));
+                    stmt.setInt(1, Integer.parseInt((String) jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 4)));
                     stmt.executeUpdate();
                     javax.swing.JOptionPane.showMessageDialog(null, "Supprimé avec succès", "Information", 1);
                     stmt = null;
@@ -298,7 +303,7 @@ public class MainIsis extends javax.swing.JFrame {
                 } catch (Exception ex) {
                     Logger.getLogger(MainIsis.class.getName()).log(Level.SEVERE, null, ex);
                 }
-               
+
                 jButton_ChercherActionPerformed(null);
             }
         }
@@ -327,18 +332,18 @@ public class MainIsis extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Authentification.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
-            Authentification authentification = new Authentification(new javax.swing.JFrame(), true);
-            authentification.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-            authentification.setModal(true);
-            authentification.setLocationRelativeTo(null);
-            authentification.setVisible(true);
-            this.setNomSession(authentification.getSalarie());
+
+        Authentification authentification = new Authentification(new javax.swing.JFrame(), true);
+        authentification.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                System.exit(0);
+            }
+        });
+        authentification.setModal(true);
+        authentification.setLocationRelativeTo(null);
+        authentification.setVisible(true);
+        this.setNomSession(authentification.getSalarie());
     }//GEN-LAST:event_formWindowOpened
 
     /**

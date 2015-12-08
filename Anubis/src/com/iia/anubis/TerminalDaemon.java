@@ -159,16 +159,16 @@ public class TerminalDaemon extends Thread {
                         
                         if (open)
                         {
-                           this.envoyer("    Entrée autorisée");  
+                           this.envoyer("    Entrée autorisée - "+scanne.getNom() + " "+scanne.getPrenom());  
                         }
                         else
                         {
-                            this.envoyer("    Entrée non autorisée"); 
+                            this.envoyer("    Entrée non autorisée - "+scanne.getNom() + " "+scanne.getPrenom()); 
                         } 
                     }
                     else
                     {
-                        this.envoyer("    Badge detecté mais non reconnu");                       
+                        this.envoyer("    Badge detecté mais non reconnu : contactez admin.");                       
                     }
                 }
                 Thread.sleep((5000));//pour affichage

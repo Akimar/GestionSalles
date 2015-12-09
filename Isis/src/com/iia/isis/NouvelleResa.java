@@ -25,9 +25,19 @@ import java.util.logging.Logger;
 public class NouvelleResa extends javax.swing.JFrame {
 
     ArrayList<Salle> listSalles = new ArrayList<>();
+    private Salarie _responsable;
 
-    public NouvelleResa() {
+    public Salarie getResponsable() {
+        return _responsable;
+    }
 
+    public void setResponsable(Salarie responsable) {
+        this._responsable = responsable;
+    }
+    
+    
+    public NouvelleResa(Salarie responsable) {
+        this.setResponsable(responsable);
         Connection cnx = null;
         Statement stmt = null;
         ResultSet ResultSalles = null;
@@ -51,15 +61,11 @@ public class NouvelleResa extends javax.swing.JFrame {
             }
             this.jComboBox_Salle.updateUI();
 
-            this.jComboBox_Responsable.removeAllItems();
             this.jList_Personnes.removeAll();
             while (ResultSalarie.next()) {
                 newSalarie = new Salarie(ResultSalarie.getInt("Identifiant"), ResultSalarie.getString("Nom"), ResultSalarie.getString("Prenom"), ResultSalarie.getString("Badge"), ResultSalarie.getBoolean("EstAdmin"));
-                this.jComboBox_Responsable.addItem(newSalarie);
                 ListPersonne.add(newSalarie);
             }
-            this.jComboBox_Responsable.updateUI();
-
             this.jList_Personnes.setListData(ListPersonne.toArray());
             jList_Personnes.updateUI();
 
@@ -70,7 +76,6 @@ public class NouvelleResa extends javax.swing.JFrame {
             this.setVisible(false);
             this.dispose();
         }
-        this.jComboBox_Responsable.setSelectedIndex(-1);
         this.jComboBox_Salle.setSelectedIndex(-1);
         cnx = null;
         stmt = null;
@@ -90,10 +95,8 @@ public class NouvelleResa extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jComboBox_Salle = new javax.swing.JComboBox();
-        jComboBox_Responsable = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList_Personnes = new javax.swing.JList();
         jButton_Annuler = new javax.swing.JButton();
@@ -113,14 +116,9 @@ public class NouvelleResa extends javax.swing.JFrame {
 
         jLabel2.setText("Salle");
 
-        jLabel3.setText("Responsable");
-
         jLabel4.setText("Personnes autorisées");
 
         jComboBox_Salle.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jComboBox_Responsable.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox_Responsable.setEnabled(false);
 
         jList_Personnes.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -181,7 +179,7 @@ public class NouvelleResa extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addComponent(jSCDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(124, 124, 124)
+                        .addGap(49, 49, 49)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(jComboBox_Salle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -189,19 +187,11 @@ public class NouvelleResa extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jComboBox_Deb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addGap(18, 18, 18)
+                .addGap(75, 75, 75)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel6)
                     .addComponent(jComboBox_fin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel3)
-                        .addGap(68, 68, 68))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addComponent(jComboBox_Responsable, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton_Annuler)
@@ -218,29 +208,28 @@ public class NouvelleResa extends javax.swing.JFrame {
                 .addGap(62, 62, 62)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
+                        .addComponent(jLabel4)
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
                             .addComponent(jLabel5)
-                            .addComponent(jLabel6)
                             .addComponent(jLabel1))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jSCDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(35, 35, 35)
+                                .addGap(29, 29, 29)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jButton_RAZ)
                                     .addComponent(jButton_Chercher)))
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jComboBox_Salle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jComboBox_Deb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jComboBox_fin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jComboBox_Responsable, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(jComboBox_Deb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addGap(0, 0, 0)
+                        .addComponent(jComboBox_fin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 263, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton_Annuler)
@@ -276,7 +265,7 @@ public class NouvelleResa extends javax.swing.JFrame {
         int identifiant_jour = -1;
         int idReservation = -1;
         boolean isPossible = true;
-        if (this.jComboBox_Responsable.getSelectedIndex() >= 0 && this.jComboBox_Salle.getSelectedIndex() >= 0 && this.jSCDatePicker1.getSelectedDate() != null) {
+        if (this.jComboBox_Salle.getSelectedIndex() >= 0 && this.jSCDatePicker1.getSelectedDate() != null) {
             IntDateDeb = Integer.parseInt(((String) jComboBox_Deb.getSelectedItem()).substring(0, 2).trim());
             IntDateFin = Integer.parseInt(((String) jComboBox_fin.getSelectedItem()).substring(0, 2).trim());
             if (IntDateDeb > IntDateFin) {
@@ -312,7 +301,7 @@ public class NouvelleResa extends javax.swing.JFrame {
                         prestmt.setTime(2, new Time(IntDateDeb, 0, 0));
                         prestmt.setTime(3, new Time(IntDateFin, 59, 00));
                         prestmt.setInt(4, identifiant_jour);
-                        prestmt.setInt(5, ((Salarie) jComboBox_Responsable.getSelectedItem()).getIdentifiant());
+                        prestmt.setInt(5, this.getResponsable().getIdentifiant());
                         prestmt.setInt(6, ((Salle) jComboBox_Salle.getSelectedItem()).getIdentifiant());
                         prestmt.executeUpdate();
                         cnx.commit();
@@ -364,12 +353,10 @@ public class NouvelleResa extends javax.swing.JFrame {
 
     private void jButton_RAZActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_RAZActionPerformed
         this.jList_Personnes.clearSelection();
-        this.jComboBox_Responsable.setSelectedIndex(-1);
         this.jComboBox_Salle.setSelectedIndex(-1);
         this.jSCDatePicker1.setSelectedDate(null);
         jComboBox_Deb.setEnabled(false);
         jComboBox_fin.setEnabled(false);
-        jComboBox_Responsable.setEnabled(false);
         jList_Personnes.setEnabled(false);
         jComboBox_Deb.removeAllItems();
         jComboBox_fin.removeAllItems();
@@ -389,7 +376,6 @@ public class NouvelleResa extends javax.swing.JFrame {
         if (jComboBox_Salle.getSelectedIndex() >= 0) {
             jComboBox_Deb.setEnabled(true);
             jComboBox_fin.setEnabled(true);
-            jComboBox_Responsable.setEnabled(true);
             jList_Personnes.setEnabled(true);
             jComboBox_Deb.removeAllItems();
             jComboBox_fin.removeAllItems();
@@ -455,12 +441,6 @@ public class NouvelleResa extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new NouvelleResa().setVisible(true);
-            }
-        });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_Annuler;
@@ -468,12 +448,10 @@ public class NouvelleResa extends javax.swing.JFrame {
     private javax.swing.JButton jButton_RAZ;
     private javax.swing.JButton jButton_ok;
     private javax.swing.JComboBox jComboBox_Deb;
-    private javax.swing.JComboBox jComboBox_Responsable;
     private javax.swing.JComboBox jComboBox_Salle;
     private javax.swing.JComboBox jComboBox_fin;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;

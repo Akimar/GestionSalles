@@ -13,11 +13,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
+import javax.swing.DefaultRowSorter;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -35,16 +37,16 @@ public class MainIsis extends javax.swing.JFrame {
     public void setNomSession(Salarie NomSession) {
         this.NomSession = NomSession;
     }
-    
+
     public MainIsis() {
-        //INTERFACE DE CONNEXION A FAIRE !
+
         this.setLocation(150, 150);
-        
+
         Connection cnx = null;
         Statement stmt;
         ResultSet ResultSalles = null;
         Salle tmpsalle = null;
-        
+
         try {
             cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
             stmt = cnx.createStatement();
@@ -86,16 +88,18 @@ public class MainIsis extends javax.swing.JFrame {
         jOptionPane1 = new javax.swing.JOptionPane();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jSCDatePicker1 = new com.javaswingcomponents.datepicker.JSCDatePicker();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
         jComboBox_Salle = new javax.swing.JComboBox();
         jButton_Chercher = new javax.swing.JButton();
         jButton_Supprimer = new javax.swing.JButton();
+        jSCDatePicker1 = new com.javaswingcomponents.datepicker.JSCDatePicker();
         jButton1 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Isis");
+        setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
@@ -105,10 +109,6 @@ public class MainIsis extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(204, 255, 255));
 
         jLabel1.setText("Salles :");
-
-        jSCDatePicker1.setFrameSize(new java.awt.Dimension(300, 300));
-        jSCDatePicker1.setFrameTitle("Choisir une date");
-        jSCDatePicker1.setInheritsPopupMenu(true);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -156,12 +156,14 @@ public class MainIsis extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addComponent(jComboBox_Salle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton_Chercher))
-                .addGap(48, 48, 48)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jSCDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(33, 33, 33)
+                        .addGap(48, 48, 48)
+                        .addComponent(jLabel2))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addComponent(jSCDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(73, 73, 73)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(42, 42, 42)
                         .addComponent(jButton_Supprimer)))
@@ -178,10 +180,11 @@ public class MainIsis extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jSCDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jComboBox_Salle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jComboBox_Salle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jSCDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(39, 39, 39)
                                 .addComponent(jButton_Chercher))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -206,14 +209,14 @@ public class MainIsis extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(60, 60, 60)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -225,10 +228,11 @@ public class MainIsis extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        NouvelleResa fenetre_resa = new NouvelleResa();
-        fenetre_resa.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        fenetre_resa.setLocation(100, 100);
+        NouvelleResa fenetre_resa = new NouvelleResa(this.getNomSession(), new javax.swing.JFrame(), true);
+        fenetre_resa.setModal(false);
+        fenetre_resa.setLocationRelativeTo(null);
         fenetre_resa.setVisible(true);
+        jButton_ChercherActionPerformed(null);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton_ChercherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ChercherActionPerformed
@@ -236,8 +240,8 @@ public class MainIsis extends javax.swing.JFrame {
         ResultSet resultResa;
         Connection cnx;
         DefaultTableModel modelJtable = null;
-        String[]data = new String[5]; 
-        
+        String[] data = new String[5];
+
         if (jComboBox_Salle.getSelectedIndex() > -1 && jSCDatePicker1.getSelectedDate() != null) {
             try {
                 data[0] = "Le";
@@ -247,23 +251,28 @@ public class MainIsis extends javax.swing.JFrame {
                 data[4] = "Id";
                 modelJtable = new DefaultTableModel(data, 0);
                 jTable1.setModel(modelJtable);
-                
+
                 jTable1.removeColumn(jTable1.getColumnModel().getColumn(4));
-                
+
                 cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
                 stmt = cnx.prepareStatement("SELECT * FROM reservation INNER JOIN salarie ON Salarie.Identifiant = reservation.IdentifiantSalarie WHERE DateRes = ? AND IdentifiantSalle = ? ;");
                 stmt.setDate(1, new java.sql.Date(jSCDatePicker1.getSelectedDate().getTime()));
-                stmt.setInt(2, ((Salle)jComboBox_Salle.getSelectedItem()).getIdentifiant());
+                stmt.setInt(2, ((Salle) jComboBox_Salle.getSelectedItem()).getIdentifiant());
                 resultResa = stmt.executeQuery();
-                while (resultResa.next())
-                {
-                    data[0]= resultResa.getString("DateRes");
+                while (resultResa.next()) {
+                    data[0] = resultResa.getString("DateRes");
                     data[1] = resultResa.getString("HoraireDeb");
                     data[2] = resultResa.getString("HoraireFin");
                     data[3] = resultResa.getString("Nom") + " " + resultResa.getString("Prenom");
                     data[4] = resultResa.getString("Identifiant");
                     modelJtable.addRow(data);
-                }                
+                }
+                jTable1.setAutoCreateRowSorter(true);
+                DefaultRowSorter sorter = ((DefaultRowSorter) jTable1.getRowSorter());
+                ArrayList list = new ArrayList();
+                list.add(new RowSorter.SortKey(2, SortOrder.ASCENDING));
+                sorter.setSortKeys(list);
+                sorter.sort();
             } catch (Exception ex) {
                 Logger.getLogger(MainIsis.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -275,22 +284,16 @@ public class MainIsis extends javax.swing.JFrame {
         //POUVOIR SUPPR RESA SI PARENT
         PreparedStatement stmt;
         Connection cnx;
-        if (jTable1.getSelectedRowCount() != 1)
-        {
+        if (jTable1.getSelectedRowCount() != 1) {
             javax.swing.JOptionPane.showMessageDialog(null, "Veuillez selectionner une ligne", "Attention !", 2);
-        }
-        else
-        {
-            if (!((this.getNomSession().getNom() + " "+ this.getNomSession().getPrenom()).equals(jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 3))))
-            {
+        } else {
+            if (!((this.getNomSession().getNom() + " " + this.getNomSession().getPrenom()).equals(jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 3)))) {
                 javax.swing.JOptionPane.showMessageDialog(null, "Vous devez être le responsable de la réservation pour pouvoir la supprimer", "Attention !", 2);
-            }
-            else
-            {
+            } else {
                 try {
                     cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
                     stmt = cnx.prepareStatement("DELETE FROM reservation WHERE Identifiant = ?");
-                    stmt.setInt(1, Integer.parseInt((String)jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 4)));
+                    stmt.setInt(1, Integer.parseInt((String) jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 4)));
                     stmt.executeUpdate();
                     javax.swing.JOptionPane.showMessageDialog(null, "Supprimé avec succès", "Information", 1);
                     stmt = null;
@@ -298,7 +301,7 @@ public class MainIsis extends javax.swing.JFrame {
                 } catch (Exception ex) {
                     Logger.getLogger(MainIsis.class.getName()).log(Level.SEVERE, null, ex);
                 }
-               
+
                 jButton_ChercherActionPerformed(null);
             }
         }
@@ -327,18 +330,18 @@ public class MainIsis extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Authentification.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
-            Authentification authentification = new Authentification(new javax.swing.JFrame(), true);
-            authentification.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-            authentification.setModal(true);
-            authentification.setLocationRelativeTo(null);
-            authentification.setVisible(true);
-            this.setNomSession(authentification.getSalarie());
+
+        Authentification authentification = new Authentification(new javax.swing.JFrame(), true);
+        authentification.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                System.exit(0);
+            }
+        });
+        authentification.setModal(true);
+        authentification.setLocationRelativeTo(null);
+        authentification.setVisible(true);
+        this.setNomSession(authentification.getSalarie());
     }//GEN-LAST:event_formWindowOpened
 
     /**
@@ -357,16 +360,9 @@ public class MainIsis extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainIsis.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainIsis.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainIsis.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (Exception ex) {
             java.util.logging.Logger.getLogger(MainIsis.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */

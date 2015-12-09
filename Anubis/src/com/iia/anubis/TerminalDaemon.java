@@ -21,7 +21,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.Date;
 
 /**
  *
@@ -147,28 +146,35 @@ public class TerminalDaemon extends Thread {
                         scanne = new Salarie (resultSet.getInt("Identifiant"), resultSet.getString("Nom"), resultSet.getString("Prenom"), resultSet.getString("Badge"), resultSet.getBoolean("EstAdmin"));
                         
                         //verifier qu'il a le droit d'entrer, ouvrir ou non la porte
-                        costmt = cnx.prepareCall("{call ProcStockPassageBadge(?, ?, ?, ?)}"); // DE EN DESSOUS
-                        costmt.setDate(1, new java.sql.Date(new java.util.Date().getTime()));
-                        costmt.setInt(2, salle.getIdentifiant());
+                        costmt = cnx.prepareCall("{call ProcStockPassageBadge(?, ?)}");
+                        costmt.setInt(1, 30);//id salarie
+                        costmt.setInt(2, 2);//id Salle
                         resultSet = costmt.executeQuery();
                         
                         while (resultSet.next())
                         {
-                            open = resultSet.getBoolean("Ouvrir");
+                            if (resultSet.getInt("Ouverture") > 0)
+                            {
+                                open = true;
+                            }
+                            else
+                            {
+                                open = false;
+                            }
                         }
                         
                         if (open)
                         {
-                           this.envoyer("    Entrée autorisée");  
+                           this.envoyer("    Entrée autorisée - "+scanne.getNom() + " "+scanne.getPrenom());  
                         }
                         else
                         {
-                            this.envoyer("    Entrée non autorisée"); 
+                            this.envoyer("    Entrée non autorisée - "+scanne.getNom() + " "+scanne.getPrenom()); 
                         } 
                     }
                     else
                     {
-                        this.envoyer("    Badge detecté mais non reconnu");                       
+                        this.envoyer("    Badge detecté mais non reconnu : contactez admin.");                       
                     }
                 }
                 Thread.sleep((5000));//pour affichage

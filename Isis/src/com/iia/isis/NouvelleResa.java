@@ -15,19 +15,31 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
 import java.util.ArrayList;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Darkadok
  */
-public class NouvelleResa extends javax.swing.JFrame {
+public class NouvelleResa extends javax.swing.JDialog {
 
     ArrayList<Salle> listSalles = new ArrayList<>();
+    private Salarie _responsable;
 
-    public NouvelleResa() {
+    public Salarie getResponsable() {
+        return _responsable;
+    }
+
+    public void setResponsable(Salarie responsable) {
+        this._responsable = responsable;
+    }
+    
+    
+    public NouvelleResa(Salarie responsable, java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
         
-        
+        this.setResponsable(responsable);
         Connection cnx = null;
         Statement stmt = null;
         ResultSet ResultSalles = null;
@@ -51,15 +63,11 @@ public class NouvelleResa extends javax.swing.JFrame {
             }
             this.jComboBox_Salle.updateUI();
 
-            this.jComboBox_Responsable.removeAllItems();
             this.jList_Personnes.removeAll();
             while (ResultSalarie.next()) {
                 newSalarie = new Salarie(ResultSalarie.getInt("Identifiant"), ResultSalarie.getString("Nom"), ResultSalarie.getString("Prenom"), ResultSalarie.getString("Badge"), ResultSalarie.getBoolean("EstAdmin"));
-                this.jComboBox_Responsable.addItem(newSalarie);
                 ListPersonne.add(newSalarie);
             }
-            this.jComboBox_Responsable.updateUI();
-
             this.jList_Personnes.setListData(ListPersonne.toArray());
             jList_Personnes.updateUI();
 
@@ -70,7 +78,6 @@ public class NouvelleResa extends javax.swing.JFrame {
             this.setVisible(false);
             this.dispose();
         }
-        this.jComboBox_Responsable.setSelectedIndex(-1);
         this.jComboBox_Salle.setSelectedIndex(-1);
         cnx = null;
         stmt = null;
@@ -90,10 +97,8 @@ public class NouvelleResa extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jComboBox_Salle = new javax.swing.JComboBox();
-        jComboBox_Responsable = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList_Personnes = new javax.swing.JList();
         jButton_Annuler = new javax.swing.JButton();
@@ -106,21 +111,17 @@ public class NouvelleResa extends javax.swing.JFrame {
         jButton_Chercher = new javax.swing.JButton();
         jSCDatePicker1 = new com.javaswingcomponents.datepicker.JSCDatePicker();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Réserver une salle");
+        setResizable(false);
 
         jLabel1.setText("Date");
 
         jLabel2.setText("Salle");
 
-        jLabel3.setText("Responsable");
-
         jLabel4.setText("Personnes autorisées");
 
         jComboBox_Salle.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jComboBox_Responsable.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox_Responsable.setEnabled(false);
 
         jList_Personnes.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -181,7 +182,7 @@ public class NouvelleResa extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addComponent(jSCDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(124, 124, 124)
+                        .addGap(49, 49, 49)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(jComboBox_Salle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -189,19 +190,11 @@ public class NouvelleResa extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jComboBox_Deb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addGap(18, 18, 18)
+                .addGap(75, 75, 75)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel6)
                     .addComponent(jComboBox_fin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel3)
-                        .addGap(68, 68, 68))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addComponent(jComboBox_Responsable, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton_Annuler)
@@ -218,29 +211,28 @@ public class NouvelleResa extends javax.swing.JFrame {
                 .addGap(62, 62, 62)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
+                        .addComponent(jLabel4)
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
                             .addComponent(jLabel5)
-                            .addComponent(jLabel6)
                             .addComponent(jLabel1))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jSCDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(35, 35, 35)
+                                .addGap(29, 29, 29)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jButton_RAZ)
                                     .addComponent(jButton_Chercher)))
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jComboBox_Salle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jComboBox_Deb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jComboBox_fin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jComboBox_Responsable, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(jComboBox_Deb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addGap(0, 0, 0)
+                        .addComponent(jComboBox_fin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 263, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton_Annuler)
@@ -270,56 +262,87 @@ public class NouvelleResa extends javax.swing.JFrame {
     private void jButton_okActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_okActionPerformed
         Connection cnx = null;
         PreparedStatement prestmt;
+        ResultSet rs = null;
         int IntDateDeb = -1;
         int IntDateFin = -1;
         int identifiant_jour = -1;
         int idReservation = -1;
-        if (this.jComboBox_Responsable.getSelectedIndex() >= 0 && this.jComboBox_Salle.getSelectedIndex() >= 0 && this.jSCDatePicker1.getSelectedDate() != null) {
+        boolean isPossible = true;
+        if (this.jComboBox_Salle.getSelectedIndex() >= 0 && this.jSCDatePicker1.getSelectedDate() != null) {
             IntDateDeb = Integer.parseInt(((String) jComboBox_Deb.getSelectedItem()).substring(0, 2).trim());
             IntDateFin = Integer.parseInt(((String) jComboBox_fin.getSelectedItem()).substring(0, 2).trim());
             if (IntDateDeb > IntDateFin) {
                 javax.swing.JOptionPane.showMessageDialog(null, "Veuillez choisir une heure de fin postérieure à l'heure de début ", "Attention !", 2);
             } else {
+
                 try {
                     cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
-                    cnx.setAutoCommit(false);
-                    identifiant_jour = jSCDatePicker1.getSelectedDate().getDay();
-                    prestmt = cnx.prepareStatement("INSERT INTO reservation VALUES (NULL,?,?,?,?,?,?); ", Statement.RETURN_GENERATED_KEYS);
-                    prestmt.setDate(1, new java.sql.Date(this.jSCDatePicker1.getSelectedDate().getTime()));
+                    int tmp = IntDateDeb;
+                    while (tmp <= IntDateFin && isPossible) {
+                        prestmt = cnx.prepareStatement("SELECT identifiant FROM reservation WHERE dateRes = ? AND HoraireDeb <= ? AND HoraireFin > ? AND IdentifiantSalle = ?;");
+                        prestmt.setDate(1, new java.sql.Date(this.jSCDatePicker1.getCalendar().getSelectedDate().getTime()));
+                        prestmt.setTime(2, new Time(tmp, 0, 0));
+                        prestmt.setTime(3, new Time(tmp, 0, 0));
+                        prestmt.setInt(4, ((Salle) this.jComboBox_Salle.getSelectedItem()).getIdentifiant());
+                        rs = prestmt.executeQuery();
 
-                    prestmt.setTime(2, new Time(IntDateDeb, 0, 0));
+                        if (rs.next()) {
+                            isPossible = false;
+                        }
+                        tmp++;
+                    }
+                } catch (Exception ex) {
+                    Logger.getLogger(NouvelleResa.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
-                    prestmt.setTime(3, new Time(IntDateFin, 59, 00));
-                    prestmt.setInt(4, identifiant_jour);
-                    prestmt.setInt(5, ((Salarie) jComboBox_Responsable.getSelectedItem()).getIdentifiant());
-                    prestmt.setInt(6, ((Salle) jComboBox_Salle.getSelectedItem()).getIdentifiant());
-                    prestmt.executeUpdate();
-                    cnx.commit();
-                    ResultSet tmpSet = prestmt.getGeneratedKeys();
-                    tmpSet.next();
-                    idReservation = tmpSet.getInt(1);
-                    tmpSet = null;
-                    for (Salarie selected : (ArrayList<Salarie>) jList_Personnes.getSelectedValuesList()) {
-                        prestmt = cnx.prepareStatement("INSERT INTO autorise VALUES (?,?);");
-                        prestmt.setInt(1, selected.getIdentifiant());
-                        prestmt.setInt(2, idReservation);
+                if (isPossible) {
+                    try {
+                        cnx.setAutoCommit(false);
+                        identifiant_jour = jSCDatePicker1.getSelectedDate().getDay();
+                        prestmt = cnx.prepareStatement("INSERT INTO reservation VALUES (NULL,?,?,?,?,?,?); ", Statement.RETURN_GENERATED_KEYS);
+                        prestmt.setDate(1, new java.sql.Date(this.jSCDatePicker1.getSelectedDate().getTime()));
+                        prestmt.setTime(2, new Time(IntDateDeb, 0, 0));
+                        prestmt.setTime(3, new Time(IntDateFin, 59, 00));
+                        prestmt.setInt(4, identifiant_jour);
+                        prestmt.setInt(5, this.getResponsable().getIdentifiant());
+                        prestmt.setInt(6, ((Salle) jComboBox_Salle.getSelectedItem()).getIdentifiant());
                         prestmt.executeUpdate();
                         cnx.commit();
+                        ResultSet tmpSet = prestmt.getGeneratedKeys();
+                        tmpSet.next();
+                        idReservation = tmpSet.getInt(1);
+                        tmpSet = null;
+                        for (Salarie selected : (ArrayList<Salarie>) jList_Personnes.getSelectedValuesList()) {
+                            prestmt = cnx.prepareStatement("INSERT INTO autorise VALUES (?,?);");
+                            prestmt.setInt(1, selected.getIdentifiant());
+                            prestmt.setInt(2, idReservation);
+                            prestmt.executeUpdate();
+                            cnx.commit();
+                        }
+                        javax.swing.JOptionPane.showMessageDialog(null, "Réservation effectuée avec succès !", "Information !", 1);
+                        prestmt = null;
+                        cnx.close();
+
+                        this.setVisible(false);
+                        this.dispose();
+                    } catch (Exception ex) {
+                        System.out.println(ex.getStackTrace());
+                        try {
+                            cnx.rollback();
+                        } catch (SQLException ex1) {
+                            System.out.println(ex1.getStackTrace());
+                        }
                     }
-                    javax.swing.JOptionPane.showMessageDialog(null, "Réservation effectuée avec succès !", "Information !", 1);
-                    prestmt = null;
-                    cnx.close();
-                    
-                    this.setVisible(false);
-                    this.dispose();
-                } catch (Exception ex) {
-                    System.out.println(ex.getStackTrace());
-                    try {
-                        cnx.rollback();
-                    } catch (SQLException ex1) {
-                        System.out.println(ex1.getStackTrace());
-                    }
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(null, "Un réservation existe déjà pour cet horaire", "Attention !", 2);
                 }
+
+                try {
+                    cnx.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(NouvelleResa.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
             }
         } else {
             javax.swing.JOptionPane.showMessageDialog(null, "Veuillez remplir tout les champs", "Attention !", 2);
@@ -333,12 +356,10 @@ public class NouvelleResa extends javax.swing.JFrame {
 
     private void jButton_RAZActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_RAZActionPerformed
         this.jList_Personnes.clearSelection();
-        this.jComboBox_Responsable.setSelectedIndex(-1);
         this.jComboBox_Salle.setSelectedIndex(-1);
         this.jSCDatePicker1.setSelectedDate(null);
         jComboBox_Deb.setEnabled(false);
         jComboBox_fin.setEnabled(false);
-        jComboBox_Responsable.setEnabled(false);
         jList_Personnes.setEnabled(false);
         jComboBox_Deb.removeAllItems();
         jComboBox_fin.removeAllItems();
@@ -348,6 +369,7 @@ public class NouvelleResa extends javax.swing.JFrame {
         Connection cnx = null;
         PreparedStatement prestmt = null;
         ResultSet result = null;
+        ResultSet resultDejaReserve = null;
         Time heurDeb1 = null;
         Time heurDeb2 = null;
         Time heurFin1 = null;
@@ -357,7 +379,6 @@ public class NouvelleResa extends javax.swing.JFrame {
         if (jComboBox_Salle.getSelectedIndex() >= 0) {
             jComboBox_Deb.setEnabled(true);
             jComboBox_fin.setEnabled(true);
-            jComboBox_Responsable.setEnabled(true);
             jList_Personnes.setEnabled(true);
             jComboBox_Deb.removeAllItems();
             jComboBox_fin.removeAllItems();
@@ -375,12 +396,12 @@ public class NouvelleResa extends javax.swing.JFrame {
                     if (heurDeb1 != null && heurFin1 != null) {
                         tmp = heurDeb1.getHours();
                         while (tmp <= heurFin1.getHours()) {
+
                             jComboBox_Deb.addItem(tmp + " : 00");
                             jComboBox_fin.addItem(tmp + " : 59");
                             tmp++;
                         }
                     }
-
                     if (heurDeb2 != null && heurFin2 != null) {
                         tmp = heurDeb2.getHours();
                         while (tmp <= heurFin2.getHours()) {
@@ -423,12 +444,6 @@ public class NouvelleResa extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new NouvelleResa().setVisible(true);
-            }
-        });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_Annuler;
@@ -436,12 +451,10 @@ public class NouvelleResa extends javax.swing.JFrame {
     private javax.swing.JButton jButton_RAZ;
     private javax.swing.JButton jButton_ok;
     private javax.swing.JComboBox jComboBox_Deb;
-    private javax.swing.JComboBox jComboBox_Responsable;
     private javax.swing.JComboBox jComboBox_Salle;
     private javax.swing.JComboBox jComboBox_fin;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;

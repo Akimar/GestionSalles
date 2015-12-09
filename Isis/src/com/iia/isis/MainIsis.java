@@ -59,11 +59,12 @@ public class MainIsis extends javax.swing.JFrame {
         jSCDatePicker1.updateUI();
         this.jComboBox_Salle.removeAllItems();
         try {
-            while (ResultSalles.next()) {
+            while (ResultSalles.next()) {//on ajoute les salles dans la combobox
                 tmpsalle = new Salle(ResultSalles.getInt("Identifiant"), ResultSalles.getString("NumeroTerminal"), ResultSalles.getString("NomSalle"), null);
                 this.jComboBox_Salle.addItem(tmpsalle);
             }
             tmpsalle = null;
+            ResultSalles = null;
         } catch (Exception ex) {
             System.out.println(ex.getStackTrace());
         }
@@ -78,7 +79,6 @@ public class MainIsis extends javax.swing.JFrame {
         jComboBox_Salle.setSelectedIndex(-1);
         cnx = null;
         stmt = null;
-        ResultSalles = null;
     }
 
     @SuppressWarnings("unchecked")
@@ -228,6 +228,7 @@ public class MainIsis extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        //Au click bouton nouvelle reservation
         NouvelleResa fenetre_resa = new NouvelleResa(this.getNomSession(), new javax.swing.JFrame(), true);
         fenetre_resa.setModal(false);
         fenetre_resa.setLocationRelativeTo(null);
@@ -236,6 +237,7 @@ public class MainIsis extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton_ChercherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ChercherActionPerformed
+        //Au click bouton chercher les reservations
         PreparedStatement stmt;
         ResultSet resultResa;
         Connection cnx;
@@ -243,17 +245,18 @@ public class MainIsis extends javax.swing.JFrame {
         String[] data = new String[5];
 
         if (jComboBox_Salle.getSelectedIndex() > -1 && jSCDatePicker1.getSelectedDate() != null) {
+
+            //On fait notre propre model de Jtable
+            data[0] = "Le";
+            data[1] = "De";
+            data[2] = "A";
+            data[3] = "Pour";
+            data[4] = "Id";
+            modelJtable = new DefaultTableModel(data, 0);
+            jTable1.setModel(modelJtable);
+
+            jTable1.removeColumn(jTable1.getColumnModel().getColumn(4));//pour avoir l'id d'accessible mais pas visible
             try {
-                data[0] = "Le";
-                data[1] = "De";
-                data[2] = "A";
-                data[3] = "Pour";
-                data[4] = "Id";
-                modelJtable = new DefaultTableModel(data, 0);
-                jTable1.setModel(modelJtable);
-
-                jTable1.removeColumn(jTable1.getColumnModel().getColumn(4));
-
                 cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
                 stmt = cnx.prepareStatement("SELECT * FROM reservation INNER JOIN salarie ON Salarie.Identifiant = reservation.IdentifiantSalarie WHERE DateRes = ? AND IdentifiantSalle = ? ;");
                 stmt.setDate(1, new java.sql.Date(jSCDatePicker1.getSelectedDate().getTime()));
@@ -265,12 +268,12 @@ public class MainIsis extends javax.swing.JFrame {
                     data[2] = resultResa.getString("HoraireFin");
                     data[3] = resultResa.getString("Nom") + " " + resultResa.getString("Prenom");
                     data[4] = resultResa.getString("Identifiant");
-                    modelJtable.addRow(data);
+                    modelJtable.addRow(data);//on ajoute chaque ligne  de Resa de la base dans le Jtable
                 }
-                jTable1.setAutoCreateRowSorter(true);
+                jTable1.setAutoCreateRowSorter(true);//On les organise...
                 DefaultRowSorter sorter = ((DefaultRowSorter) jTable1.getRowSorter());
                 ArrayList list = new ArrayList();
-                list.add(new RowSorter.SortKey(2, SortOrder.ASCENDING));
+                list.add(new RowSorter.SortKey(2, SortOrder.ASCENDING));//..par la colonne 2
                 sorter.setSortKeys(list);
                 sorter.sort();
             } catch (Exception ex) {
@@ -281,7 +284,7 @@ public class MainIsis extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton_ChercherActionPerformed
 
     private void jButton_SupprimerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_SupprimerActionPerformed
-        //POUVOIR SUPPR RESA SI PARENT
+        //supprimer une reservation si on en est l'auteur
         PreparedStatement stmt;
         Connection cnx;
         if (jTable1.getSelectedRowCount() != 1) {
@@ -301,8 +304,7 @@ public class MainIsis extends javax.swing.JFrame {
                 } catch (Exception ex) {
                     Logger.getLogger(MainIsis.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
-                jButton_ChercherActionPerformed(null);
+                jButton_ChercherActionPerformed(null);//actualisation de la Jtable
             }
         }
     }//GEN-LAST:event_jButton_SupprimerActionPerformed
@@ -330,7 +332,7 @@ public class MainIsis extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Authentification.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+//fenetre d'authentification à l'ouverture
         Authentification authentification = new Authentification(new javax.swing.JFrame(), true);
         authentification.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override

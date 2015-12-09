@@ -56,7 +56,7 @@ public class NouvelleResa extends javax.swing.JDialog {
             System.out.println(ex.getStackTrace());
         }
         initComponents();
-        try {
+        try {//on ajoute les infos de la base dans la fenetre
             this.jComboBox_Salle.removeAllItems();
             while (ResultSalles.next()) {
                 this.jComboBox_Salle.addItem(new Salle(ResultSalles.getInt("Identifiant"), ResultSalles.getString("NumeroTerminal"), ResultSalles.getString("NomSalle"), null));
@@ -71,7 +71,6 @@ public class NouvelleResa extends javax.swing.JDialog {
             this.jList_Personnes.setListData(ListPersonne.toArray());
             jList_Personnes.updateUI();
 
-            cnx.close();
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             javax.swing.JOptionPane.showMessageDialog(null, ex.getStackTrace(), "Error", 0);
@@ -260,6 +259,7 @@ public class NouvelleResa extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton_okActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_okActionPerformed
+        //confirmation creation
         Connection cnx = null;
         PreparedStatement prestmt;
         ResultSet rs = null;
@@ -281,7 +281,7 @@ public class NouvelleResa extends javax.swing.JDialog {
                     while (tmp <= IntDateFin && isPossible) {
                         prestmt = cnx.prepareStatement("SELECT identifiant FROM reservation WHERE dateRes = ? AND HoraireDeb <= ? AND HoraireFin > ? AND IdentifiantSalle = ?;");
                         prestmt.setDate(1, new java.sql.Date(this.jSCDatePicker1.getCalendar().getSelectedDate().getTime()));
-                        prestmt.setTime(2, new Time(tmp, 0, 0));
+                        prestmt.setTime(2, new Time(tmp, 0, 0));//on ne prend que des heurs entières
                         prestmt.setTime(3, new Time(tmp, 0, 0));
                         prestmt.setInt(4, ((Salle) this.jComboBox_Salle.getSelectedItem()).getIdentifiant());
                         rs = prestmt.executeQuery();
@@ -312,7 +312,7 @@ public class NouvelleResa extends javax.swing.JDialog {
                         tmpSet.next();
                         idReservation = tmpSet.getInt(1);
                         tmpSet = null;
-                        for (Salarie selected : (ArrayList<Salarie>) jList_Personnes.getSelectedValuesList()) {
+                        for (Salarie selected : (ArrayList<Salarie>) jList_Personnes.getSelectedValuesList()) {//on ajoute toutes les personnes selectionnées
                             prestmt = cnx.prepareStatement("INSERT INTO autorise VALUES (?,?);");
                             prestmt.setInt(1, selected.getIdentifiant());
                             prestmt.setInt(2, idReservation);
@@ -328,7 +328,7 @@ public class NouvelleResa extends javax.swing.JDialog {
                     } catch (Exception ex) {
                         System.out.println(ex.getStackTrace());
                         try {
-                            cnx.rollback();
+                            cnx.rollback();//si probleme dans l'ajout, on ajoute pas la reservation 
                         } catch (SQLException ex1) {
                             System.out.println(ex1.getStackTrace());
                         }
@@ -352,6 +352,7 @@ public class NouvelleResa extends javax.swing.JDialog {
 
     private void jButton_AnnulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_AnnulerActionPerformed
         this.setVisible(false);
+        this.dispose();
     }//GEN-LAST:event_jButton_AnnulerActionPerformed
 
     private void jButton_RAZActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_RAZActionPerformed

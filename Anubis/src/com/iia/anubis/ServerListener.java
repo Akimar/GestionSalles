@@ -26,7 +26,7 @@ public abstract class ServerListener {
             {
                 Socket so = server.accept();//Attente d'une connection
                 InetAddress ia = so.getInetAddress();//Adresse connectée
-                System.out.println(ia.getHostAddress());
+                System.out.println(ia.getHostAddress());//pour info
                 
                 TerminalDaemon client = new TerminalDaemon(so);//Creation d'un objet client
                 client.setDaemon(true);

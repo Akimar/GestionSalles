@@ -12,14 +12,15 @@ import javax.swing.JOptionPane;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author Akimar - Darkadok
  */
+//Explications fonctionnement => com.iia.osiris.ihm.Authentification
 public class Authentification extends javax.swing.JDialog {
 
     private Salarie _Salarie;
+
     /**
      * Creates new form Authentification
      */
@@ -35,7 +36,6 @@ public class Authentification extends javax.swing.JDialog {
     public void setSalarie(Salarie Salarie) {
         this._Salarie = Salarie;
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -168,64 +168,44 @@ public class Authentification extends javax.swing.JDialog {
 
     private void annulerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_annulerButtonActionPerformed
         // TODO add your handling code here:
-        
+
         System.exit(0);
     }//GEN-LAST:event_annulerButtonActionPerformed
 
     private void validerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_validerButtonActionPerformed
 
-        if(badgeField.getText().isEmpty() || String.valueOf(mdpField.getPassword()).isEmpty())
-        {
-           JOptionPane.showMessageDialog(null, "Veuillez saisir votre numéro de badge ainsi que votre mot de passe.");         
-        }
-        
-        else
-        {
-            Salarie auth = null ;
+        if (badgeField.getText().isEmpty() || String.valueOf(mdpField.getPassword()).isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Veuillez saisir votre numéro de badge ainsi que votre mot de passe.");
+        } else {
+            Salarie auth = null;
             Connection cnx = null;
-           
-            try 
-            {
+
+            try {
                 cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
                 auth = AuthentificationDAO.authenticator(cnx, badgeField.getText(), String.valueOf(mdpField.getPassword()));
-            } 
-            
-            catch (Exception ex) 
-            {
-               ex.printStackTrace();
-            }
-             finally
-                {
-                    if(cnx != null)
-                    {
-                        try
-                        {
-                            cnx.close();
-                            cnx = null;
-                        }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                if (cnx != null) {
+                    try {
+                        cnx.close();
+                        cnx = null;
+                    } catch (SQLException ex) {
 
-                        catch(SQLException ex)
-                        {
-
-                        }
-                    }
-                    
-                    if(auth != null)
-                    {
-                        setSalarie(auth);
-                        this.setVisible(false);
-                    }
-                    
-                    else
-                    {
-                        JOptionPane.showMessageDialog(null, "Numéro de badge ou mot de passe incorrects.");
                     }
                 }
+
+                if (auth != null) {
+                    setSalarie(auth);
+                    this.setVisible(false);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Numéro de badge ou mot de passe incorrects.");
+                }
+            }
         }
     }//GEN-LAST:event_validerButtonActionPerformed
 
-  
-  
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton annulerButton;
     private javax.swing.JPanel authPanel;

@@ -33,8 +33,16 @@ public class TerminalDaemon extends Thread {
     private BufferedReader br;
     private OutputStream os;
     private PrintWriter pw;
-    private Salle salle ;
+    private Salle salle;
     private String Message;
+
+    public Salle getSalle() {
+        return salle;
+    }
+
+    public void setSalle(Salle salle) {
+        this.salle = salle;
+    }
 
     public TerminalDaemon(Socket socket) throws IOException {
         this.socket = socket;
@@ -46,25 +54,20 @@ public class TerminalDaemon extends Thread {
     }
 
     public String getIdentifiantTerminal() {
-        if (salle != null)
-        {
-            return salle.getNumeroTerminal();
-        }
-        else
-        {
+        if (this.getSalle() != null) {
+            return this.getSalle().getNumeroTerminal();
+        } else {
             return null;
         }
     }
+
     public void setIdentifiantTerminal(String IdentifiantTerminal) {
-        if (salle == null)
-        {
+        if (salle == null) {
             salle = new Salle(-1, IdentifiantTerminal, null, null, null);
+        } else {
+            this.getSalle().setNumeroTerminal(IdentifiantTerminal);
         }
-        else
-        {
-            this.salle.setNumeroTerminal(IdentifiantTerminal);
-        }
-       
+
     }
 
     public String getMessage() {
@@ -72,7 +75,7 @@ public class TerminalDaemon extends Thread {
     }
 
     @Override
-    public void run() {
+    public void run() {//initialise le terminal
         String line;
         Connection cnx;
         Statement stmt;
@@ -87,18 +90,17 @@ public class TerminalDaemon extends Thread {
         try {
             line = br.readLine();//le terminal envoie son identité
             this.setIdentifiantTerminal(line.substring(line.length() - 4));//récupérée et mise en attribut
-            System.out.println(this.getIdentifiantTerminal());
+            System.out.println(this.getIdentifiantTerminal());//pour info-log
             try {
                 cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
                 stmt = cnx.createStatement();
                 resultSet = stmt.executeQuery("SELECT identifiant FROM salle WHERE NumeroTerminal = " + this.getIdentifiantTerminal());
-                if (!resultSet.next()) {
+                // on regarde si le terminal existe en base
+                if (!resultSet.next()) {//si non on le créé
                     stmt.executeUpdate("INSERT INTO salle VALUES (NULL, '" + this.getIdentifiantTerminal() + "', NULL, NULL)");
-                    //a tester
-                }
-                else
-                {
-                    this.salle = new Salle(resultSet.getInt("Identifiant"), resultSet.getString("NumeroTerminal"), resultSet.getString("NomSalle"), null, null);
+                    this.setSalle(new Salle(-1, line, null, null, null));
+                } else {
+                    this.setSalle(new Salle(resultSet.getInt("Identifiant"), resultSet.getString("NumeroTerminal"), resultSet.getString("NomSalle"), null, null));
                 }
             } catch (Exception ex) {
                 System.out.println(ex.getStackTrace());
@@ -110,12 +112,11 @@ public class TerminalDaemon extends Thread {
         }
     }
 
-    public void reception() {
+    public void reception() {//recoit et interprete les messages du terminal
         String line;
         Connection cnx = null;
         Statement stmt = null;
         CallableStatement costmt = null;
-        PreparedStatement prstmt = null;
         ResultSet resultSet = null;
         Salarie scanne = null;
         boolean open = false;
@@ -138,43 +139,31 @@ public class TerminalDaemon extends Thread {
                 if (line.equals("CWHO")) {
                     this.envoyer("    Identifiant terminal : " + this.getIdentifiantTerminal());
                 }
-                if (line.matches("[A-Za-z0-9]+")) {
+                if (line.matches("[A-Za-z0-9]+")) {//si c'est un badge
                     stmt = cnx.createStatement();
-                    resultSet = stmt.executeQuery("SELECT * FROM salarie WHERE Badge = '"+ line +"';");
-                    if (resultSet.next())
-                    {
-                        scanne = new Salarie (resultSet.getInt("Identifiant"), resultSet.getString("Nom"), resultSet.getString("Prenom"), resultSet.getString("Badge"), resultSet.getBoolean("EstAdmin"));
-                        
-                        //verifier qu'il a le droit d'entrer, ouvrir ou non la porte
-                        costmt = cnx.prepareCall("{call ProcStockPassageBadge(?, ?)}");
-                        costmt.setInt(1, 30);//id salarie
-                        costmt.setInt(2, 2);//id Salle
+                    resultSet = stmt.executeQuery("SELECT * FROM salarie WHERE Badge = '" + line + "';");
+                    if (resultSet.next()) {//si le badge est connu
+                        scanne = new Salarie(resultSet.getInt("Identifiant"), resultSet.getString("Nom"), resultSet.getString("Prenom"), resultSet.getString("Badge"), resultSet.getBoolean("EstAdmin"));
+                        costmt = cnx.prepareCall("{call ProcStockPassageBadge(?, ?)}");//procedure stockée
+                        costmt.setInt(1, scanne.getIdentifiant());//id salarie
+                        costmt.setInt(2, this.getSalle().getIdentifiant());//id Salle
                         resultSet = costmt.executeQuery();
-                        
-                        while (resultSet.next())
-                        {
-                            if (resultSet.getInt("Ouverture") > 0)
-                            {
+                        while (resultSet.next()) {//proc renvoie le nombre de reservation qui matches avec l'heure et salle du badge
+                            if (resultSet.getInt("Ouverture") > 0) {
                                 open = true;
-                            }
-                            else
-                            {
+                            } else {
                                 open = false;
                             }
                         }
-                        
-                        if (open)
-                        {
-                           this.envoyer("    Entrée autorisée - "+scanne.getNom() + " "+scanne.getPrenom());  
+
+                        if (open) {
+                            this.envoyer("    Entrée autorisée - " + scanne.getNom() + " " + scanne.getPrenom());
+                        } else {
+                            this.envoyer("    Entrée non autorisée - " + scanne.getNom() + " " + scanne.getPrenom());
                         }
-                        else
-                        {
-                            this.envoyer("    Entrée non autorisée - "+scanne.getNom() + " "+scanne.getPrenom()); 
-                        } 
-                    }
-                    else
-                    {
-                        this.envoyer("    Badge detecté mais non reconnu : contactez admin.");                       
+                        scanne = null;
+                    } else {
+                        this.envoyer("    Badge detecté mais non reconnu : contactez admin.");
                     }
                 }
                 Thread.sleep((5000));//pour affichage
@@ -190,13 +179,11 @@ public class TerminalDaemon extends Thread {
         pw.flush();
     }
 
-    public String transformerChaineMessage(String input) {
-        if (!input.equals("T042CINIT")) {
+    public String transformerChaineMessage(String input) {//Ne selectionne que la partie corps du message
+        if (!input.matches("T[0-9]*CINIT")) {
             return input.substring(4, this.Message.length() - 9);
         } else {
             return input;
         }
-
     }
-
 }

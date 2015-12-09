@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  *
  * @author Darkadok
  */
-public class NouvelleResa extends javax.swing.JFrame {
+public class NouvelleResa extends javax.swing.JDialog {
 
     ArrayList<Salle> listSalles = new ArrayList<>();
     private Salarie _responsable;
@@ -36,7 +36,9 @@ public class NouvelleResa extends javax.swing.JFrame {
     }
     
     
-    public NouvelleResa(Salarie responsable) {
+    public NouvelleResa(Salarie responsable, java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
+        
         this.setResponsable(responsable);
         Connection cnx = null;
         Statement stmt = null;
@@ -109,8 +111,9 @@ public class NouvelleResa extends javax.swing.JFrame {
         jButton_Chercher = new javax.swing.JButton();
         jSCDatePicker1 = new com.javaswingcomponents.datepicker.JSCDatePicker();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Réserver une salle");
+        setResizable(false);
 
         jLabel1.setText("Date");
 

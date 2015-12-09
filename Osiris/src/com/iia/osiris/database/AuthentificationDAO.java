@@ -25,14 +25,14 @@ public abstract class AuthentificationDAO {
         {
             String password = Salarie.passEncrypt(String.valueOf(mdp));
            
-            pstmt = cnx.prepareStatement("SELECT Nom, Prenom FROM Salarie WHERE Badge = ? AND MotDePasse = ?;");
+            pstmt = cnx.prepareStatement("SELECT Identifiant FROM Salarie WHERE Badge = ? AND MotDePasse = ?;");
             pstmt.setString(1, badge);
             pstmt.setString(2, password);
             
        
             ResultSet rs  =  pstmt.executeQuery() ;
             
-            if(rs.next())
+            if(rs.next())// si un salarié correspondant au mot de passe et au badge est retourné
             {
               return true;  
             }
@@ -54,7 +54,7 @@ public abstract class AuthentificationDAO {
 
                 catch(SQLException ex)
                 {
-
+                    ex.printStackTrace();
                 }
             }
         }

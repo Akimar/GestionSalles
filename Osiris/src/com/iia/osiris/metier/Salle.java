@@ -95,13 +95,8 @@ public class Salle {
 
     @Override
     public String toString() {
-        return "Salle{" + "Identifiant=" + Identifiant + ", NumeroTerminal=" + NumeroTerminal + ", Nom=" + Nom + ", Disponibilite=" + Disponibilite + '}';
+        return "Salle{" + "Nom=" + Nom + '}';
     }
 
-   
 
- 
-    
-    
-    
 }

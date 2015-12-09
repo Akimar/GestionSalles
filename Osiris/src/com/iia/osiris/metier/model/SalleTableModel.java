@@ -3,22 +3,24 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.iia.osiris.metier;
+package com.iia.osiris.metier.model;
 
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
+import com.iia.osiris.metier.Salle;
+
 
 /**
  *
  * @author Akimar
  */
-public class TerminalTableModel extends DefaultTableModel {
+public class SalleTableModel extends DefaultTableModel {
     
-    private String[] columns = new String[] { "Numéro", "Salle"};
-    private Class[] classs = new Class[] { String.class, String.class };
-    private boolean[] editables = new boolean[] {false, false};
+    private String[] columns = new String[] {"Nom", "Numéro du terminal"};
+    private Class[] classs = new Class[] { String.class, String.class};
+    private boolean[] editables = new boolean[] { false, false };
 
-    public TerminalTableModel() {
+    public SalleTableModel() {
         super(0, 0);
     }
 
@@ -42,9 +44,9 @@ public class TerminalTableModel extends DefaultTableModel {
         return classs[columnIndex];
     } 
     
-    public void fillTable(Vector<Salle> vectorSalle)
+    public void fillTable(Vector<Salle> vectorSalle)// remplit le TableModel avec le contenu du vector
     {
-         if(this.getRowCount() > 0)
+        if(this.getRowCount() > 0)// si le TableModel contient déjà de la donnée, on efface tout pour réinsérer les données à jour du vector
         {
             int rowCount =  this.getRowCount();
             
@@ -57,7 +59,7 @@ public class TerminalTableModel extends DefaultTableModel {
          
         for(Salle salle : vectorSalle)
         {
-          this.addRow(new Object[] { salle.getNumeroTerminal(), salle.getNom()}); 
+            this.addRow(new Object[] { salle.getNom(), salle.getNumeroTerminal()}); 
         }
     }
 }

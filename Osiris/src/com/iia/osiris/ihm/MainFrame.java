@@ -9,16 +9,13 @@ import com.iia.osiris.database.SalarieDAO;
 import com.iia.osiris.database.SalleDAO;
 import com.iia.osiris.metier.Salle;
 import com.iia.osiris.metier.Salarie;
-import com.iia.osiris.metier.SalarieTableModel;
-import com.iia.osiris.metier.SalleTableModel;
-import com.iia.osiris.metier.TerminalTableModel;
+import com.iia.osiris.metier.model.SalarieTableModel;
+import com.iia.osiris.metier.model.SalleTableModel;
+import com.iia.osiris.metier.model.TerminalTableModel;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
 
@@ -54,7 +51,7 @@ public class MainFrame extends javax.swing.JFrame {
         listDisponibiliteButton.setEnabled(false);
         listDisponibiliteButton.setVisible(false);
         listeAccesButton.setEnabled(false);
-        listReservationButton.setEnabled(false);
+
         buttonAdd.setEnabled(false);
         myTable.setSelectionMode(SINGLE_SELECTION);
         
@@ -67,8 +64,8 @@ public class MainFrame extends javax.swing.JFrame {
         {
            Connection cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
            
-           SalarieDAO.getAllSalarie(cnx, vectorSalarie);
-           SalleDAO.getAllSalle(cnx, vectorSalle);
+           SalarieDAO.getAllSalarie(cnx, vectorSalarie);//get en mémoire de tous les salariés
+           SalleDAO.getAllSalle(cnx, vectorSalle);//get en mémoire de toutes les salles
            
            cnx.close();
            
@@ -82,14 +79,14 @@ public class MainFrame extends javax.swing.JFrame {
         
         
         salleTableModel = new SalleTableModel();
-        salleTableModel.fillTable(vectorSalle);
+        salleTableModel.fillTable(vectorSalle);// on remplit le tableModel
         
         salarieTableModel = new SalarieTableModel();
-        salarieTableModel.fillTable(vectorSalarie);
+        salarieTableModel.fillTable(vectorSalarie);// on remplit le tableModel
         
         terminalTableModel = new TerminalTableModel();
-        terminalTableModel.fillTable(vectorSalle);
-        myTable.setModel(terminalTableModel);
+        terminalTableModel.fillTable(vectorSalle);// on remplit le tableModel
+        myTable.setModel(terminalTableModel);// c'est le tableau des terminaux qui est affiché par défaut
         
     }
     
@@ -114,7 +111,6 @@ public class MainFrame extends javax.swing.JFrame {
         buttonDel = new javax.swing.JButton();
         panelListe = new javax.swing.JPanel();
         listeAccesButton = new javax.swing.JButton();
-        listReservationButton = new javax.swing.JButton();
         listDisponibiliteButton = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -258,8 +254,6 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        listReservationButton.setText("Liste des réservations");
-
         listDisponibiliteButton.setText("Liste des disponibilités");
         listDisponibiliteButton.setToolTipText("");
         listDisponibiliteButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -277,9 +271,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addComponent(listDisponibiliteButton)
                 .addGap(46, 46, 46)
                 .addComponent(listeAccesButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46)
-                .addComponent(listReservationButton)
-                .addContainerGap())
+                .addGap(193, 193, 193))
         );
         panelListeLayout.setVerticalGroup(
             panelListeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -287,7 +279,6 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(panelListeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(listeAccesButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(listReservationButton)
                     .addComponent(listDisponibiliteButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -390,13 +381,13 @@ public class MainFrame extends javax.swing.JFrame {
     private void boutonSalarieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boutonSalarieActionPerformed
         // TODO add your handling code here:
         
-        myTable.setModel(salarieTableModel);
+        myTable.setModel(salarieTableModel);// affichage de salariés
         indexTableModel = 1;
         buttonAdd.setEnabled(true);
         
         if(myTable.getColumnCount() == 5)
         {
-            myTable.removeColumn(myTable.getColumnModel().getColumn(0));
+            myTable.removeColumn(myTable.getColumnModel().getColumn(0));// la colonne de l'identifiant est retirée du JTable mais pas du TableModel
         }
         
         
@@ -411,12 +402,12 @@ public class MainFrame extends javax.swing.JFrame {
             buttonAdd.setEnabled(false);
         }
         
-        myTable.setModel(terminalTableModel);
+        myTable.setModel(terminalTableModel);// affichage de terminaux
         indexTableModel = 2;
         
         if(myTable.getColumnCount() == 3)
         {
-            myTable.removeColumn(myTable.getColumnModel().getColumn(0));
+            myTable.removeColumn(myTable.getColumnModel().getColumn(0));// la colonne de l'identifiant est retirée du JTable mais pas du TableModel
         }
     }//GEN-LAST:event_boutonTerminalActionPerformed
 
@@ -428,24 +419,24 @@ public class MainFrame extends javax.swing.JFrame {
             buttonAdd.setEnabled(false);
         }
         
-        myTable.setModel(salleTableModel);
+        myTable.setModel(salleTableModel);// affichage de salles
         indexTableModel = 3;
         
         if(myTable.getColumnCount() == 3)
         {
-            myTable.removeColumn(myTable.getColumnModel().getColumn(0));
+            myTable.removeColumn(myTable.getColumnModel().getColumn(0));// la colonne de l'identifiant est retirée du JTable mais pas du TableModel
         }
     }//GEN-LAST:event_boutonSallesActionPerformed
 
     private void myTableFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_myTableFocusGained
         // TODO add your handling code here:
         
-        if(indexTableModel == 1)
+        if(indexTableModel == 1)// si affchage des salariés, on affiche le bouton de suppression
         {
             buttonDel.setEnabled(true);
         }
         
-          if(indexTableModel == 3)
+          if(indexTableModel == 3)// si affchage de salles, on affiche le bouton d'accès aux disponibilités
         {
             listDisponibiliteButton.setVisible(true);
             listDisponibiliteButton.setEnabled(true);
@@ -454,7 +445,7 @@ public class MainFrame extends javax.swing.JFrame {
         
         buttonMod.setEnabled(true);
         listeAccesButton.setEnabled(true);
-        listReservationButton.setEnabled(true);
+  
     }//GEN-LAST:event_myTableFocusGained
 
     private void myTableFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_myTableFocusLost
@@ -463,7 +454,7 @@ public class MainFrame extends javax.swing.JFrame {
         buttonMod.setEnabled(false);
         buttonDel.setEnabled(false);
         listeAccesButton.setEnabled(false);
-        listReservationButton.setEnabled(false);
+
         
         if(listDisponibiliteButton.isVisible())
         {
@@ -476,7 +467,7 @@ public class MainFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         
         
-        if(indexTableModel == 1)
+        if(indexTableModel == 1) //création et affichage de la fenêtre d'ajout du salarié
         {
            /* Set the Nimbus look and feel */
             //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -517,7 +508,7 @@ public class MainFrame extends javax.swing.JFrame {
         
           
           
-          if(indexTableModel == 1)
+          if(indexTableModel == 1)//si SalarieTableModel, on créé la fenêtre de modifications pour les salariés 
         {
             /* Set the Nimbus look and feel */
             //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -548,36 +539,40 @@ public class MainFrame extends javax.swing.JFrame {
             modifierSalarie.setModal(true);
             modifierSalarie.setLocationRelativeTo(null);
             modifierSalarie.setVisible(true);
-            salarieTableModel.fillTable(vectorSalarie);
-            myTable.setModel(salarieTableModel);
+            salarieTableModel.fillTable(vectorSalarie);// mise à jour du TableModel
+            myTable.setModel(salarieTableModel);// mise à jour de l'affichage
         }  
         
-          else
+          else//si SalleTableModel ou TerminalTableModel, on créé la fenêtre de modifications pour les salles/terminaux 
           {
                JDialog modifierSalle = new ModifierSalle(new javax.swing.JFrame(), true, vectorSalle, vectorSalle.indexOf(vectorSalle.elementAt(myTable.getSelectedRow())));
             modifierSalle.setModal(true);
             modifierSalle.setLocationRelativeTo(null);
             modifierSalle.setVisible(true);
-            salleTableModel.fillTable(vectorSalle);
-            terminalTableModel.fillTable(vectorSalle);
+            salleTableModel.fillTable(vectorSalle);// mise à jour de SalleTableModel
+            terminalTableModel.fillTable(vectorSalle);// mise à jour de TerminalTableModel
             
-            if(indexTableModel == 2 )
+            if(indexTableModel == 2 )// si TerminalTableModel est dans le JTable
             {
-                myTable.setModel(terminalTableModel);
+                myTable.setModel(terminalTableModel);// mise à jour de l'affichage
             }
             
             else
             {
-               myTable.setModel(salleTableModel); 
+               myTable.setModel(salleTableModel); // mise à jour de l'affichage
             }
            
           }
     }//GEN-LAST:event_buttonModMouseReleased
 
+    /* Lors de la suppression d'un salarié, toutes les lignes des tables où il est présent en base sont supprimées
+    (DELETE CASCADE), cela inclu donc les réservations, les historiques d'accès...
+    */
     private void buttonDelMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonDelMouseReleased
         // TODO add your handling code here:
         
         Connection cnx=null;
+        
         int reponse = JOptionPane.showConfirmDialog(null, "Attention !\nLa suppression du salarié supprimera également ses réservations et l'historique de ses accès.\nVoulez-vous continuer ?", "Confirm",
         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         
@@ -586,14 +581,14 @@ public class MainFrame extends javax.swing.JFrame {
              try 
                 {
                     cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
-                    SalarieDAO.deleteSalarie(cnx, vectorSalarie.elementAt(myTable.getSelectedRow()).getIdentifiant());
-                    vectorSalarie.removeElementAt(vectorSalarie.indexOf(vectorSalarie.elementAt(myTable.getSelectedRow())));
+                    SalarieDAO.deleteSalarie(cnx, vectorSalarie.elementAt(myTable.getSelectedRow()).getIdentifiant());// suppression en base(DELETE CASCADE)
+                    vectorSalarie.removeElementAt(vectorSalarie.indexOf(vectorSalarie.elementAt(myTable.getSelectedRow())));//suppression en mémoire
                     
                     JOptionPane.showMessageDialog(null, "Le salarié a été supprimé.");
                 } 
                 catch (Exception ex) 
                 {
-            
+                    ex.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Une erreur s'est produite, la suppression a échoué.");
                 }
 
@@ -610,11 +605,11 @@ public class MainFrame extends javax.swing.JFrame {
 
                         catch(SQLException ex)
                         {
-
+                            ex.printStackTrace();
                         }
                     }
-                    salarieTableModel.fillTable(vectorSalarie);
-                    myTable.setModel(salarieTableModel);
+                    salarieTableModel.fillTable(vectorSalarie);// mise à jour du TableModel
+                    myTable.setModel(salarieTableModel);//Mise à jour de l'affichage
                 }
         }
     }//GEN-LAST:event_buttonDelMouseReleased
@@ -622,7 +617,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void listeAccesButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listeAccesButtonMouseReleased
         // TODO add your handling code here:
         
-        if(indexTableModel == 1)
+        if(indexTableModel == 1)// si SalarieTableModel est utilisé
         {
             /* Set the Nimbus look and feel */
             //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -648,17 +643,15 @@ public class MainFrame extends javax.swing.JFrame {
       //</editor-fold>
 
             /* Create and display the form */
-            java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-              AccesFrame accesFrame =  new AccesFrame(indexTableModel, vectorSalarie.elementAt(myTable.getSelectedRow()).getIdentifiant());
-
+          
+              JDialog accesFrame =  new AccesFrame(new javax.swing.JFrame(), true, indexTableModel, vectorSalarie.elementAt(myTable.getSelectedRow()).getIdentifiant());
+              accesFrame.setModal(true);
               accesFrame.setLocationRelativeTo(null);
               accesFrame.setVisible(true);
-            }
-          });
+            
         }
         
-        else
+        else// si SalleTableModel ou TerminalTableModel sont utilisés
         {
             
             /* Set the Nimbus look and feel */
@@ -685,19 +678,20 @@ public class MainFrame extends javax.swing.JFrame {
       //</editor-fold>
 
             /* Create and display the form */
-            java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-              AccesFrame accesFrame =  new AccesFrame(indexTableModel, vectorSalle.elementAt(myTable.getSelectedRow()).getIdentifiant());
+            
+             JDialog accesFrame =  new AccesFrame(new javax.swing.JFrame(), true, indexTableModel, vectorSalle.elementAt(myTable.getSelectedRow()).getIdentifiant());
+              accesFrame.setModal(true);
               accesFrame.setLocationRelativeTo(null);
               accesFrame.setVisible(true);
-            }
-          });
+           
+         
         }
          
         
           
     }//GEN-LAST:event_listeAccesButtonMouseReleased
 
+    // Créé la fenêtre de gestion des dipsonibilités d'une salle
     private void listDisponibiliteButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listDisponibiliteButtonMouseReleased
         // TODO add your handling code here:
         
@@ -725,16 +719,13 @@ public class MainFrame extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-               DisponibiliteFrame disponibiliteSalle =  new DisponibiliteFrame(vectorSalle.elementAt(myTable.getSelectedRow()).getDisponibilite(), vectorSalle.elementAt(myTable.getSelectedRow()).getIdentifiant());
-               disponibiliteSalle.setLocationRelativeTo(null);
-               disponibiliteSalle.setVisible(true);
-            }
-        });
         
+               JDialog disponibiliteSalle =  new DisponibiliteFrame(new javax.swing.JFrame(), true, vectorSalle.elementAt(myTable.getSelectedRow()).getDisponibilite(), vectorSalle.elementAt(myTable.getSelectedRow()).getIdentifiant());
+               disponibiliteSalle.setLocationRelativeTo(null);
+               disponibiliteSalle.setVisible(true);          
     }//GEN-LAST:event_listDisponibiliteButtonMouseReleased
 
+     // Créé la fenêtre d'authentification
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
           /* Set the Nimbus look and feel */
@@ -760,7 +751,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
         //</editor-fold>
         
-            JDialog authentification = new Authentification(new javax.swing.JFrame(), true);
+           /*JDialog authentification = new Authentification(new javax.swing.JFrame(), true);
             authentification.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -769,7 +760,7 @@ public class MainFrame extends javax.swing.JFrame {
                 });
             authentification.setModal(true);
             authentification.setLocationRelativeTo(null);
-            authentification.setVisible(true);
+            authentification.setVisible(true);*/
     }//GEN-LAST:event_formWindowOpened
 
 
@@ -784,7 +775,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JButton listDisponibiliteButton;
-    private javax.swing.JButton listReservationButton;
     private javax.swing.JButton listeAccesButton;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JTable myTable;

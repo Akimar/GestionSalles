@@ -3,13 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.iia.osiris.metier;
+package com.iia.osiris.metier.model;
 
 import com.iia.osiris.database.BDD_Util;
 import com.iia.osiris.database.SalarieDAO;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -47,7 +46,7 @@ public class HistoriqueSalarieTableModel extends DefaultTableModel {
         return classs[columnIndex];
     } 
      
-    public void fillTable(int idSalarie)
+    public void fillTable(int idSalarie)// remplit le TableModel avec les accès du salarié
     {
         String [][] acces = null;
         Connection cnx = null;
@@ -55,7 +54,7 @@ public class HistoriqueSalarieTableModel extends DefaultTableModel {
         {
            cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
            
-           acces = SalarieDAO.getSalarieAccess(cnx, idSalarie);
+           acces = SalarieDAO.getSalarieAccess(cnx, idSalarie);// get des accès du salarié
         }
        
         catch(Exception ex)
@@ -75,7 +74,7 @@ public class HistoriqueSalarieTableModel extends DefaultTableModel {
 
                 catch(SQLException ex)
                 {
-
+                    ex.printStackTrace();
                 }
             }
         }

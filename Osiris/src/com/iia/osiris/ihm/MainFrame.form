@@ -290,9 +290,7 @@
                   <Component id="listDisponibiliteButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
                   <Component id="listeAccesButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
-                  <Component id="listReservationButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="193" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -302,7 +300,6 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="listeAccesButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="listReservationButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="listDisponibiliteButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
@@ -327,11 +324,6 @@
           <Events>
             <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="listeAccesButtonMouseReleased"/>
           </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="listReservationButton">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Liste des r&#xe9;servations"/>
-          </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="listDisponibiliteButton">
           <Properties>

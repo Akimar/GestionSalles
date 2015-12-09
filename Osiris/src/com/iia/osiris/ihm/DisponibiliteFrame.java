@@ -6,22 +6,16 @@
 package com.iia.osiris.ihm;
 
 import com.iia.osiris.database.BDD_Util;
-import com.iia.osiris.database.SalarieDAO;
 import com.iia.osiris.database.SalleDAO;
 import com.iia.osiris.metier.HoraireJour;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Time;
-import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
@@ -30,20 +24,21 @@ import javax.swing.SpinnerDateModel;
  *
  * @author Akimar
  */
-public class DisponibiliteFrame extends javax.swing.JFrame {
+public class DisponibiliteFrame extends javax.swing.JDialog {
 
     private HoraireJour[] Disponibilite;
     private int Identfiant;
     /**
      * Creates new form DisponibiliteFrame
      */
-    public DisponibiliteFrame(HoraireJour[] dispo, int idSalle) {
+    public DisponibiliteFrame(java.awt.Frame parent, boolean modal, HoraireJour[] dispo, int idSalle) {
+        super(parent, modal);
         initComponents();
         
         Disponibilite = dispo;
         Identfiant = idSalle;
         
-        changeTime();
+        changeTime(); // met à jour l'affiche avec les dipos de la salle présentes dans le vector
     }
 
     /**
@@ -234,7 +229,7 @@ public class DisponibiliteFrame extends javax.swing.JFrame {
     private void joursComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_joursComboBoxActionPerformed
         // TODO add your handling code here:
         
-        changeTime();
+        changeTime(); // met à jour l'affiche avec les dipos de la salle présentes dans le vector
     }//GEN-LAST:event_joursComboBoxActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
@@ -248,14 +243,14 @@ public class DisponibiliteFrame extends javax.swing.JFrame {
         if(reponse == JOptionPane.YES_OPTION)
         { 
 
-
+            // on recherche avec l'heure dans ce qui est retourné par getValue()
             Pattern p = Pattern.compile("[0-1][0-9]:[0-5][0-9]:[0-5][0-9]");
             Matcher matcherDebMat = p.matcher(horaireMatDebSpinner.getValue().toString());
             Matcher matcherFinMat = p.matcher(horaireMatFinSpinner.getValue().toString());
             Matcher matcherDebSoir = p.matcher(horaireSoirDebSpinner.getValue().toString());
             Matcher matcherFinSoir = p.matcher(horaireSoirFinSpinner.getValue().toString());
 
-            if (matcherDebMat.find() && matcherDebSoir.find() && matcherFinMat.find() && matcherFinSoir.find()) 
+            if (matcherDebMat.find() && matcherDebSoir.find() && matcherFinMat.find() && matcherFinSoir.find()) // extraction de l'heure via la regex
             {
                 try 
                 {
@@ -263,7 +258,7 @@ public class DisponibiliteFrame extends javax.swing.JFrame {
                     boolean trouve = false;
                     SimpleDateFormat formatter = new SimpleDateFormat("hh:mm:ss");
                 
-                    Time horaireMatDeb =new Time((formatter.parse(matcherDebMat.group()).getTime()));
+                    Time horaireMatDeb =new Time((formatter.parse(matcherDebMat.group()).getTime()));// get de l'heure afin de d'instancier des java.sql.Time
                     Time horaireMatFin = new Time((formatter.parse(matcherFinMat.group()).getTime())); 
                     Time horaireSoirDeb = new Time((formatter.parse(matcherDebSoir.group()).getTime())); 
                     Time horaireSoirFin = new Time((formatter.parse(matcherFinSoir.group()).getTime())); 
@@ -272,9 +267,9 @@ public class DisponibiliteFrame extends javax.swing.JFrame {
                     cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
                     SalleDAO.updateDispo(cnx, joursComboBox.getSelectedItem().toString(), horaireMatDeb, horaireMatFin, horaireSoirDeb, horaireSoirFin);
                     
-                   while(i < Disponibilite.length && !trouve)
+                   while(i < Disponibilite.length && !trouve)// on parcourt les disponibilités en mémoire correspondant à la salle
                    {
-                       if(Disponibilite[i].getJour().equals(joursComboBox.getSelectedItem().toString()))
+                       if(Disponibilite[i].getJour().equals(joursComboBox.getSelectedItem().toString()))// quand le bpn jour est trouvé, mise à jour des créneaux en mémoire
                        {
                            Disponibilite[i].setHeureDebMatin(horaireMatDeb);
                            Disponibilite[i].setHeureDebSoir(horaireSoirDeb);
@@ -310,12 +305,12 @@ public class DisponibiliteFrame extends javax.swing.JFrame {
 
                         catch(SQLException ex)
                         {
-
+                            ex.printStackTrace();
                         }
                     }
                 }
             }
-        }
+        }   
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
@@ -325,7 +320,7 @@ public class DisponibiliteFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     
-    public void changeTime()
+    public void changeTime()// met à jour l'affichage avec les infos contenus dans les dispos d'une salle
     {
         int i = 0;
         boolean ok = false;

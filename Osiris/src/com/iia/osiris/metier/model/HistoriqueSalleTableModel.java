@@ -3,13 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.iia.osiris.metier;
+package com.iia.osiris.metier.model;
 
 import com.iia.osiris.database.BDD_Util;
-import com.iia.osiris.database.SalarieDAO;
+
 import com.iia.osiris.database.SalleDAO;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -47,7 +48,7 @@ public  class HistoriqueSalleTableModel extends DefaultTableModel {
         return classs[columnIndex];
     } 
     
-    public void fillTable(int idSalle)
+    public void fillTable(int idSalle)// remplit le TableModel avec les accès à la salle
     {
         String [][] acces = null;
         Connection cnx = null;
@@ -55,7 +56,7 @@ public  class HistoriqueSalleTableModel extends DefaultTableModel {
         {
            cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
            
-           acces = SalleDAO.getSalleAccess(cnx, idSalle);
+           acces = SalleDAO.getSalleAccess(cnx, idSalle);// remplit le TableModel avec les accès à la salle
         }
        
         catch(Exception ex)
@@ -94,4 +95,30 @@ public  class HistoriqueSalleTableModel extends DefaultTableModel {
         }
     }
     
+    public static String changeDateFormat(String date, boolean mysqlFormat)//change le format de la date de 'YYYY-mm-dd' vers 'dd/mm/yyyy' et vice versa
+    {
+       
+        if(mysqlFormat)
+        {
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+            
+            String jour = date.substring(8);
+            String mois = date.substring(5, 7);
+            String annee = date.substring(0, 4);
+            
+            date = jour+"/"+mois+"/"+annee;
+        }
+        
+        else
+        {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            
+            String jour = date.substring(0, 2);
+            String mois = date.substring(3, 5);
+            String annee = date.substring(7);
+            
+            date = annee+"-"+mois+"-"+jour;
+        }
+       return date;  
+    }
 }

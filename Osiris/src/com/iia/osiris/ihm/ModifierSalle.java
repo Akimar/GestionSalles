@@ -178,11 +178,13 @@ public class ModifierSalle extends javax.swing.JDialog {
     private void validerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_validerButtonActionPerformed
         // TODO add your handling code here:
         
+        // vérifie qu'aucun champ n'est laissé vide
           if(terminalField.getText().isEmpty() || salleField.getText().isEmpty())
         {
             JOptionPane.showMessageDialog(null, "Veuillez compléter tous les champs.");
         }
         
+        // contrôle les saisies
         else if(!terminalField.getText().matches("[0-9]+") || !salleField.getText().matches("[a-zA-Z0-9]+"))
         {
            JOptionPane.showMessageDialog(null, "Les informations contiennent des caractères non pris en compte.");
@@ -190,15 +192,15 @@ public class ModifierSalle extends javax.swing.JDialog {
         else
         {
        
-                Connection cnx=null;
-                
-
+            Connection cnx=null;
+  
             try 
             {
 
                 cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
-                SalleDAO.updateSalle(cnx, vectorSalle.elementAt(indexSalle).getIdentifiant(), this.terminalField.getText(), this.salleField.getText());
-
+                SalleDAO.updateSalle(cnx, vectorSalle.elementAt(indexSalle).getIdentifiant(), this.terminalField.getText(), this.salleField.getText());// mise à jour en base
+                
+                // mise à jour en mémoire
                 vectorSalle.elementAt(indexSalle).setNumeroTerminal(this.terminalField.getText());
                 vectorSalle.elementAt(indexSalle).setNom(this.salleField.getText());
 
@@ -206,6 +208,7 @@ public class ModifierSalle extends javax.swing.JDialog {
             } 
             catch (Exception ex) 
             {
+                ex.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Une erreur s'est produite, les modifications ont échoué.");
             }
 
@@ -221,7 +224,7 @@ public class ModifierSalle extends javax.swing.JDialog {
 
                     catch(SQLException ex)
                     {
-
+                        ex.printStackTrace();
                     }
                 }
 

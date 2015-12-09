@@ -114,7 +114,7 @@ public class Salarie {
     }
    
     
-    public static String passEncrypt(String mdp)
+    public static String passEncrypt(String mdp)// transforme légèrement le mot de passe pour ne pas qu'il soit en clair en base
     {
        String mdpEncrypt= "";
        int mdpTemp;

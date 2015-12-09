@@ -5,23 +5,17 @@
  */
 package com.iia.osiris.database;
 
+import com.iia.osiris.metier.model.HistoriqueSalleTableModel;
 import com.iia.osiris.metier.HoraireJour;
-import com.iia.osiris.metier.Salarie;
 import com.iia.osiris.metier.Salle;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Time;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.beans.binding.Bindings;
+
+
 
 /**
  *
@@ -29,7 +23,8 @@ import javafx.beans.binding.Bindings;
  */
 public abstract class SalleDAO {
     
-     public static void getAllSalle(Connection cnx, Vector<Salle> vectorSalle)
+    // récupère toutes les salles
+    public static void getAllSalle(Connection cnx, Vector<Salle> vectorSalle)
     {
         PreparedStatement pstmtSalle = null;
         PreparedStatement pstmtHoraire = null;
@@ -40,8 +35,8 @@ public abstract class SalleDAO {
             int countDispo = 0;
             int i = 0;
             
-            pstmtSalle = cnx.prepareStatement("SELECT Identifiant, NomSalle, NumeroTerminal FROM Salle ORDER BY NomSalle;");  
-            pstmtHoraire = cnx.prepareStatement("SELECT IdentifiantJour, HoraireDebMat, HoraireFinMat, HoraireDebSoir, HoraireFinSoir , Jour.Identifiant, Libelle  FROM Disponibilite INNER JOIN Jour ON Disponibilite.IdentifiantJour = Jour.Identifiant WHERE Disponibilite.IdentifiantSalle = ? ORDER BY Libelle;");
+            pstmtSalle = cnx.prepareStatement("SELECT Identifiant, NomSalle, NumeroTerminal FROM Salle ORDER BY NomSalle;");// get des salles  
+            pstmtHoraire = cnx.prepareStatement("SELECT IdentifiantJour, HoraireDebMat, HoraireFinMat, HoraireDebSoir, HoraireFinSoir , Jour.Identifiant, Libelle  FROM Disponibilite INNER JOIN Jour ON Disponibilite.IdentifiantJour = Jour.Identifiant WHERE Disponibilite.IdentifiantSalle = ? ORDER BY Libelle;");// get des disponibilités d'une salle
             
             
 
@@ -54,22 +49,23 @@ public abstract class SalleDAO {
               pstmtHoraire.setInt(1, rsSalle.getInt("Identifiant"));
               rsHoraire = pstmtHoraire.executeQuery();
               
-              countDispo = getCountDispo(cnx, rsSalle.getInt("Identifiant"));
+              countDispo = getCountDispo(cnx, rsSalle.getInt("Identifiant"));// get du nombre de jours pour lesquels les diponibilités existent en base
               
               disponibilite = new HoraireJour[countDispo];
               
-              while(rsHoraire.next() && i< countDispo)
+              while(rsHoraire.next() && i< countDispo)// on remplit le tableau des diponibilités pour la salle
               {
                 disponibilite[i] = new HoraireJour(rsHoraire.getInt("Identifiant"), rsHoraire.getString("Libelle"),  rsHoraire.getTime("HoraireDebMat") , rsHoraire.getTime("HoraireFinMat"),  rsHoraire.getTime("HoraireDebSoir"),  rsHoraire.getTime("HoraireFinSoir"));
                 i++;
               }
               
               i = 0;
-              vectorSalle.add(new Salle(rsSalle.getInt("Identifiant"), rsSalle.getString("NumeroTerminal"), rsSalle.getString("NomSalle"), disponibilite));
+              vectorSalle.add(new Salle(rsSalle.getInt("Identifiant"), rsSalle.getString("NumeroTerminal"), rsSalle.getString("NomSalle"), disponibilite));// ajout de la salle dans les vector
             }
         }
         catch (Exception ex)
         {
+            ex.printStackTrace();
         } 
         
         finally
@@ -83,7 +79,7 @@ public abstract class SalleDAO {
 
                 catch(SQLException ex)
                 {
-
+                    ex.printStackTrace();
                 }
             }
             
@@ -96,12 +92,13 @@ public abstract class SalleDAO {
 
                 catch(SQLException ex)
                 {
-
+                    ex.printStackTrace();
                 }
             }
         }
     }
      
+    // get du nombre de jours pour lesquels les diponibilités existent en base
     public static int getCountDispo(Connection cnx, int id)
     {
         int nbDispo = 0;
@@ -117,7 +114,7 @@ public abstract class SalleDAO {
         } 
         catch (SQLException ex) 
         {
-           Logger.getLogger(SalleDAO.class.getName()).log(Level.SEVERE, null, ex);
+          ex.printStackTrace();
         }
         
         finally
@@ -139,6 +136,7 @@ public abstract class SalleDAO {
         }
     }
     
+    //get des salariés ayant tenter d'accéder à une salle
     public static String[][] getSalleAccess(Connection cnx, int id)
      {
         PreparedStatement pstmt = null;
@@ -152,14 +150,14 @@ public abstract class SalleDAO {
         try 
         {
             
-            countAcces = getCountAccess(cnx, id);
+            countAcces = getCountAccess(cnx, id); // get du nombre d'accès pour la salle
             
             if(countAcces == 0)
             {
                 return null;
             }
             
-            pstmt = cnx.prepareStatement("SELECT DateAcces, Nom, Prenom, Badge, EstAdmin, Autorise  FROM HistoriqueAcces INNER JOIN Salarie ON IdentifiantSalarie = Identifiant WHERE IdentifiantSalle = ?");
+            pstmt = cnx.prepareStatement("SELECT DateAcces, Nom, Prenom, Badge, EstAdmin, Autorise  FROM HistoriqueAcces INNER JOIN Salarie ON IdentifiantSalarie = Identifiant WHERE IdentifiantSalle = ?");// get des salariés
             pstmt.setInt(1,id);
                   
             ResultSet rs = pstmt.executeQuery();
@@ -170,6 +168,7 @@ public abstract class SalleDAO {
             {
                date = getDateFromDateTime(String.valueOf(rs.getTimestamp("DateAcces")));
                time = getTimeFromDateTime(String.valueOf(rs.getTimestamp("DateAcces")));
+               date = HistoriqueSalleTableModel.changeDateFormat(date, true);
                access[i][0] = rs.getString("Nom");
                access[i][1] = rs.getString("Prenom");
                access[i][2] = rs.getString("Badge");
@@ -200,7 +199,7 @@ public abstract class SalleDAO {
 
                 catch(SQLException ex)
                 {
-
+                    ex.printStackTrace();
                 }
             }
         }
@@ -208,7 +207,7 @@ public abstract class SalleDAO {
           return access;
     }
     
-     
+     // get du nombre d'accès pour la salle
     public static int getCountAccess(Connection cnx, int id)
     {
         int nbAcces = 0;
@@ -225,7 +224,7 @@ public abstract class SalleDAO {
         } 
         catch (SQLException ex) 
         {
-           Logger.getLogger(SalleDAO.class.getName()).log(Level.SEVERE, null, ex);
+          ex.printStackTrace();
         }
         
         finally
@@ -247,46 +246,23 @@ public abstract class SalleDAO {
         }
     } 
     
+    //extrait la date d'un DATETIME MySQL
     public static String getDateFromDateTime(String dateTime)
     {
         String date;
         return date = dateTime.substring(0, 10);
     }
     
-    
+    //extrait l'heure d'un DATETIME MySQL
     public static String getTimeFromDateTime(String dateTime)
     {
         String time;
         return time = dateTime.substring(11, 19);
     }
     
-    public static String changeDateFormat(String date, boolean mysqlFormat)
-    {
-       
-        if(mysqlFormat)
-        {
-            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-            
-            String jour = date.substring(8);
-            String mois = date.substring(5, 7);
-            String annee = date.substring(0, 4);
-            
-            date = jour+"/"+mois+"/"+annee;
-        }
-        
-        else
-        {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            
-            String jour = date.substring(0, 2);
-            String mois = date.substring(3, 5);
-            String annee = date.substring(7);
-            
-            date = annee+"-"+mois+"-"+jour;
-        }
-       return date;  
-    }
-    
+   
+    //Mise à jour des disponibilités d'une salle
+    // LEs réservations dont les horaires ne correspondent plus aux créneaux de la salle sont supprimés via un trigger en base.
     public static void updateDispo(Connection cnx, String jour, Time horaireDebMat, Time horaireFinMat, Time horaireDebSoir, Time horaireFinSoir)
     {
         PreparedStatement pstmt = null;
@@ -304,6 +280,7 @@ public abstract class SalleDAO {
         } 
         catch (SQLException ex) 
         {
+            ex.printStackTrace();
         }
         
         finally
@@ -317,12 +294,13 @@ public abstract class SalleDAO {
 
                 catch(SQLException ex)
                 {
-
+                    ex.printStackTrace();
                 }
             }
         }
     }
     
+    //met à jour les infos de la salle
     public static void updateSalle(Connection cnx, int identifiant, String terminal, String salle)
     {
         PreparedStatement pstmt = null;
@@ -354,7 +332,7 @@ public abstract class SalleDAO {
 
                 catch(SQLException ex)
                 {
-
+                    ex.printStackTrace();
                 }
             }
         }

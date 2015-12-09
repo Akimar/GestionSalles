@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.iia.osiris.metier;
+package com.iia.osiris.metier.model;
 
+import com.iia.osiris.metier.Salle;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 
@@ -12,13 +13,13 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Akimar
  */
-public class SalarieTableModel extends DefaultTableModel {
+public class TerminalTableModel extends DefaultTableModel {
     
-    private String[] columns = new String[] {"Identifiant", "Nom", "Prénom", "Badge", "Administrateur" };
-    private Class[] classs = new Class[] {int.class, String.class, String.class, String.class, Boolean.class};
-    private boolean[] editables = new boolean[] {false, false, false, false, false};
+    private String[] columns = new String[] { "Numéro", "Salle"};
+    private Class[] classs = new Class[] { String.class, String.class };
+    private boolean[] editables = new boolean[] {false, false};
 
-    public SalarieTableModel() {
+    public TerminalTableModel() {
         super(0, 0);
     }
 
@@ -40,12 +41,11 @@ public class SalarieTableModel extends DefaultTableModel {
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         return classs[columnIndex];
-    }
+    } 
     
-    public void fillTable(Vector<Salarie> vectorSalarie)
+    public void fillTable(Vector<Salle> vectorSalle)// remplit le TableModel avec le contenu du vector
     {
-        
-        if(this.getRowCount() > 0)
+         if(this.getRowCount() > 0)// si le TableModel contient déjà de la donnée, on efface tout pour réinsérer les données à jour du vector
         {
             int rowCount =  this.getRowCount();
             
@@ -55,9 +55,10 @@ public class SalarieTableModel extends DefaultTableModel {
             }
          
         }
-        for(Salarie salarie : vectorSalarie)
+         
+        for(Salle salle : vectorSalle)
         {
-            this.addRow(new Object[] {salarie.getIdentifiant(), salarie.getNom(),salarie.getPrenom(),salarie.getBadge(), salarie.isEstAdmin()}); 
+          this.addRow(new Object[] { salle.getNumeroTerminal(), salle.getNom()}); 
         }
     }
 }

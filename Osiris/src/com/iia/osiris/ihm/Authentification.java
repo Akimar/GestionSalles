@@ -4,8 +4,6 @@ import com.iia.osiris.database.AuthentificationDAO;
 import com.iia.osiris.database.BDD_Util;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /*
@@ -167,7 +165,7 @@ public class Authentification extends javax.swing.JDialog {
     private void validerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_validerButtonActionPerformed
         // TODO add your handling code here:
         
-        if(badgeField.getText().isEmpty() || String.valueOf(mdpField.getPassword()).isEmpty())
+        if(badgeField.getText().isEmpty() || String.valueOf(mdpField.getPassword()).isEmpty())// si le champs ne sont pas remplis
         {
            JOptionPane.showMessageDialog(null, "Veuillez saisir votre numéro de badge ainsi que votre mot de passe.");         
         }
@@ -203,7 +201,7 @@ public class Authentification extends javax.swing.JDialog {
                         }
                     }
                     
-                    if(auth)
+                    if(auth)/// les infos saisies ont match en base
                     {
                         this.dispose();
                     }

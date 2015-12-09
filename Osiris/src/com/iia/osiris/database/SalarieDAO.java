@@ -5,6 +5,7 @@
  */
 package com.iia.osiris.database;
 
+import com.iia.osiris.metier.model.HistoriqueSalleTableModel;
 import com.iia.osiris.metier.Salarie;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,8 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -29,13 +28,14 @@ public abstract class SalarieDAO {
             pstmt = cnx.prepareStatement("SELECT *  FROM Salarie ORDER BY Nom, Prenom;");       
             ResultSet rs = pstmt.executeQuery(); 
                  
-            while(rs.next()) // pour chaque salle
+            while(rs.next()) // pour chaque salarie retourné on instancie un salarie dans le vector
             {
                 vectorSalarie.add(new Salarie(rs.getInt("Identifiant"), rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Badge"), rs.getBoolean("EstAdmin")));
             }
         }
         catch (Exception ex)
         {
+            ex.printStackTrace();
         } 
         
         finally
@@ -49,12 +49,13 @@ public abstract class SalarieDAO {
 
                 catch(SQLException ex)
                 {
-
+                    ex.printStackTrace();
                 }
             }
         }
     }
     
+    // Ajoute un salarié en base et renvoie son Identifiant
     public static int addSalarie(Connection cnx, String nom, String prenom, String badge, String mdp, boolean admin)
     {
        
@@ -95,7 +96,7 @@ public abstract class SalarieDAO {
 
                 catch(SQLException ex)
                 {
-
+                    ex.printStackTrace();
                 }
             }
         }
@@ -103,13 +104,14 @@ public abstract class SalarieDAO {
         return id;
     }
     
+    
     public static void updateSalarie(Connection cnx, int identifiant, String nom, String prenom, String badge, String mdp, boolean admin)
     {
         PreparedStatement pstmt = null;
         try 
         {
             
-            if(mdp.isEmpty())
+            if(mdp.isEmpty())// si le mot de passe n'est pas modifié
             {
                 pstmt = cnx.prepareStatement("UPDATE Salarie SET Nom = ?, Prenom = ?, Badge = ?, EstAdmin = ? WHERE Identifiant = ?");         
                 pstmt.setInt(5,identifiant);
@@ -146,7 +148,7 @@ public abstract class SalarieDAO {
 
                 catch(SQLException ex)
                 {
-
+                    ex.printStackTrace();
                 }
             }
         }
@@ -182,13 +184,14 @@ public abstract class SalarieDAO {
 
                 catch(SQLException ex)
                 {
-
+                    ex.printStackTrace();
                 }
             }
         }
         
     }
     
+     // get des tentatives d'accès aux salles d'un salarié
      public static String[][] getSalarieAccess(Connection cnx, int id)
      {
         PreparedStatement pstmt = null;
@@ -202,7 +205,7 @@ public abstract class SalarieDAO {
         try 
         {
             
-            countAcces = getCountAccess(cnx, id);
+            countAcces = getCountAccess(cnx, id);// renvoie le nombre de tentative d'accès
             
             if(countAcces == 0)
             {
@@ -219,9 +222,9 @@ public abstract class SalarieDAO {
             while(rs.next() && i<countAcces)
             {
                 
-               date = SalleDAO.getDateFromDateTime(String.valueOf(rs.getTimestamp("DateAcces")));
-               time = SalleDAO.getTimeFromDateTime(String.valueOf(rs.getTimestamp("DateAcces")));
-               date = SalleDAO.changeDateFormat(date, true);
+               date = SalleDAO.getDateFromDateTime(String.valueOf(rs.getTimestamp("DateAcces")));// extrait la date du DATETIME
+               time = SalleDAO.getTimeFromDateTime(String.valueOf(rs.getTimestamp("DateAcces"))); //extrait l'heure du DATETIME
+               date = HistoriqueSalleTableModel.changeDateFormat(date, true);// met la date au format dd/mm/yyyy
                access[i][0] = rs.getString("NomSalle");
                access[i][1] = rs.getString("NumeroTerminal");
                access[i][2] = date;
@@ -251,7 +254,7 @@ public abstract class SalarieDAO {
 
                 catch(SQLException ex)
                 {
-
+                     ex.printStackTrace();
                 }
             }
         }
@@ -259,7 +262,7 @@ public abstract class SalarieDAO {
           return access;
     }
     
-     
+     // renvoie le nombre de tentative d'accès d'un salarié pour une salle
     public static int getCountAccess(Connection cnx, int id)
     {
         int nbAcces = 0;
@@ -276,7 +279,7 @@ public abstract class SalarieDAO {
         } 
         catch (SQLException ex) 
         {
-           Logger.getLogger(SalleDAO.class.getName()).log(Level.SEVERE, null, ex);
+          ex.printStackTrace();
         }
         
         finally
@@ -290,7 +293,7 @@ public abstract class SalarieDAO {
 
                 catch(SQLException ex)
                 {
-
+                    ex.printStackTrace();
                 }
             }
             

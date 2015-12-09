@@ -11,9 +11,6 @@ import com.iia.osiris.metier.Salarie;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -262,27 +259,31 @@ public class ModifierSalarie extends javax.swing.JDialog {
     private void validerModSalarieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_validerModSalarieActionPerformed
         // TODO add your handling code here:
       
+        // vérifie si les champs sont tous remplis
         if(nomSalarieField.getText().isEmpty() || prenomSalarieField.getText().isEmpty() || badgeSalarieField.getText().isEmpty() )
         {
             JOptionPane.showMessageDialog(null, "Veuillez compléter tous les champs.");
         }
         
+        // si un mot de passe a été entré il doit être confirmé
         else if(((mdpField.getPassword().length == 0) && (cMdpField.getPassword().length != 0)) || ((mdpField.getPassword().length != 0) && (cMdpField.getPassword().length == 0)))
         {
             JOptionPane.showMessageDialog(null, "Les deux champs du mot de passe doivent être renseignés.");
         }
         
+        // vérifie que les mots de passe correspondent
          else if(!String.valueOf(mdpField.getPassword()).equals(String.valueOf(cMdpField.getPassword())))
         {
             JOptionPane.showMessageDialog(null, "Les mots de passe ne correspondent pas.");
         }
          
+         // contrôle la longueur du mdp
          else if(mdpField.getPassword().length < 6 &&  mdpField.getPassword().length != 0)
         {
             JOptionPane.showMessageDialog(null, "Le mot de passe doit faire au minimum 6 caractères.");  
         }
       
-        
+        // contrôle les chaines saisies
         else if(!nomSalarieField.getText().matches("[a-zA-ZÀ-ÿ\\- ]+") || !prenomSalarieField.getText().matches("[a-zA-ZÀ-ÿ\\- ]+") || !badgeSalarieField.getText().matches("[A-Za-z0-9]+"))
         {
            JOptionPane.showMessageDialog(null, "Les informations contiennent des caractères non pris en compte.");
@@ -294,6 +295,8 @@ public class ModifierSalarie extends javax.swing.JDialog {
             
             int i = 0;
             boolean dejaPresent = false;
+            
+            // on recherche si le badge saisi n'est pas déjà utilisé dans le cas où il est différent de l'ancien badge du salarié
             while(i < vectorSalarie.size() && ! dejaPresent)
             {
                 if(vectorSalarie.elementAt(i).badgeExists(badgeSalarieField.getText()))
@@ -304,6 +307,7 @@ public class ModifierSalarie extends javax.swing.JDialog {
                 i++;
             }
             
+            // le badge n'est pas utilisé ailleurs ou si il n'a pas été changé
             if(!dejaPresent || badgeSalarieField.getText().equals(ancientBadge))
             {
             
@@ -316,23 +320,20 @@ public class ModifierSalarie extends javax.swing.JDialog {
                 {
 
                     cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
-                    SalarieDAO.updateSalarie(cnx, vectorSalarie.elementAt(indexSalarie).getIdentifiant(), this.nomSalarieField.getText(), this.prenomSalarieField.getText(), this.badgeSalarieField.getText(), String.valueOf(mdpField.getPassword()), admin);
+                    SalarieDAO.updateSalarie(cnx, vectorSalarie.elementAt(indexSalarie).getIdentifiant(), this.nomSalarieField.getText(), this.prenomSalarieField.getText(), this.badgeSalarieField.getText(), String.valueOf(mdpField.getPassword()), admin);// modification du salarié en base
                     
+                    // modification du salarié en mémoire
                     vectorSalarie.elementAt(indexSalarie).setNom(this.nomSalarieField.getText());
                     vectorSalarie.elementAt(indexSalarie).setPrenom(this.prenomSalarieField.getText());
                     vectorSalarie.elementAt(indexSalarie).setBadge(this.badgeSalarieField.getText());
                     vectorSalarie.elementAt(indexSalarie).setEstAdmin(admin);
                     
                     JOptionPane.showMessageDialog(null, "Les informations ont été modifiées avec succès !");
-
-
-
-                   
                        
                 } 
                 catch (Exception ex) 
                 {
-                    Logger.getLogger(ModifierSalarie.class.getName()).log(Level.SEVERE, null, ex);
+                   ex.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Une erreur s'est produite, les modifications ont échoué.");
                 }
 
@@ -348,7 +349,7 @@ public class ModifierSalarie extends javax.swing.JDialog {
 
                         catch(SQLException ex)
                         {
-
+                            ex.printStackTrace();
                         }
                     }
                 

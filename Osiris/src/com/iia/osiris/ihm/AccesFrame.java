@@ -5,34 +5,36 @@
  */
 package com.iia.osiris.ihm;
 
-import com.iia.osiris.metier.HistoriqueSalarieTableModel;
-import com.iia.osiris.metier.HistoriqueSalleTableModel;
+import com.iia.osiris.metier.model.HistoriqueSalarieTableModel;
+import com.iia.osiris.metier.model.HistoriqueSalleTableModel;
 
 /**
  *
  * @author Akimar
  */
-public class AccesFrame extends javax.swing.JFrame {
+public class AccesFrame extends javax.swing.JDialog {
 
     HistoriqueSalarieTableModel historiqueSalarieTableModel;
     HistoriqueSalleTableModel historiqueSalleTableModel;
     /**
      * Creates new form AccesFrame
      */
-    public AccesFrame(int indexModel, int id) {
+    public AccesFrame(java.awt.Frame parent, boolean modal, int indexModel, int id) {
+        
+        super(parent, modal);
         initComponents();
         
-        if(indexModel == 1)
+        if(indexModel == 1)// s'il s'agit de l'accès d'un salarié aux salles (la MainFrame a pour modèle SalarieTableModel)
         {
             historiqueSalarieTableModel = new HistoriqueSalarieTableModel();
-            historiqueSalarieTableModel.fillTable(id);
+            historiqueSalarieTableModel.fillTable(id);// rempit le tableau via le modèle
             
             tableAccess.setModel(historiqueSalarieTableModel);
         }
         else
         {
-            historiqueSalleTableModel = new HistoriqueSalleTableModel();
-            historiqueSalleTableModel.fillTable(id);
+            historiqueSalleTableModel = new HistoriqueSalleTableModel();// s'il s'agit de l'accès à une salle (la MainFrame a pour modèle SalleTableModel ou TermnalTableModel)
+            historiqueSalleTableModel.fillTable(id);// rempit le tableau via le modèle
             tableAccess.setModel(historiqueSalleTableModel);
         }
     }
@@ -103,7 +105,7 @@ public class AccesFrame extends javax.swing.JFrame {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
         
-        if(tableAccess.getRowCount() == 0)
+        if(tableAccess.getRowCount() == 0)//si aucun accès n'est enregistré
         {
             this.dispose();
         }

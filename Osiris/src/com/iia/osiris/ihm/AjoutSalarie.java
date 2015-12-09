@@ -11,8 +11,6 @@ import com.iia.osiris.metier.Salarie;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -226,21 +224,26 @@ public class AjoutSalarie extends javax.swing.JDialog {
         String mdp = String.valueOf(mpdField.getPassword());
         String confirmMdp = String.valueOf(cMdpField.getPassword());
           
+        // si tous les champs ne sont pas remplis
         if(nomSalarieField.getText().isEmpty() || prenomSalarieField.getText().isEmpty() || badgeSalarieField.getText().isEmpty() ||cMdpField.getPassword().length==0 || cMdpField.getPassword().length==0)
         {
             JOptionPane.showMessageDialog(null, "Veuillez compléter tous les champs.");
         }
+        
+        // si l'utilisateur a tapé des caractères interdits en fonction de champ à remplir
         
         else if(!nomSalarieField.getText().matches("[a-zA-ZÀ-ÿ\\- ]+") || !prenomSalarieField.getText().matches("[a-zA-ZÀ-ÿ\\- ]+") || !badgeSalarieField.getText().matches("[A-Za-z0-9]+") || !mdp.matches("[A-Za-z0-9]+") || !confirmMdp.matches("[A-Za-z0-9]+"))
         {
            JOptionPane.showMessageDialog(null, "Les informations contiennent des caractères non pris en compte.");
         }
         
+        // test la longueur du mot de passe
         else if(mdp.length() < 6)
         {
             JOptionPane.showMessageDialog(null, "Le mot de passe doit faire au minimum 6 caractères.");  
         }
         
+        // test la correspondance des mots de passe
         else if(!mdp.equals(confirmMdp))
         {
           JOptionPane.showMessageDialog(null, "Les mots de passe ne correspondent pas.");  
@@ -251,7 +254,7 @@ public class AjoutSalarie extends javax.swing.JDialog {
             
             int i = 0;
             boolean dejaPresent = false;
-            while(i < vectorSalarie.size() && ! dejaPresent)
+            while(i < vectorSalarie.size() && ! dejaPresent) // on vérifie si le bagdge saisi n'est pas déjà présent
             {
                 if(vectorSalarie.elementAt(i).badgeExists(badgeSalarieField.getText()))
                 {
@@ -261,19 +264,19 @@ public class AjoutSalarie extends javax.swing.JDialog {
                 i++;
             }
             
-            if(!dejaPresent)
+            if(!dejaPresent)//si le numéro de badge n'est pas encore utilisé
             {
                 int id;
-                boolean admin = (nonAdminRadio.isSelected()) ? false : true;
+                boolean admin = (nonAdminRadio.isSelected()) ? false : true;// si le salarié est admin ou non
                 Connection cnx = null;
                 try 
                 {
                     cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
-                    id = SalarieDAO.addSalarie(cnx,nomSalarieField.getText(), prenomSalarieField.getText(), badgeSalarieField.getText(), Salarie.passEncrypt(mdp), admin);
+                    id = SalarieDAO.addSalarie(cnx,nomSalarieField.getText(), prenomSalarieField.getText(), badgeSalarieField.getText(), Salarie.passEncrypt(mdp), admin); // ajout du salarié
                     cnx.close();
                     cnx=null;
 
-                    if(id != -1)
+                    if(id != -1)//si l'ajout a fonctionné, on ajoute le salarié dans le vector
                     {
                         vectorSalarie.add(new Salarie(id, nomSalarieField.getText(), prenomSalarieField.getText(), badgeSalarieField.getText(), admin));
                         JOptionPane.showMessageDialog(null, "Le salarié a été ajouté avec succès !");
@@ -281,6 +284,7 @@ public class AjoutSalarie extends javax.swing.JDialog {
                 } 
                 catch (Exception ex) 
                 {
+                    ex.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Une erreur s'est produite, l'enregistrement a échoué.");
                 }
 
@@ -296,7 +300,7 @@ public class AjoutSalarie extends javax.swing.JDialog {
 
                         catch(SQLException ex)
                         {
-
+                            ex.printStackTrace();
                         }
                     }
                   this.dispose();

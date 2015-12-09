@@ -25,7 +25,7 @@ public abstract class AuthentificationDAO {
         {
             String password = Salarie.passEncrypt(String.valueOf(mdp));
            
-            pstmt = cnx.prepareStatement("SELECT Identifiant FROM Salarie WHERE Badge = ? AND MotDePasse = ?;");
+            pstmt = cnx.prepareStatement("SELECT Identifiant FROM Salarie WHERE Badge = ? AND MotDePasse = ? AND EstAdmin = 1;");
             pstmt.setString(1, badge);
             pstmt.setString(2, password);
             

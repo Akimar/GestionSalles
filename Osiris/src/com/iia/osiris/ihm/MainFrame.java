@@ -751,7 +751,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
         //</editor-fold>
         
-           /*JDialog authentification = new Authentification(new javax.swing.JFrame(), true);
+           JDialog authentification = new Authentification(new javax.swing.JFrame(), true);
             authentification.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -760,7 +760,7 @@ public class MainFrame extends javax.swing.JFrame {
                 });
             authentification.setModal(true);
             authentification.setLocationRelativeTo(null);
-            authentification.setVisible(true);*/
+            authentification.setVisible(true);
     }//GEN-LAST:event_formWindowOpened
 
 

@@ -18,14 +18,13 @@ public class Salle {
     private String NumeroTerminal;
     private String Nom;
     private HoraireJour[] Disponibilite; 
-    private Porte[] Acces;
 
-    public Salle(int Identifiant, String NumeroTerminal, String Nom, HoraireJour[] Disponibilite, Porte[] Acces) {
+
+    public Salle(int Identifiant, String NumeroTerminal, String Nom, HoraireJour[] Disponibilite) {
         this.Identifiant = Identifiant;
         this.NumeroTerminal = NumeroTerminal;
         this.Nom = Nom;
         this.Disponibilite = Disponibilite;
-        this.Acces = Acces;
     }
 
     public int getIdentifiant() {
@@ -61,13 +60,6 @@ public class Salle {
         this.Disponibilite = Disponibilite;
     }
 
-    public Porte[] getAcces() {
-        return Acces;
-    }
-
-    public void setAcces(Porte[] Acces) {
-        this.Acces = Acces;
-    }
 
     @Override
     public int hashCode() {
@@ -97,19 +89,14 @@ public class Salle {
         if (!Arrays.deepEquals(this.Disponibilite, other.Disponibilite)) {
             return false;
         }
-        if (!Arrays.deepEquals(this.Acces, other.Acces)) {
-            return false;
-        }
+        
         return true;
     }
 
     @Override
     public String toString() {
-        return Nom;
+        return "Salle{" + "Nom=" + Nom + '}';
     }
 
- 
-    
-    
-    
+
 }

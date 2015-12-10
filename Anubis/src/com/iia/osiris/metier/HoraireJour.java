@@ -6,24 +6,44 @@
 package com.iia.osiris.metier;
 
 import java.sql.Time;
-import java.util.Objects;
+
 
 /**
  *
  * @author akimar
  */
 public class HoraireJour {
-    
+   
+   int Identifiant;
+   private String Jour;
    private Time HeureDebMatin;
    private Time HeureFinMatin;
    private Time HeureDebSoir;
    private Time HeureFinSoir;
 
-    public HoraireJour(Time HeureDebMatin, Time HeureFinMatin, Time HeureDebSoir, Time HeureFinSoir) {
+    public HoraireJour(int Identifiant, String Jour, Time HeureDebMatin, Time HeureFinMatin, Time HeureDebSoir, Time HeureFinSoir) {
+        this.Identifiant = Identifiant;
+        this.Jour = Jour;
         this.HeureDebMatin = HeureDebMatin;
         this.HeureFinMatin = HeureFinMatin;
         this.HeureDebSoir = HeureDebSoir;
         this.HeureFinSoir = HeureFinSoir;
+    }
+
+    public int getIdentifiant() {
+        return Identifiant;
+    }
+
+    public void setIdentifiant(int Identifiant) {
+        this.Identifiant = Identifiant;
+    }
+
+    public String getJour() {
+        return Jour;
+    }
+
+    public void setJour(String Jour) {
+        this.Jour = Jour;
     }
 
     public Time getHeureDebMatin() {
@@ -57,36 +77,6 @@ public class HoraireJour {
     public void setHeureFinSoir(Time HeureFinSoir) {
         this.HeureFinSoir = HeureFinSoir;
     }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final HoraireJour other = (HoraireJour) obj;
-        if (!Objects.equals(this.HeureDebMatin, other.HeureDebMatin)) {
-            return false;
-        }
-        if (!Objects.equals(this.HeureFinMatin, other.HeureFinMatin)) {
-            return false;
-        }
-        if (!Objects.equals(this.HeureDebSoir, other.HeureDebSoir)) {
-            return false;
-        }
-        if (!Objects.equals(this.HeureFinSoir, other.HeureFinSoir)) {
-            return false;
-        }
-        return true;
-    }
-   
+    
     
 }

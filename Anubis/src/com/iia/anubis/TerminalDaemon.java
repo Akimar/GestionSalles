@@ -18,7 +18,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -63,7 +62,7 @@ public class TerminalDaemon extends Thread {
 
     public void setIdentifiantTerminal(String IdentifiantTerminal) {
         if (salle == null) {
-            salle = new Salle(-1, IdentifiantTerminal, null, null, null);
+            salle = new Salle(-1, IdentifiantTerminal, null, null);
         } else {
             this.getSalle().setNumeroTerminal(IdentifiantTerminal);
         }
@@ -94,13 +93,13 @@ public class TerminalDaemon extends Thread {
             try {
                 cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
                 stmt = cnx.createStatement();
-                resultSet = stmt.executeQuery("SELECT identifiant FROM salle WHERE NumeroTerminal = " + this.getIdentifiantTerminal());
+                resultSet = stmt.executeQuery("SELECT * FROM salle WHERE NumeroTerminal = '" + this.getIdentifiantTerminal() +"' ;");
                 // on regarde si le terminal existe en base
                 if (!resultSet.next()) {//si non on le créé
-                    stmt.executeUpdate("INSERT INTO salle VALUES (NULL, '" + this.getIdentifiantTerminal() + "', NULL, NULL)");
-                    this.setSalle(new Salle(-1, line, null, null, null));
+                    stmt.executeUpdate("INSERT INTO salle VALUES (NULL, '" + this.getIdentifiantTerminal() + "', 'VOID' );");
+                    this.setSalle(new Salle(-1, line, null, null));
                 } else {
-                    this.setSalle(new Salle(resultSet.getInt("Identifiant"), resultSet.getString("NumeroTerminal"), resultSet.getString("NomSalle"), null, null));
+                    this.setSalle(new Salle(resultSet.getInt("Identifiant"), resultSet.getString("NumeroTerminal"), resultSet.getString("NomSalle"), null));
                 }
             } catch (Exception ex) {
                 System.out.println(ex.getStackTrace());
@@ -119,27 +118,33 @@ public class TerminalDaemon extends Thread {
         CallableStatement costmt = null;
         ResultSet resultSet = null;
         Salarie scanne = null;
+        boolean isBadge;
         boolean open = false;
         try {
-            Thread.sleep((3000));//pour affichage
-            cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
+            //Thread.sleep((3000));//pour affichage
+            
             this.envoyer("    En attente.");
             while ((line = br.readLine()) != null)//attend lecture terminal
             {
+                cnx = BDD_Util.open("root", "formation", "localhost", "GestionSalles");
                 this.Message = line;
                 line = transformerChaineMessage(this.Message);
+                isBadge = true;
                 if (line.equals("CME"))//action selon la lecture
                 {
                     this.envoyer("    Bonjour Merlin");
+                    isBadge = false;
                 }
                 if (line.equals("CSTAT")) {
                     this.envoyer("    Connected_to_" + InetAddress.getLocalHost().toString());
+                    isBadge = false;
                 }
 
                 if (line.equals("CWHO")) {
-                    this.envoyer("    Identifiant terminal : " + this.getIdentifiantTerminal());
+                    this.envoyer("    Identifiant terminal : " + this.getIdentifiantTerminal() + " => "+this.getSalle().getNom());
+                    isBadge = false;
                 }
-                if (line.matches("[A-Za-z0-9]+")) {//si c'est un badge
+                if (line.matches("[A-Za-z0-9]+") && isBadge) {//si c'est un badge
                     stmt = cnx.createStatement();
                     resultSet = stmt.executeQuery("SELECT * FROM salarie WHERE Badge = '" + line + "';");
                     if (resultSet.next()) {//si le badge est connu
@@ -157,13 +162,13 @@ public class TerminalDaemon extends Thread {
                         }
 
                         if (open) {
-                            this.envoyer("    Entrée autorisée - " + scanne.getNom() + " " + scanne.getPrenom());
+                            this.envoyer("    Entree autorisee - " + scanne.getNom() + " " + scanne.getPrenom());
                         } else {
-                            this.envoyer("    Entrée non autorisée - " + scanne.getNom() + " " + scanne.getPrenom());
+                            this.envoyer("    Entree non autorisee - " + scanne.getNom() + " " + scanne.getPrenom());
                         }
                         scanne = null;
                     } else {
-                        this.envoyer("    Badge detecté mais non reconnu : contactez admin.");
+                        this.envoyer("    Non reconnu");
                     }
                 }
                 Thread.sleep((5000));//pour affichage

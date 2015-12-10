@@ -316,7 +316,7 @@ BEGIN
 	
 	IF Ouvrir = 0 THEN
 	INSERT INTO historiqueacces(IdentifiantSalarie, IdentifiantSalle, DateAcces, Autorise) VALUES (IdSalarie, IdSalle, NOW(), 0);
-	SELECT Ouvrir as Test;
+	SELECT Ouvrir as Ouverture;
 	ELSE
 	INSERT INTO historiqueacces(IdentifiantSalarie, IdentifiantSalle, DateAcces, Autorise) VALUES (IdSalarie, IdSalle, NOW(), 1);
 	SELECT Ouvrir as Ouverture;

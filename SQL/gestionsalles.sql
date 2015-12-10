@@ -1,4 +1,4 @@
--- MySQL dump 10.13  Distrib 5.6.21, for Win64 (x86_64)
+﻿-- MySQL dump 10.13  Distrib 5.6.21, for Win64 (x86_64)
 --
 -- Host: localhost    Database: gestionsalles
 -- ------------------------------------------------------
@@ -16,7 +16,7 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --Création DB
-CREATE DATABASE gestionsalles charset='utf8';
+CREATE DATABASE gestionsalles CHARACTER SET utf8 COLLATE utf8_bin;
 use gestionsalles;
 
 --
